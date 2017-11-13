@@ -1,0 +1,97 @@
+{
+  "fluentMethods": true,
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "relationshipName": "event",
+      "otherEntityName": "event",
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "assessment"
+    },
+    {
+      "relationshipType": "one-to-one",
+      "relationshipName": "outcome",
+      "otherEntityName": "outcome",
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "assessment"
+    }
+  ],
+  "fields": [
+    {
+      "fieldName": "curriculumId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "curriculumName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "curriculumStartDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "curriculumEndDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "curriculumSpecialtyId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "curriculumSpecialty",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "curriculumSubType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "membershipType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gradeAbbreviation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gradeName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "periodCoveredFrom",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "periodCoveredTo",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "portfolioReviewDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "monthsWTEDuringPeriod",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "monthsCountedToTraining",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "traineeNTN",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "pya",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20171110134541",
+  "entityTableName": "assessment",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false
+}

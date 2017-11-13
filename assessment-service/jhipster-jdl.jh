@@ -1,0 +1,80 @@
+enum EventStatus {
+	APPEALED, ASSESSMENT_COMPLETED, COMPLETED, OVERDUE, SCHEDULED
+}
+
+enum OutcomeStatus {
+	OUTCOME_1, OUTCOME_2, OUTCOME_3,
+    OUTCOME_4, OUTCOME_5, OUTCOME_6,
+    OUTCOME_7
+}
+
+enum OutcomeReason {
+	UNSATISFACTORY_OUTCOME_REASON,
+    UNSATISFACTORY_OUTCOME_REASON_OTHER,
+    NOT_ASSESSED_OUTCOME_REASON,
+    NOT_ASSESSED_OUTCOME_REASON_OTHER
+}
+
+entity Outcome {
+	outcome OutcomeStatus,
+    underAppeal Boolean,
+    reason OutcomeReason,
+    comments String,
+    trainingCompletionDate ZonedDateTime,
+    extendedTrainingCompletionDate ZonedDateTime,
+    extendedTrainingTimeInMonths Integer,
+    tenPercentAudit Boolean,
+    externalTrainer Boolean,
+    nextRotationGradeId Long,
+    nextRotationGradeName String,
+    traineeNotifiedOfOutcome Boolean,
+    nextReviewDate ZonedDateTime
+}
+
+entity Event {
+	id Long,
+    personId Long,
+    firstName String,
+    lastName String,
+    startDate ZonedDateTime,
+    endDate ZonedDateTime,
+    programmeNumber Long,
+    programmeName String,
+    status EventStatus,
+}
+
+entity Assessment {
+	id Long,
+	curriculumId Long,
+    curriculumName String,
+    curriculumStartDate ZonedDateTime,
+    curriculumEndDate ZonedDateTime,
+    curriculumSpecialtyId Long,
+    curriculumSpecialty String,
+    curriculumSubType String,
+    membershipType String,
+    gradeAbbreviation String,
+    gradeName String,
+    periodCoveredFrom ZonedDateTime,
+    periodCoveredTo ZonedDateTime,
+    portfolioReviewDate ZonedDateTime,
+    monthsWTEDuringPeriod Integer,
+    monthsCountedToTraining Integer,
+    traineeNTN String,
+    pya String,
+}
+
+relationship OneToOne {
+	Assessment{event} to Event
+    Assessment{outcome} to Outcome
+}
+
+// Set pagination options
+paginate Assessment with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+// Set an angular suffix
+//angularSuffix * with mySuffix

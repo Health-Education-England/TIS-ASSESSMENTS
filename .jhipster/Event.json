@@ -1,0 +1,45 @@
+{
+  "fluentMethods": true,
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "personId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "firstName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "programmeNumber",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "programmeName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "EventStatus",
+      "fieldValues": "APPEALED,ASSESSMENT_COMPLETED,COMPLETED,OVERDUE,SCHEDULED"
+    }
+  ],
+  "changelogDate": "20171110134540",
+  "entityTableName": "event",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false
+}

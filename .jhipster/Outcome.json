@@ -1,0 +1,66 @@
+{
+  "fluentMethods": true,
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "outcome",
+      "fieldType": "OutcomeStatus",
+      "fieldValues": "OUTCOME_1,OUTCOME_2,OUTCOME_3,OUTCOME_4,OUTCOME_5,OUTCOME_6,OUTCOME_7"
+    },
+    {
+      "fieldName": "underApeal",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "reason",
+      "fieldType": "OutcomeReason",
+      "fieldValues": "UNSATISFACTORY_OUTCOME_REASON,UNSATISFACTORY_OUTCOME_REASON_OTHER,NOT_ASSESSED_OUTCOME_REASON,NOT_ASSESSED_OUTCOME_REASON_OTHER"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "trainingCompletionDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "extendedTrainingCompletionDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "extendedTrainingTimeInMonths",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "tenPercentAudit",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "externalTrainer",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "nextRotationGradeId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "nextRotationGradeName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "traineeNotifiedOfOutcome",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "nextReviewDate",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "changelogDate": "20171110134539",
+  "entityTableName": "outcome",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false
+}
