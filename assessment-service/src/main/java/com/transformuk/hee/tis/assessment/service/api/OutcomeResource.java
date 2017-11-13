@@ -9,6 +9,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,7 @@ public class OutcomeResource {
    */
   @PostMapping("/outcomes")
   @Timed
+  @PreAuthorize("hasAuthority('outcomes:add:modify')")
   public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
     log.debug("REST request to save Outcome : {}", outcomeDTO);
     if (outcomeDTO.getId() != null) {
@@ -70,6 +72,7 @@ public class OutcomeResource {
    */
   @PutMapping("/outcomes")
   @Timed
+  @PreAuthorize("hasAuthority('outcomes:add:modify')")
   public ResponseEntity<OutcomeDTO> updateOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
     log.debug("REST request to update Outcome : {}", outcomeDTO);
     if (outcomeDTO.getId() == null) {
@@ -88,6 +91,7 @@ public class OutcomeResource {
    */
   @GetMapping("/outcomes")
   @Timed
+  @PreAuthorize("hasAuthority('outcomes:view')")
   public List<OutcomeDTO> getAllOutcomes() {
     log.debug("REST request to get all Outcomes");
     return outcomeService.findAll();
@@ -101,6 +105,7 @@ public class OutcomeResource {
    */
   @GetMapping("/outcomes/{id}")
   @Timed
+  @PreAuthorize("hasAuthority('outcomes:view')")
   public ResponseEntity<OutcomeDTO> getOutcome(@PathVariable Long id) {
     log.debug("REST request to get Outcome : {}", id);
     OutcomeDTO outcomeDTO = outcomeService.findOne(id);
@@ -115,6 +120,7 @@ public class OutcomeResource {
    */
   @DeleteMapping("/outcomes/{id}")
   @Timed
+  @PreAuthorize("hasAuthority('outcomes:delete:entities')")
   public ResponseEntity<Void> deleteOutcome(@PathVariable Long id) {
     log.debug("REST request to delete Outcome : {}", id);
     outcomeService.delete(id);

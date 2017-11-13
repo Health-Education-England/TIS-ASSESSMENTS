@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class AssessmentResource {
    */
   @PostMapping("/assessments")
   @Timed
+  @PreAuthorize("hasAuthority('assessments:add:modify')")
   public ResponseEntity<AssessmentDTO> createAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
@@ -75,6 +77,7 @@ public class AssessmentResource {
    */
   @PutMapping("/assessments")
   @Timed
+  @PreAuthorize("hasAuthority('assessments:add:modify')")
   public ResponseEntity<AssessmentDTO> updateAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
@@ -94,6 +97,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments")
   @Timed
+  @PreAuthorize("hasAuthority('assessments:view')")
   public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
     log.debug("REST request to get a page of Assessments");
     Page<AssessmentDTO> page = assessmentService.findAll(pageable);
@@ -109,6 +113,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments/{id}")
   @Timed
+  @PreAuthorize("hasAuthority('assessments:view')")
   public ResponseEntity<AssessmentDTO> getAssessment(@PathVariable Long id) {
     log.debug("REST request to get Assessment : {}", id);
     AssessmentDTO assessmentDTO = assessmentService.findOne(id);
@@ -123,6 +128,7 @@ public class AssessmentResource {
    */
   @DeleteMapping("/assessments/{id}")
   @Timed
+  @PreAuthorize("hasAuthority('assessments:delete:entities')")
   public ResponseEntity<Void> deleteAssessment(@PathVariable Long id) {
     log.debug("REST request to delete Assessment : {}", id);
     assessmentService.delete(id);
