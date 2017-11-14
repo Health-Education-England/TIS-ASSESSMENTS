@@ -19,6 +19,14 @@ public interface OutcomeService {
   OutcomeDTO save(OutcomeDTO outcomeDTO);
 
   /**
+   * Save a collection outcomes.
+   *
+   * @param outcomeDTOs the collection of outcomes to save
+   * @return the persisted entity
+   */
+  List<OutcomeDTO> save(List<OutcomeDTO> outcomeDTOs);
+
+  /**
    * Get all the outcomes.
    *
    * @return the list of entities

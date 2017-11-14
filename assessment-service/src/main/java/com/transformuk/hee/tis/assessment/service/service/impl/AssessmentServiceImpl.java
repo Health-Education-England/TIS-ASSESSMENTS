@@ -55,6 +55,14 @@ public class AssessmentServiceImpl implements AssessmentService {
     return assessmentMapper.toDto(assessment);
   }
 
+  @Override
+  public List<AssessmentDTO> save(List<AssessmentDTO> assessmentDTOs) {
+    log.debug("Request to save collcetion of Assessment : {}", assessmentDTOs);
+    List<Assessment> assessments = assessmentMapper.toEntity(assessmentDTOs);
+    assessments = assessmentRepository.save(assessments);
+    return assessmentMapper.toDto(assessments);
+  }
+
   /**
    * Get all the assessments.
    *

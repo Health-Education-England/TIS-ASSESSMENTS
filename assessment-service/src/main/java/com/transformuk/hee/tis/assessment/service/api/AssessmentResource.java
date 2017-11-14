@@ -11,6 +11,7 @@ import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -34,11 +35,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 
@@ -50,6 +53,11 @@ import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.san
 public class AssessmentResource {
 
   private static final String ENTITY_NAME = "assessment";
+  private static final String REQUEST_BODY_EMPTY = "request.body.empty";
+  private static final String REQUEST_BODY_CANNOT_BE_EMPTY = "The request body for this end point cannot be empty";
+  private static final String BULK_UPDATE_FAILED_NOID = "bulk.update.failed.noId";
+  private static final String NOID_ERR_MSG = "Some DTOs you've provided have no Id, cannot update entities that don't exist";
+
   private final Logger log = LoggerFactory.getLogger(AssessmentResource.class);
   private final AssessmentService assessmentService;
 
@@ -180,4 +188,69 @@ public class AssessmentResource {
     assessmentService.delete(id);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
   }
+
+
+
+
+
+  /**
+   * POST  /bulk-assessments : Bulk create a new Assessments.
+   *
+   * @param assessmentDTOS List of the AssessmentDTO to create
+   * @return the ResponseEntity with status 200 (Created) and with body the new assessmentDTOS, or with status 400 (Bad Request) if the Assessment already has an ID
+   * @throws URISyntaxException if the Location URI syntax is incorrect
+   */
+  @PostMapping("/bulk-assessments")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:bulk:add:modify:entities')")
+  public ResponseEntity<List<AssessmentDTO>> bulkCreateAssessments(@Valid @RequestBody List<AssessmentDTO> assessmentDTOS) {
+    log.debug("REST request to bulk save Assessment : {}", assessmentDTOS);
+    if (!Collections.isEmpty(assessmentDTOS)) {
+      List<Long> entityIds = assessmentDTOS.stream()
+          .filter(p -> p.getId() != null)
+          .map(AssessmentDTO::getId)
+          .collect(Collectors.toList());
+      if (!Collections.isEmpty(entityIds)) {
+        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(StringUtils.join(entityIds, ","), "ids.exist", "A new Assessment cannot already have an ID")).body(null);
+      }
+    }
+    List<AssessmentDTO> result = assessmentService.save(assessmentDTOS);
+    List<Long> ids = result.stream().map(AssessmentDTO::getId).collect(Collectors.toList());
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, StringUtils.join(ids, ",")))
+        .body(result);
+  }
+
+  /**
+   * PUT  /bulk-assessments : Updates a collections of existing Assessments.
+   *
+   * @param assessmentDTOS List of the assessmentDTOS to update
+   * @return the ResponseEntity with status 200 (OK) and with body the updated assessmentDTOS,
+   * or with status 400 (Bad Request) if the assessmentDTOS is not valid,
+   * or with status 500 (Internal Server Error) if the assessmentDTOS couldnt be updated
+   * @throws URISyntaxException if the Location URI syntax is incorrect
+   */
+  @PutMapping("/bulk-assessments")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:bulk:add:modify:entities')")
+  public ResponseEntity<List<AssessmentDTO>> bulkUpdateAssessments(@Valid @RequestBody List<AssessmentDTO> assessmentDTOS) {
+    log.debug("REST request to bulk update Posts : {}", assessmentDTOS);
+    if (Collections.isEmpty(assessmentDTOS)) {
+      return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, REQUEST_BODY_EMPTY,
+          REQUEST_BODY_CANNOT_BE_EMPTY)).body(null);
+    } else if (!Collections.isEmpty(assessmentDTOS)) {
+      List<AssessmentDTO> entitiesWithNoId = assessmentDTOS.stream().filter(p -> p.getId() == null).collect(Collectors.toList());
+      if (!Collections.isEmpty(entitiesWithNoId)) {
+        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(StringUtils.join(entitiesWithNoId, ","),
+            BULK_UPDATE_FAILED_NOID, NOID_ERR_MSG)).body(entitiesWithNoId);
+      }
+    }
+
+    List<AssessmentDTO> results = assessmentService.save(assessmentDTOS);
+    List<Long> ids = results.stream().map(AssessmentDTO::getId).collect(Collectors.toList());
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, StringUtils.join(ids, ",")))
+        .body(results);
+  }
+
 }

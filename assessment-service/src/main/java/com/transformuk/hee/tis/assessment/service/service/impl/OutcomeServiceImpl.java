@@ -47,6 +47,20 @@ public class OutcomeServiceImpl implements OutcomeService {
   }
 
   /**
+   * Save a collection outcomes.
+   *
+   * @param outcomeDTOs the collection of outcomes to save
+   * @return the persisted entity
+   */
+  @Override
+  public List<OutcomeDTO> save(List<OutcomeDTO> outcomeDTOs) {
+    log.debug("Request to save a collection of Outcomes : {}", outcomeDTOs);
+    List<Outcome> outcome = outcomeMapper.toEntity(outcomeDTOs);
+    outcome = outcomeRepository.save(outcome);
+    return outcomeMapper.toDto(outcome);
+  }
+
+  /**
    * Get all the outcomes.
    *
    * @return the list of entities

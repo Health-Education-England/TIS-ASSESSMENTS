@@ -21,6 +21,15 @@ public interface AssessmentService {
   AssessmentDTO save(AssessmentDTO assessmentDTO);
 
   /**
+   * Save a collection of assessments
+   *
+   * @param assessmentDTOs
+   * @return
+   */
+  List<AssessmentDTO> save(List<AssessmentDTO> assessmentDTOs);
+
+
+  /**
    * Get all the assessments.
    *
    * @param pageable the pagination information
