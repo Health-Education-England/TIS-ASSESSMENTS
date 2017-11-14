@@ -1,13 +1,21 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+import com.transformuk.hee.tis.assessment.service.api.util.ColumnFilterUtil;
 import com.transformuk.hee.tis.assessment.service.exception.BadRequestAlertException;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
 import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,12 +31,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+
+import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 
 /**
  * REST controller for managing Assessment.
@@ -88,6 +100,22 @@ public class AssessmentResource {
         .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, assessmentDTO.getId().toString()))
         .body(result);
   }
+//
+//  /**
+//   * GET  /assessments : get all the assessments.
+//   *
+//   * @param pageable the pagination information
+//   * @return the ResponseEntity with status 200 (OK) and the list of assessments in body
+//   */
+//  @GetMapping("/assessments")
+//  @Timed
+//  @PreAuthorize("hasAuthority('assessment:view:entities')")
+//  public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
+//    log.debug("REST request to get a page of Assessments");
+//    Page<AssessmentDTO> page = assessmentService.findAll(pageable);
+//    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/assessments");
+//    return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//  }
 
   /**
    * GET  /assessments : get all the assessments.
@@ -95,13 +123,31 @@ public class AssessmentResource {
    * @param pageable the pagination information
    * @return the ResponseEntity with status 200 (OK) and the list of assessments in body
    */
+  @ApiOperation(value = "Lists Assessment data",
+      notes = "Returns a list of assessments with support for pagination, sorting, smart search and column filters \n",
+      response = ResponseEntity.class, responseContainer = "Person list")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Assessment list", response = ResponseEntity.class)})
   @GetMapping("/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
-    log.debug("REST request to get a page of Assessments");
-    Page<AssessmentDTO> page = assessmentService.findAll(pageable);
-    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/assessments");
+  public ResponseEntity<List<AssessmentDTO>> getAllAssessments(
+      @ApiParam Pageable pageable,
+      @ApiParam(value = "any wildcard string to be searched")
+      @RequestParam(value = "searchQuery", required = false) String searchQuery,
+      @ApiParam(value = "json object by column name and value. (Eg: columnFilters={ \"status\": [\"CURRENT\"]}\"")
+      @RequestParam(value = "columnFilters", required = false) String columnFilterJson) throws IOException {
+    log.debug("REST request to get a page of People");
+    searchQuery = sanitize(searchQuery);
+    List<Class> filterEnumList = Lists.newArrayList(EventStatus.class);
+    List<ColumnFilter> columnFilters = ColumnFilterUtil.getColumnFilters(columnFilterJson, filterEnumList);
+    Page<AssessmentDTO> page;
+    if (StringUtils.isEmpty(searchQuery) && StringUtils.isEmpty(columnFilterJson)) {
+      page = assessmentService.findAll(pageable);
+    } else {
+      page = assessmentService.advancedSearch(searchQuery, columnFilters, pageable);
+    }
+    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/people");
     return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
   }
 

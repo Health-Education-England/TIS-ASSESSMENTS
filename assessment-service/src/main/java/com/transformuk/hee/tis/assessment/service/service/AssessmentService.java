@@ -1,8 +1,11 @@
 package com.transformuk.hee.tis.assessment.service.service;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * Service Interface for managing Assessment.
@@ -39,4 +42,6 @@ public interface AssessmentService {
    * @param id the id of the entity
    */
   void delete(Long id);
+
+  Page<AssessmentDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
 }
