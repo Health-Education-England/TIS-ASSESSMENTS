@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -77,7 +78,7 @@ public class Assessment implements Serializable {
   @Column(name = "pya")
   private String pya;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "eventId", unique = true)
   private Event event;
 

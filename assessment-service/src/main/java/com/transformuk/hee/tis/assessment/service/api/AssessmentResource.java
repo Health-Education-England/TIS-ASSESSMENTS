@@ -54,7 +54,7 @@ public class AssessmentResource {
    */
   @PostMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessments:add:modify')")
+  @PreAuthorize("hasAuthority('assessment:add:modify')")
   public ResponseEntity<AssessmentDTO> createAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
@@ -77,7 +77,7 @@ public class AssessmentResource {
    */
   @PutMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessments:add:modify')")
+  @PreAuthorize("hasAuthority('assessment:add:modify')")
   public ResponseEntity<AssessmentDTO> updateAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
@@ -97,7 +97,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessments:view')")
+  @PreAuthorize("hasAuthority('assessment:view')")
   public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
     log.debug("REST request to get a page of Assessments");
     Page<AssessmentDTO> page = assessmentService.findAll(pageable);
@@ -113,7 +113,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments/{id}")
   @Timed
-  @PreAuthorize("hasAuthority('assessments:view')")
+  @PreAuthorize("hasAuthority('assessment:view')")
   public ResponseEntity<AssessmentDTO> getAssessment(@PathVariable Long id) {
     log.debug("REST request to get Assessment : {}", id);
     AssessmentDTO assessmentDTO = assessmentService.findOne(id);
@@ -128,7 +128,7 @@ public class AssessmentResource {
    */
   @DeleteMapping("/assessments/{id}")
   @Timed
-  @PreAuthorize("hasAuthority('assessments:delete:entities')")
+  @PreAuthorize("hasAuthority('assessment:delete:entities')")
   public ResponseEntity<Void> deleteAssessment(@PathVariable Long id) {
     log.debug("REST request to delete Assessment : {}", id);
     assessmentService.delete(id);
