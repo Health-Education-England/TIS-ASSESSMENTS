@@ -54,7 +54,7 @@ public class AssessmentResource {
    */
   @PostMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:add:modify')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDTO> createAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
@@ -77,7 +77,7 @@ public class AssessmentResource {
    */
   @PutMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:add:modify')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDTO> updateAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
@@ -97,7 +97,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view')")
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
     log.debug("REST request to get a page of Assessments");
     Page<AssessmentDTO> page = assessmentService.findAll(pageable);
@@ -113,7 +113,7 @@ public class AssessmentResource {
    */
   @GetMapping("/assessments/{id}")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view')")
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDTO> getAssessment(@PathVariable Long id) {
     log.debug("REST request to get Assessment : {}", id);
     AssessmentDTO assessmentDTO = assessmentService.findOne(id);

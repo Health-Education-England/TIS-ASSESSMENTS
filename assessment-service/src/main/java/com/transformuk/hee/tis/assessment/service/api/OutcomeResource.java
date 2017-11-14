@@ -48,7 +48,7 @@ public class OutcomeResource {
    */
   @PostMapping("/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:add:modify')")
+  @PreAuthorize("hasAuthority('outcomes:add:modify:entities')")
   public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
     log.debug("REST request to save Outcome : {}", outcomeDTO);
     if (outcomeDTO.getId() != null) {
@@ -72,7 +72,7 @@ public class OutcomeResource {
    */
   @PutMapping("/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:add:modify')")
+  @PreAuthorize("hasAuthority('outcomes:add:modify:entities')")
   public ResponseEntity<OutcomeDTO> updateOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
     log.debug("REST request to update Outcome : {}", outcomeDTO);
     if (outcomeDTO.getId() == null) {
@@ -91,7 +91,7 @@ public class OutcomeResource {
    */
   @GetMapping("/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:view')")
+  @PreAuthorize("hasAuthority('outcomes:view:entities')")
   public List<OutcomeDTO> getAllOutcomes() {
     log.debug("REST request to get all Outcomes");
     return outcomeService.findAll();
@@ -105,7 +105,7 @@ public class OutcomeResource {
    */
   @GetMapping("/outcomes/{id}")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:view')")
+  @PreAuthorize("hasAuthority('outcomes:view:entities')")
   public ResponseEntity<OutcomeDTO> getOutcome(@PathVariable Long id) {
     log.debug("REST request to get Outcome : {}", id);
     OutcomeDTO outcomeDTO = outcomeService.findOne(id);

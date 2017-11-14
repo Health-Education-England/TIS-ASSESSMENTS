@@ -374,7 +374,7 @@
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
       <artifactId>assessment-api</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
