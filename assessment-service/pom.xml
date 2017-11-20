@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <groupId>org.springframework.boot</groupId>
-    <version>1.5.7.RELEASE</version>
+    <artifactId>tis-parent</artifactId>
+    <groupId>com.transformuk.hee</groupId>
+    <version>2.1.0</version>
     <relativePath/>
   </parent>
 
@@ -627,41 +627,16 @@
   </build>
   <profiles>
     <profile>
-      <id>swagger</id>
-      <properties>
-        <profile.swagger>,swagger</profile.swagger>
-      </properties>
-    </profile>
-    <profile>
-      <id>webpack</id>
+      <id>nonexec</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>com.github.eirslett</groupId>
-            <artifactId>frontend-maven-plugin</artifactId>
-            <version>${frontend-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>install node and yarn</id>
-                <goals>
-                  <goal>install-node-and-yarn</goal>
-                </goals>
-                <configuration>
-                  <nodeVersion>${node.version}</nodeVersion>
-                  <yarnVersion>${yarn.version}</yarnVersion>
-                </configuration>
-              </execution>
-              <execution>
-                <id>webpack build dev</id>
-                <goals>
-                  <goal>yarn</goal>
-                </goals>
-                <phase>generate-resources</phase>
-                <configuration>
-                  <arguments>run webpack:build</arguments>
-                </configuration>
-              </execution>
-            </executions>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.0.2</version>
+            <configuration>
+              <classifier>nonexec</classifier>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -688,25 +663,6 @@
           <optional>true</optional>
         </dependency>
       </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <warSourceDirectory>target/www/</warSourceDirectory>
-              <webResources>
-                <resource>
-                  <directory>src/main/webapp</directory>
-                  <includes>
-                    <include>WEB-INF/**</include>
-                  </includes>
-                </resource>
-              </webResources>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>prod</id>
@@ -718,31 +674,6 @@
       </dependencies>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <configuration>
-              <filesets>
-                <fileset>
-                  <directory>target/www/</directory>
-                </fileset>
-              </filesets>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <warSourceDirectory>target/www/</warSourceDirectory>
-              <webResources>
-                <resource>
-                  <directory>src/main/webapp</directory>
-                  <includes>
-                    <include>WEB-INF/**</include>
-                  </includes>
-                </resource>
-              </webResources>
-            </configuration>
-          </plugin>
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
@@ -756,52 +687,6 @@
             <configuration>
               <executable>true</executable>
             </configuration>
-          </plugin>
-          <plugin>
-            <groupId>com.github.eirslett</groupId>
-            <artifactId>frontend-maven-plugin</artifactId>
-            <version>${frontend-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>install node and yarn</id>
-                <goals>
-                  <goal>install-node-and-yarn</goal>
-                </goals>
-                <configuration>
-                  <nodeVersion>${node.version}</nodeVersion>
-                  <yarnVersion>${yarn.version}</yarnVersion>
-                </configuration>
-              </execution>
-              <execution>
-                <id>yarn install</id>
-                <goals>
-                  <goal>yarn</goal>
-                </goals>
-                <configuration>
-                  <arguments>install --force</arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>webpack build test</id>
-                <goals>
-                  <goal>yarn</goal>
-                </goals>
-                <phase>test</phase>
-                <configuration>
-                  <arguments>run webpack:test</arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>webpack build prod</id>
-                <goals>
-                  <goal>yarn</goal>
-                </goals>
-                <phase>generate-resources</phase>
-                <configuration>
-                  <arguments>run webpack:prod</arguments>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>

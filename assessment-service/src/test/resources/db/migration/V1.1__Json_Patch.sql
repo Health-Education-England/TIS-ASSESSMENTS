@@ -4,6 +4,6 @@ CREATE TABLE `JsonPatch` (
   `patchId` varchar(255) DEFAULT NULL,
   `patch` varchar(255) DEFAULT NULL,
   `dateAdded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `enabled` bit(1) DEFAULT '1',
+  `enabled` bit(1) DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
