@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 /**
  * Mapper for the entity Assessment and its DTO AssessmentDTO.
  */
-@Mapper(componentModel = "spring", uses = {EventMapper.class, OutcomeMapper.class})
+@Mapper(componentModel = "spring", uses = {OutcomeMapper.class})
 public interface AssessmentMapper extends EntityMapper<AssessmentDTO, Assessment> {
 
   AssessmentDTO toDto(Assessment assessment);

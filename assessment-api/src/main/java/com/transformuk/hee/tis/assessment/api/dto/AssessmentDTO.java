@@ -12,6 +12,24 @@ public class AssessmentDTO implements Serializable {
 
   private Long id;
 
+  private Long personId;
+
+  private String firstName;
+
+  private String lastName;
+
+  private ZonedDateTime startDate;
+
+  private ZonedDateTime endDate;
+
+  private Long programmeNumber;
+
+  private String programmeName;
+
+  private EventStatus status;
+
+  private AssessmentType type;
+
   private Long curriculumId;
 
   private String curriculumName;
@@ -46,8 +64,6 @@ public class AssessmentDTO implements Serializable {
 
   private String pya;
 
-  private EventDTO event;
-
   private OutcomeDTO outcome;
 
   public Long getId() {
@@ -56,6 +72,78 @@ public class AssessmentDTO implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getPersonId() {
+    return personId;
+  }
+
+  public void setPersonId(Long personId) {
+    this.personId = personId;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public ZonedDateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(ZonedDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public ZonedDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(ZonedDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+  public Long getProgrammeNumber() {
+    return programmeNumber;
+  }
+
+  public void setProgrammeNumber(Long programmeNumber) {
+    this.programmeNumber = programmeNumber;
+  }
+
+  public String getProgrammeName() {
+    return programmeName;
+  }
+
+  public void setProgrammeName(String programmeName) {
+    this.programmeName = programmeName;
+  }
+
+  public EventStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(EventStatus status) {
+    this.status = status;
+  }
+
+  public AssessmentType getType() {
+    return type;
+  }
+
+  public void setType(AssessmentType type) {
+    this.type = type;
   }
 
   public Long getCurriculumId() {
@@ -194,14 +282,6 @@ public class AssessmentDTO implements Serializable {
     this.pya = pya;
   }
 
-  public EventDTO getEvent() {
-    return event;
-  }
-
-  public void setEvent(EventDTO event) {
-    this.event = event;
-  }
-
   public OutcomeDTO getOutcome() {
     return outcome;
   }
@@ -235,6 +315,15 @@ public class AssessmentDTO implements Serializable {
   public String toString() {
     return "AssessmentDTO{" +
         "id=" + getId() +
+        ", personId='" + getPersonId() + "'" +
+        ", firstName='" + getFirstName() + "'" +
+        ", lastName='" + getLastName() + "'" +
+        ", startDate='" + getStartDate() + "'" +
+        ", endDate='" + getEndDate() + "'" +
+        ", programmeNumber='" + getProgrammeNumber() + "'" +
+        ", programmeName='" + getProgrammeName() + "'" +
+        ", status='" + getStatus() + "'" +
+        ", type='" + getType() + "'" +
         ", curriculumId='" + getCurriculumId() + "'" +
         ", curriculumName='" + getCurriculumName() + "'" +
         ", curriculumStartDate='" + getCurriculumStartDate() + "'" +

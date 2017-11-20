@@ -1,9 +1,13 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
-import javax.persistence.CascadeType;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
+import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +30,35 @@ public class Assessment implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(name = "personId")
+  private Long personId;
+
+  @Column(name = "firstName")
+  private String firstName;
+
+  @Column(name = "lastName")
+  private String lastName;
+
+  @Column(name = "startDate")
+  private ZonedDateTime startDate;
+
+  @Column(name = "endDate")
+  private ZonedDateTime endDate;
+
+  @Column(name = "programmeNumber")
+  private Long programmeNumber;
+
+  @Column(name = "programmeName")
+  private String programmeName;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  private EventStatus status;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type")
+  private AssessmentType type;
 
   @Column(name = "curriculumId")
   private Long curriculumId;
@@ -78,10 +111,6 @@ public class Assessment implements Serializable {
   @Column(name = "pya")
   private String pya;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "eventId", unique = true)
-  private Event event;
-
   @OneToOne
   @JoinColumn(name = "outcomeId", unique = true)
   private Outcome outcome;
@@ -93,6 +122,123 @@ public class Assessment implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getPersonId() {
+    return personId;
+  }
+
+  public void setPersonId(Long personId) {
+    this.personId = personId;
+  }
+
+  public Assessment personId(Long personId) {
+    this.personId = personId;
+    return this;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public Assessment firstName(String firstName) {
+    this.firstName = firstName;
+    return this;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public Assessment lastName(String lastName) {
+    this.lastName = lastName;
+    return this;
+  }
+
+  public ZonedDateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(ZonedDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public Assessment startDate(ZonedDateTime startDate) {
+    this.startDate = startDate;
+    return this;
+  }
+
+  public ZonedDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(ZonedDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+  public Assessment endDate(ZonedDateTime endDate) {
+    this.endDate = endDate;
+    return this;
+  }
+
+  public Long getProgrammeNumber() {
+    return programmeNumber;
+  }
+
+  public void setProgrammeNumber(Long programmeNumber) {
+    this.programmeNumber = programmeNumber;
+  }
+
+  public Assessment programmeNumber(Long programmeNumber) {
+    this.programmeNumber = programmeNumber;
+    return this;
+  }
+
+  public String getProgrammeName() {
+    return programmeName;
+  }
+
+  public void setProgrammeName(String programmeName) {
+    this.programmeName = programmeName;
+  }
+
+  public Assessment programmeName(String programmeName) {
+    this.programmeName = programmeName;
+    return this;
+  }
+
+  public EventStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(EventStatus status) {
+    this.status = status;
+  }
+
+  public Assessment status(EventStatus status) {
+    this.status = status;
+    return this;
+  }
+
+  public AssessmentType getType() {
+    return type;
+  }
+
+  public void setType(AssessmentType type) {
+    this.type = type;
+  }
+
+  public Assessment type(AssessmentType type) {
+    this.type = type;
+    return this;
   }
 
   public Long getCurriculumId() {
@@ -316,19 +462,6 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public Event getEvent() {
-    return event;
-  }
-
-  public void setEvent(Event event) {
-    this.event = event;
-  }
-
-  public Assessment event(Event event) {
-    this.event = event;
-    return this;
-  }
-
   public Outcome getOutcome() {
     return outcome;
   }
@@ -367,6 +500,15 @@ public class Assessment implements Serializable {
   public String toString() {
     return "Assessment{" +
         "id=" + getId() +
+        ", personId='" + getPersonId() + "'" +
+        ", firstName='" + getFirstName() + "'" +
+        ", lastName='" + getLastName() + "'" +
+        ", startDate='" + getStartDate() + "'" +
+        ", endDate='" + getEndDate() + "'" +
+        ", programmeNumber='" + getProgrammeNumber() + "'" +
+        ", programmeName='" + getProgrammeName() + "'" +
+        ", status='" + getStatus() + "'" +
+        ", type='" + getType() + "'" +
         ", curriculumId='" + getCurriculumId() + "'" +
         ", curriculumName='" + getCurriculumName() + "'" +
         ", curriculumStartDate='" + getCurriculumStartDate() + "'" +

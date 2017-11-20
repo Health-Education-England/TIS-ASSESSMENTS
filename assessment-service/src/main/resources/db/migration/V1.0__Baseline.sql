@@ -1,16 +1,3 @@
-CREATE TABLE `Event` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `personId` bigint(20) DEFAULT NULL,
-  `firstName` varchar(255) DEFAULT NULL,
-  `lastName` varchar(255) DEFAULT NULL,
-  `startDate` timestamp NULL,
-  `endDate` timestamp NULL,
-  `programmeNumber` bigint(20) DEFAULT NULL,
-  `programmeName` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `Outcome` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `outcome` varchar(255) DEFAULT NULL,
@@ -32,6 +19,15 @@ CREATE TABLE `Outcome` (
 
 CREATE TABLE `Assessment` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `personId` bigint(20) DEFAULT NULL,
+  `firstName` varchar(255) DEFAULT NULL,
+  `lastName` varchar(255) DEFAULT NULL,
+  `startDate` timestamp NULL,
+  `endDate` timestamp NULL,
+  `programmeNumber` bigint(20) DEFAULT NULL,
+  `programmeName` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
   `curriculumId` bigint(20) DEFAULT NULL,
   `curriculumName` varchar(255) DEFAULT NULL,
   `curriculumStartDate` timestamp NULL,
@@ -49,12 +45,9 @@ CREATE TABLE `Assessment` (
   `monthsCountedToTraining` int(11) DEFAULT NULL,
   `traineeNtn` varchar(255) DEFAULT NULL,
   `pya` varchar(255) DEFAULT NULL,
-  `eventId` bigint(20) DEFAULT NULL,
   `outcomeId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `eventId` (`eventId`),
   KEY `outcomeId` (`outcomeId`),
-  CONSTRAINT `fk_assessment_event_id` FOREIGN KEY (`eventId`) REFERENCES `Event` (`id`),
   CONSTRAINT `fk_assessment_outcome_id` FOREIGN KEY (`outcomeId`) REFERENCES `Outcome` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
