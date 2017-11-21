@@ -4,6 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
+import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.ColumnFilterUtil;
 import com.transformuk.hee.tis.assessment.service.exception.BadRequestAlertException;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
@@ -25,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +78,7 @@ public class AssessmentResource {
   @PostMapping("/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<AssessmentDTO> createAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
+  public ResponseEntity<AssessmentDTO> createAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
       throw new BadRequestAlertException("A new assessment cannot already have an ID", ENTITY_NAME, "idexists");
@@ -98,7 +101,7 @@ public class AssessmentResource {
   @PutMapping("/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<AssessmentDTO> updateAssessment(@RequestBody AssessmentDTO assessmentDTO) throws URISyntaxException {
+  public ResponseEntity<AssessmentDTO> updateAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
       return createAssessment(assessmentDTO);
@@ -108,22 +111,6 @@ public class AssessmentResource {
         .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, assessmentDTO.getId().toString()))
         .body(result);
   }
-//
-//  /**
-//   * GET  /assessments : get all the assessments.
-//   *
-//   * @param pageable the pagination information
-//   * @return the ResponseEntity with status 200 (OK) and the list of assessments in body
-//   */
-//  @GetMapping("/assessments")
-//  @Timed
-//  @PreAuthorize("hasAuthority('assessment:view:entities')")
-//  public ResponseEntity<List<AssessmentDTO>> getAllAssessments(@ApiParam Pageable pageable) {
-//    log.debug("REST request to get a page of Assessments");
-//    Page<AssessmentDTO> page = assessmentService.findAll(pageable);
-//    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/assessments");
-//    return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//  }
 
   /**
    * GET  /assessments : get all the assessments.
