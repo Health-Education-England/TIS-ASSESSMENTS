@@ -1,6 +1,13 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
+import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
+import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -10,28 +17,44 @@ import java.util.Objects;
  */
 public class AssessmentDTO implements Serializable {
 
+  @Null(groups = Create.class, message = "id must be null when creating a new assessment")
+  @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
   private Long id;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "personId cannot be null")
   private Long personId;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "first name cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "first name should be at least 1 character long")
   private String firstName;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "last name cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "last name should be at least 1 character long")
   private String lastName;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "start date cannot be null")
   private ZonedDateTime startDate;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "end date cannot be null")
   private ZonedDateTime endDate;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
   private Long programmeNumber;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "programme name cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "programme name should be at least 1 character long")
   private String programmeName;
 
   private EventStatus status;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "type cannot be null")
   private AssessmentType type;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "curriculumId cannot be null")
   private Long curriculumId;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "curriculum name cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "curriculum name should be at least 1 character long")
   private String curriculumName;
 
   private ZonedDateTime curriculumStartDate;
@@ -46,12 +69,18 @@ public class AssessmentDTO implements Serializable {
 
   private String membershipType;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "gradeAbbreviation cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "gradeAbbreviation should be at least 1 character long")
   private String gradeAbbreviation;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "grade name cannot be null")
+  @Length(min = 1, groups = {Create.class, Update.class}, message = "grade name should be at least 1 character long")
   private String gradeName;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "period covered from cannot be null")
   private ZonedDateTime periodCoveredFrom;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "period covered to cannot be null")
   private ZonedDateTime periodCoveredTo;
 
   private ZonedDateTime portfolioReviewDate;
