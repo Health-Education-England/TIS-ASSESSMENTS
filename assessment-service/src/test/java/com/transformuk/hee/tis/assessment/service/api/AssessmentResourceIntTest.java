@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -100,6 +101,29 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PYA = "AAAAAAAAAA";
   private static final String UPDATED_PYA = "BBBBBBBBBB";
 
+  private static final long DEFAULT_PERSION_ID = 12345L;
+  private static final long UPDATED_PERSION_ID = 67890L;
+
+  private static final String DEFAULT_FIRST_NAME = "firstName-AAAAAA";
+  private static final String UPDATED_FIRST_NAME = "firstName-BBBBBB";
+
+  private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
+  private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
+
+  private static final ZonedDateTime DEFAULT_START_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+  private static final ZonedDateTime UPDATED_START_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+  private static final ZonedDateTime DEFAULT_END_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+  private static final ZonedDateTime UPDATED_END_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+  private static final long DEFAULT_PROGRAMME_NUMBER = 12345L;
+  private static final long UPDATED_PROGRAMME_NUMBER = 67890L;
+
+  private static final String DEFAULT_PROGRAMME_NAME = "programmeName-AAAAA";
+  private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
+
+  private static final AssessmentType DEFAULT_ASSESSMENT_TYPE = AssessmentType.ARCP;
+
   @Autowired
   private AssessmentRepository assessmentRepository;
 
@@ -133,6 +157,14 @@ public class AssessmentResourceIntTest {
    */
   public static Assessment createEntity(EntityManager em) {
     Assessment assessment = new Assessment()
+        .personId(DEFAULT_PERSION_ID)
+        .firstName(DEFAULT_FIRST_NAME)
+        .lastName(DEFAULT_LAST_NAME)
+        .startDate(DEFAULT_START_DATE)
+        .endDate(DEFAULT_END_DATE)
+        .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
+        .programmeName(DEFAULT_PROGRAMME_NAME)
+        .type(DEFAULT_ASSESSMENT_TYPE)
         .curriculumId(DEFAULT_CURRICULUM_ID)
         .curriculumName(DEFAULT_CURRICULUM_NAME)
         .curriculumStartDate(DEFAULT_CURRICULUM_START_DATE)
@@ -185,6 +217,14 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeCreate + 1);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
+    assertThat(testAssessment.getPersonId()).isEqualTo(DEFAULT_PERSION_ID);
+    assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
+    assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
+    assertThat(testAssessment.getStartDate()).isEqualTo(DEFAULT_START_DATE);
+    assertThat(testAssessment.getEndDate()).isEqualTo(DEFAULT_END_DATE);
+    assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
+    assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
+    assertThat(testAssessment.getType()).isEqualTo(DEFAULT_ASSESSMENT_TYPE);
     assertThat(testAssessment.getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
     assertThat(testAssessment.getCurriculumName()).isEqualTo(DEFAULT_CURRICULUM_NAME);
     assertThat(testAssessment.getCurriculumStartDate()).isEqualTo(DEFAULT_CURRICULUM_START_DATE);
@@ -235,6 +275,14 @@ public class AssessmentResourceIntTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
+        .andExpect(jsonPath("$.[*].personId").value(hasItem(assessment.getPersonId().intValue())))
+        .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
+        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
+        .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_START_DATE))))
+        .andExpect(jsonPath("$.[*].endDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_END_DATE))))
+        .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber().intValue())))
+        .andExpect(jsonPath("$.[*].programmeName").value(hasItem(assessment.getProgrammeName())))
+        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
         .andExpect(jsonPath("$.[*].curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
         .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
         .andExpect(jsonPath("$.[*].curriculumStartDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_CURRICULUM_START_DATE))))
@@ -265,6 +313,14 @@ public class AssessmentResourceIntTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.id").value(assessment.getId().intValue()))
+        .andExpect(jsonPath("$.personId").value(assessment.getPersonId().intValue()))
+        .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
+        .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
+        .andExpect(jsonPath("$.startDate").value(TestUtil.sameInstant(DEFAULT_START_DATE)))
+        .andExpect(jsonPath("$.endDate").value(TestUtil.sameInstant(DEFAULT_END_DATE)))
+        .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber().intValue()))
+        .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
+        .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
         .andExpect(jsonPath("$.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
         .andExpect(jsonPath("$.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
         .andExpect(jsonPath("$.curriculumStartDate").value(TestUtil.sameInstant(DEFAULT_CURRICULUM_START_DATE)))
@@ -302,6 +358,13 @@ public class AssessmentResourceIntTest {
     // Update the assessment
     Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
     updatedAssessment
+        .personId(UPDATED_PERSION_ID)
+        .firstName(UPDATED_FIRST_NAME)
+        .lastName(UPDATED_LAST_NAME)
+        .startDate(UPDATED_START_DATE)
+        .endDate(UPDATED_END_DATE)
+        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
+        .programmeName(UPDATED_PROGRAMME_NAME)
         .curriculumId(UPDATED_CURRICULUM_ID)
         .curriculumName(UPDATED_CURRICULUM_NAME)
         .curriculumStartDate(UPDATED_CURRICULUM_START_DATE)
@@ -330,6 +393,13 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
+    assertThat(testAssessment.getPersonId()).isEqualTo(UPDATED_PERSION_ID);
+    assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
+    assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
+    assertThat(testAssessment.getStartDate()).isEqualTo(UPDATED_START_DATE);
+    assertThat(testAssessment.getEndDate()).isEqualTo(UPDATED_END_DATE);
+    assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
+    assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
     assertThat(testAssessment.getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
     assertThat(testAssessment.getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
     assertThat(testAssessment.getCurriculumStartDate()).isEqualTo(UPDATED_CURRICULUM_START_DATE);
