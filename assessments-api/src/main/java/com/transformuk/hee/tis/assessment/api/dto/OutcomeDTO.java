@@ -1,7 +1,10 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -20,9 +23,11 @@ public class OutcomeDTO implements Serializable {
 
   private String comments;
 
-  private ZonedDateTime trainingCompletionDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate trainingCompletionDate;
 
-  private ZonedDateTime extendedTrainingCompletionDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate extendedTrainingCompletionDate;
 
   private Integer extendedTrainingTimeInMonths;
 
@@ -36,7 +41,10 @@ public class OutcomeDTO implements Serializable {
 
   private Boolean traineeNotifiedOfOutcome;
 
-  private ZonedDateTime nextReviewDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate nextReviewDate;
+
+  private String intrepidId;
 
   public Long getId() {
     return id;
@@ -78,19 +86,19 @@ public class OutcomeDTO implements Serializable {
     this.comments = comments;
   }
 
-  public ZonedDateTime getTrainingCompletionDate() {
+  public LocalDate getTrainingCompletionDate() {
     return trainingCompletionDate;
   }
 
-  public void setTrainingCompletionDate(ZonedDateTime trainingCompletionDate) {
+  public void setTrainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
   }
 
-  public ZonedDateTime getExtendedTrainingCompletionDate() {
+  public LocalDate getExtendedTrainingCompletionDate() {
     return extendedTrainingCompletionDate;
   }
 
-  public void setExtendedTrainingCompletionDate(ZonedDateTime extendedTrainingCompletionDate) {
+  public void setExtendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
   }
 
@@ -142,12 +150,20 @@ public class OutcomeDTO implements Serializable {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 
-  public ZonedDateTime getNextReviewDate() {
+  public LocalDate getNextReviewDate() {
     return nextReviewDate;
   }
 
-  public void setNextReviewDate(ZonedDateTime nextReviewDate) {
+  public void setNextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
   }
 
   @Override

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
@@ -70,6 +71,12 @@ public class TestUtil {
   public static ZonedDateTimeMatcher sameInstant(ZonedDateTime date) {
     return new ZonedDateTimeMatcher(date);
   }
+
+  public static DateMatcher sameDate(LocalDate date) {
+    return new DateMatcher(date);
+  }
+
+
 
   /**
    * Verifies the equals/hashcode contract on the model object.
@@ -134,6 +141,34 @@ public class TestUtil {
     @Override
     public void describeTo(Description description) {
       description.appendText("a String representing the same Instant as ").appendValue(date);
+    }
+  }
+
+  public static class DateMatcher extends TypeSafeDiagnosingMatcher<String> {
+    private final LocalDate date;
+
+    public DateMatcher(LocalDate date) {
+      this.date = date;
+    }
+
+    @Override
+    protected boolean matchesSafely(String item, Description mismatchDescription) {
+      try {
+        if (!date.isEqual(LocalDate.parse(item))) {
+          mismatchDescription.appendText("was ").appendValue(item);
+          return false;
+        }
+        return true;
+      } catch (DateTimeParseException e) {
+        mismatchDescription.appendText("was ").appendValue(item)
+            .appendText(", which could not be parsed as a LocalDate");
+        return false;
+      }
+    }
+
+    @Override
+    public void describeTo(Description description) {
+      description.appendText("a String representing the same date as ").appendValue(date);
     }
   }
 

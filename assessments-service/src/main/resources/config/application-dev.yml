@@ -26,6 +26,7 @@ spring:
             enabled: false # we use gulp + BrowserSync for livereload
     jackson:
         serialization.indent_output: true
+        date-format: dd/MM/yyyy
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://${DBHOST:localhost}:${DBPORT:3306}/${DBNAME:assessment}?useUnicode=true&characterEncoding=utf8&useSSL=${USE_SSL:false}

@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -41,10 +41,10 @@ public class Assessment implements Serializable {
   private String lastName;
 
   @Column(name = "startDate")
-  private ZonedDateTime startDate;
+  private LocalDate startDate;
 
   @Column(name = "endDate")
-  private ZonedDateTime endDate;
+  private LocalDate endDate;
 
   @Column(name = "programmeNumber")
   private Long programmeNumber;
@@ -67,10 +67,10 @@ public class Assessment implements Serializable {
   private String curriculumName;
 
   @Column(name = "curriculumStartDate")
-  private ZonedDateTime curriculumStartDate;
+  private LocalDate curriculumStartDate;
 
   @Column(name = "curriculumEndDate")
-  private ZonedDateTime curriculumEndDate;
+  private LocalDate curriculumEndDate;
 
   @Column(name = "curriculumSpecialtyId")
   private Long curriculumSpecialtyId;
@@ -91,13 +91,13 @@ public class Assessment implements Serializable {
   private String gradeName;
 
   @Column(name = "periodCoveredFrom")
-  private ZonedDateTime periodCoveredFrom;
+  private LocalDate periodCoveredFrom;
 
   @Column(name = "periodCoveredTo")
-  private ZonedDateTime periodCoveredTo;
+  private LocalDate periodCoveredTo;
 
   @Column(name = "portfolioReviewDate")
-  private ZonedDateTime portfolioReviewDate;
+  private LocalDate portfolioReviewDate;
 
   @Column(name = "monthsWteDuringPeriod")
   private Integer monthsWTEDuringPeriod;
@@ -110,6 +110,9 @@ public class Assessment implements Serializable {
 
   @Column(name = "pya")
   private String pya;
+
+  @Column(name = "intrepidId")
+  private String intrepidId;
 
   @OneToOne
   @JoinColumn(name = "outcomeId", unique = true)
@@ -163,28 +166,28 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public ZonedDateTime getStartDate() {
+  public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(ZonedDateTime startDate) {
+  public void setStartDate(LocalDate startDate) {
     this.startDate = startDate;
   }
 
-  public Assessment startDate(ZonedDateTime startDate) {
+  public Assessment startDate(LocalDate startDate) {
     this.startDate = startDate;
     return this;
   }
 
-  public ZonedDateTime getEndDate() {
+  public LocalDate getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(ZonedDateTime endDate) {
+  public void setEndDate(LocalDate endDate) {
     this.endDate = endDate;
   }
 
-  public Assessment endDate(ZonedDateTime endDate) {
+  public Assessment endDate(LocalDate endDate) {
     this.endDate = endDate;
     return this;
   }
@@ -267,28 +270,28 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public ZonedDateTime getCurriculumStartDate() {
+  public LocalDate getCurriculumStartDate() {
     return curriculumStartDate;
   }
 
-  public void setCurriculumStartDate(ZonedDateTime curriculumStartDate) {
+  public void setCurriculumStartDate(LocalDate curriculumStartDate) {
     this.curriculumStartDate = curriculumStartDate;
   }
 
-  public Assessment curriculumStartDate(ZonedDateTime curriculumStartDate) {
+  public Assessment curriculumStartDate(LocalDate curriculumStartDate) {
     this.curriculumStartDate = curriculumStartDate;
     return this;
   }
 
-  public ZonedDateTime getCurriculumEndDate() {
+  public LocalDate getCurriculumEndDate() {
     return curriculumEndDate;
   }
 
-  public void setCurriculumEndDate(ZonedDateTime curriculumEndDate) {
+  public void setCurriculumEndDate(LocalDate curriculumEndDate) {
     this.curriculumEndDate = curriculumEndDate;
   }
 
-  public Assessment curriculumEndDate(ZonedDateTime curriculumEndDate) {
+  public Assessment curriculumEndDate(LocalDate curriculumEndDate) {
     this.curriculumEndDate = curriculumEndDate;
     return this;
   }
@@ -371,41 +374,41 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public ZonedDateTime getPeriodCoveredFrom() {
+  public LocalDate getPeriodCoveredFrom() {
     return periodCoveredFrom;
   }
 
-  public void setPeriodCoveredFrom(ZonedDateTime periodCoveredFrom) {
+  public void setPeriodCoveredFrom(LocalDate periodCoveredFrom) {
     this.periodCoveredFrom = periodCoveredFrom;
   }
 
-  public Assessment periodCoveredFrom(ZonedDateTime periodCoveredFrom) {
+  public Assessment periodCoveredFrom(LocalDate periodCoveredFrom) {
     this.periodCoveredFrom = periodCoveredFrom;
     return this;
   }
 
-  public ZonedDateTime getPeriodCoveredTo() {
+  public LocalDate getPeriodCoveredTo() {
     return periodCoveredTo;
   }
 
-  public void setPeriodCoveredTo(ZonedDateTime periodCoveredTo) {
+  public void setPeriodCoveredTo(LocalDate periodCoveredTo) {
     this.periodCoveredTo = periodCoveredTo;
   }
 
-  public Assessment periodCoveredTo(ZonedDateTime periodCoveredTo) {
+  public Assessment periodCoveredTo(LocalDate periodCoveredTo) {
     this.periodCoveredTo = periodCoveredTo;
     return this;
   }
 
-  public ZonedDateTime getPortfolioReviewDate() {
+  public LocalDate getPortfolioReviewDate() {
     return portfolioReviewDate;
   }
 
-  public void setPortfolioReviewDate(ZonedDateTime portfolioReviewDate) {
+  public void setPortfolioReviewDate(LocalDate portfolioReviewDate) {
     this.portfolioReviewDate = portfolioReviewDate;
   }
 
-  public Assessment portfolioReviewDate(ZonedDateTime portfolioReviewDate) {
+  public Assessment portfolioReviewDate(LocalDate portfolioReviewDate) {
     this.portfolioReviewDate = portfolioReviewDate;
     return this;
   }
@@ -459,6 +462,19 @@ public class Assessment implements Serializable {
 
   public Assessment pya(String pya) {
     this.pya = pya;
+    return this;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public Assessment intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
     return this;
   }
 

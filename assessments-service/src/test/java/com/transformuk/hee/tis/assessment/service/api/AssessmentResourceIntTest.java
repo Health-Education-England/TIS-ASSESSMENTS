@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -56,11 +57,11 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_CURRICULUM_NAME = "AAAAAAAAAA";
   private static final String UPDATED_CURRICULUM_NAME = "BBBBBBBBBB";
 
-  private static final ZonedDateTime DEFAULT_CURRICULUM_START_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_CURRICULUM_START_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_CURRICULUM_START_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_CURRICULUM_START_DATE = LocalDate.now();
 
-  private static final ZonedDateTime DEFAULT_CURRICULUM_END_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_CURRICULUM_END_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_CURRICULUM_END_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_CURRICULUM_END_DATE = LocalDate.now();
 
   private static final Long DEFAULT_CURRICULUM_SPECIALTY_ID = 1L;
   private static final Long UPDATED_CURRICULUM_SPECIALTY_ID = 2L;
@@ -80,14 +81,14 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_GRADE_NAME = "AAAAAAAAAA";
   private static final String UPDATED_GRADE_NAME = "BBBBBBBBBB";
 
-  private static final ZonedDateTime DEFAULT_PERIOD_COVERED_FROM = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_PERIOD_COVERED_FROM = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_PERIOD_COVERED_FROM = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_PERIOD_COVERED_FROM = LocalDate.now();
 
-  private static final ZonedDateTime DEFAULT_PERIOD_COVERED_TO = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_PERIOD_COVERED_TO = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_PERIOD_COVERED_TO = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_PERIOD_COVERED_TO = LocalDate.now();
 
-  private static final ZonedDateTime DEFAULT_PORTFOLIO_REVIEW_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_PORTFOLIO_REVIEW_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_PORTFOLIO_REVIEW_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_PORTFOLIO_REVIEW_DATE = LocalDate.now();
 
   private static final Integer DEFAULT_MONTHS_WTE_DURING_PERIOD = 1;
   private static final Integer UPDATED_MONTHS_WTE_DURING_PERIOD = 2;
@@ -101,8 +102,8 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PYA = "AAAAAAAAAA";
   private static final String UPDATED_PYA = "BBBBBBBBBB";
 
-  private static final long DEFAULT_PERSION_ID = 12345L;
-  private static final long UPDATED_PERSION_ID = 67890L;
+  private static final long DEFAULT_PERSON_ID = 12345L;
+  private static final long UPDATED_PERSON_ID = 67890L;
 
   private static final String DEFAULT_FIRST_NAME = "firstName-AAAAAA";
   private static final String UPDATED_FIRST_NAME = "firstName-BBBBBB";
@@ -110,11 +111,11 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
   private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
 
-  private static final ZonedDateTime DEFAULT_START_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_START_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_START_DATE = LocalDate.now();
 
-  private static final ZonedDateTime DEFAULT_END_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_END_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_END_DATE = LocalDate.now();
 
   private static final long DEFAULT_PROGRAMME_NUMBER = 12345L;
   private static final long UPDATED_PROGRAMME_NUMBER = 67890L;
@@ -157,7 +158,7 @@ public class AssessmentResourceIntTest {
    */
   public static Assessment createEntity(EntityManager em) {
     Assessment assessment = new Assessment()
-        .personId(DEFAULT_PERSION_ID)
+        .personId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
         .startDate(DEFAULT_START_DATE)
@@ -217,7 +218,7 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeCreate + 1);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
-    assertThat(testAssessment.getPersonId()).isEqualTo(DEFAULT_PERSION_ID);
+    assertThat(testAssessment.getPersonId()).isEqualTo(DEFAULT_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
     assertThat(testAssessment.getStartDate()).isEqualTo(DEFAULT_START_DATE);
@@ -278,24 +279,24 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].personId").value(hasItem(assessment.getPersonId().intValue())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
-        .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_START_DATE))))
-        .andExpect(jsonPath("$.[*].endDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_END_DATE))))
+        .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
+        .andExpect(jsonPath("$.[*].endDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_END_DATE))))
         .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber().intValue())))
         .andExpect(jsonPath("$.[*].programmeName").value(hasItem(assessment.getProgrammeName())))
         .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
         .andExpect(jsonPath("$.[*].curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
         .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
-        .andExpect(jsonPath("$.[*].curriculumStartDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_CURRICULUM_START_DATE))))
-        .andExpect(jsonPath("$.[*].curriculumEndDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_CURRICULUM_END_DATE))))
+        .andExpect(jsonPath("$.[*].curriculumStartDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE))))
+        .andExpect(jsonPath("$.[*].curriculumEndDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE))))
         .andExpect(jsonPath("$.[*].curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue())))
         .andExpect(jsonPath("$.[*].curriculumSpecialty").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY.toString())))
         .andExpect(jsonPath("$.[*].curriculumSubType").value(hasItem(DEFAULT_CURRICULUM_SUB_TYPE.toString())))
         .andExpect(jsonPath("$.[*].membershipType").value(hasItem(DEFAULT_MEMBERSHIP_TYPE.toString())))
         .andExpect(jsonPath("$.[*].gradeAbbreviation").value(hasItem(DEFAULT_GRADE_ABBREVIATION.toString())))
         .andExpect(jsonPath("$.[*].gradeName").value(hasItem(DEFAULT_GRADE_NAME.toString())))
-        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_PERIOD_COVERED_FROM))))
-        .andExpect(jsonPath("$.[*].periodCoveredTo").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_PERIOD_COVERED_TO))))
-        .andExpect(jsonPath("$.[*].portfolioReviewDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_PORTFOLIO_REVIEW_DATE))))
+        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM))))
+        .andExpect(jsonPath("$.[*].periodCoveredTo").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO))))
+        .andExpect(jsonPath("$.[*].portfolioReviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE))))
         .andExpect(jsonPath("$.[*].monthsWTEDuringPeriod").value(hasItem(DEFAULT_MONTHS_WTE_DURING_PERIOD)))
         .andExpect(jsonPath("$.[*].monthsCountedToTraining").value(hasItem(DEFAULT_MONTHS_COUNTED_TO_TRAINING)))
         .andExpect(jsonPath("$.[*].traineeNTN").value(hasItem(DEFAULT_TRAINEE_NTN.toString())))
@@ -316,24 +317,24 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.personId").value(assessment.getPersonId().intValue()))
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
-        .andExpect(jsonPath("$.startDate").value(TestUtil.sameInstant(DEFAULT_START_DATE)))
-        .andExpect(jsonPath("$.endDate").value(TestUtil.sameInstant(DEFAULT_END_DATE)))
+        .andExpect(jsonPath("$.startDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
+        .andExpect(jsonPath("$.endDate").value(TestUtil.sameDate(DEFAULT_END_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber().intValue()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
         .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
         .andExpect(jsonPath("$.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
         .andExpect(jsonPath("$.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
-        .andExpect(jsonPath("$.curriculumStartDate").value(TestUtil.sameInstant(DEFAULT_CURRICULUM_START_DATE)))
-        .andExpect(jsonPath("$.curriculumEndDate").value(TestUtil.sameInstant(DEFAULT_CURRICULUM_END_DATE)))
+        .andExpect(jsonPath("$.curriculumStartDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
+        .andExpect(jsonPath("$.curriculumEndDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
         .andExpect(jsonPath("$.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue()))
         .andExpect(jsonPath("$.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
         .andExpect(jsonPath("$.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
         .andExpect(jsonPath("$.membershipType").value(DEFAULT_MEMBERSHIP_TYPE.toString()))
         .andExpect(jsonPath("$.gradeAbbreviation").value(DEFAULT_GRADE_ABBREVIATION.toString()))
         .andExpect(jsonPath("$.gradeName").value(DEFAULT_GRADE_NAME.toString()))
-        .andExpect(jsonPath("$.periodCoveredFrom").value(TestUtil.sameInstant(DEFAULT_PERIOD_COVERED_FROM)))
-        .andExpect(jsonPath("$.periodCoveredTo").value(TestUtil.sameInstant(DEFAULT_PERIOD_COVERED_TO)))
-        .andExpect(jsonPath("$.portfolioReviewDate").value(TestUtil.sameInstant(DEFAULT_PORTFOLIO_REVIEW_DATE)))
+        .andExpect(jsonPath("$.periodCoveredFrom").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM)))
+        .andExpect(jsonPath("$.periodCoveredTo").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO)))
+        .andExpect(jsonPath("$.portfolioReviewDate").value(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE)))
         .andExpect(jsonPath("$.monthsWTEDuringPeriod").value(DEFAULT_MONTHS_WTE_DURING_PERIOD))
         .andExpect(jsonPath("$.monthsCountedToTraining").value(DEFAULT_MONTHS_COUNTED_TO_TRAINING))
         .andExpect(jsonPath("$.traineeNTN").value(DEFAULT_TRAINEE_NTN.toString()))
@@ -358,7 +359,7 @@ public class AssessmentResourceIntTest {
     // Update the assessment
     Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
     updatedAssessment
-        .personId(UPDATED_PERSION_ID)
+        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
         .lastName(UPDATED_LAST_NAME)
         .startDate(UPDATED_START_DATE)
@@ -393,7 +394,7 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
-    assertThat(testAssessment.getPersonId()).isEqualTo(UPDATED_PERSION_ID);
+    assertThat(testAssessment.getPersonId()).isEqualTo(UPDATED_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
     assertThat(testAssessment.getStartDate()).isEqualTo(UPDATED_START_DATE);

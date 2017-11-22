@@ -1,15 +1,17 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -33,10 +35,12 @@ public class AssessmentDTO implements Serializable {
   private String lastName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "start date cannot be null")
-  private ZonedDateTime startDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate startDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "end date cannot be null")
-  private ZonedDateTime endDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate endDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
   private Long programmeNumber;
@@ -57,9 +61,11 @@ public class AssessmentDTO implements Serializable {
   @Length(min = 1, groups = {Create.class, Update.class}, message = "curriculum name should be at least 1 character long")
   private String curriculumName;
 
-  private ZonedDateTime curriculumStartDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate curriculumStartDate;
 
-  private ZonedDateTime curriculumEndDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate curriculumEndDate;
 
   private Long curriculumSpecialtyId;
 
@@ -78,12 +84,15 @@ public class AssessmentDTO implements Serializable {
   private String gradeName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "period covered from cannot be null")
-  private ZonedDateTime periodCoveredFrom;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate periodCoveredFrom;
 
   @NotNull(groups = {Create.class, Update.class}, message = "period covered to cannot be null")
-  private ZonedDateTime periodCoveredTo;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate periodCoveredTo;
 
-  private ZonedDateTime portfolioReviewDate;
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private LocalDate portfolioReviewDate;
 
   private Integer monthsWTEDuringPeriod;
 
@@ -92,6 +101,8 @@ public class AssessmentDTO implements Serializable {
   private String traineeNTN;
 
   private String pya;
+
+  private String intrepidId;
 
   private OutcomeDTO outcome;
 
@@ -127,19 +138,19 @@ public class AssessmentDTO implements Serializable {
     this.lastName = lastName;
   }
 
-  public ZonedDateTime getStartDate() {
+  public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(ZonedDateTime startDate) {
+  public void setStartDate(LocalDate startDate) {
     this.startDate = startDate;
   }
 
-  public ZonedDateTime getEndDate() {
+  public LocalDate getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(ZonedDateTime endDate) {
+  public void setEndDate(LocalDate endDate) {
     this.endDate = endDate;
   }
 
@@ -191,19 +202,19 @@ public class AssessmentDTO implements Serializable {
     this.curriculumName = curriculumName;
   }
 
-  public ZonedDateTime getCurriculumStartDate() {
+  public LocalDate getCurriculumStartDate() {
     return curriculumStartDate;
   }
 
-  public void setCurriculumStartDate(ZonedDateTime curriculumStartDate) {
+  public void setCurriculumStartDate(LocalDate curriculumStartDate) {
     this.curriculumStartDate = curriculumStartDate;
   }
 
-  public ZonedDateTime getCurriculumEndDate() {
+  public LocalDate getCurriculumEndDate() {
     return curriculumEndDate;
   }
 
-  public void setCurriculumEndDate(ZonedDateTime curriculumEndDate) {
+  public void setCurriculumEndDate(LocalDate curriculumEndDate) {
     this.curriculumEndDate = curriculumEndDate;
   }
 
@@ -255,27 +266,27 @@ public class AssessmentDTO implements Serializable {
     this.gradeName = gradeName;
   }
 
-  public ZonedDateTime getPeriodCoveredFrom() {
+  public LocalDate getPeriodCoveredFrom() {
     return periodCoveredFrom;
   }
 
-  public void setPeriodCoveredFrom(ZonedDateTime periodCoveredFrom) {
+  public void setPeriodCoveredFrom(LocalDate periodCoveredFrom) {
     this.periodCoveredFrom = periodCoveredFrom;
   }
 
-  public ZonedDateTime getPeriodCoveredTo() {
+  public LocalDate getPeriodCoveredTo() {
     return periodCoveredTo;
   }
 
-  public void setPeriodCoveredTo(ZonedDateTime periodCoveredTo) {
+  public void setPeriodCoveredTo(LocalDate periodCoveredTo) {
     this.periodCoveredTo = periodCoveredTo;
   }
 
-  public ZonedDateTime getPortfolioReviewDate() {
+  public LocalDate getPortfolioReviewDate() {
     return portfolioReviewDate;
   }
 
-  public void setPortfolioReviewDate(ZonedDateTime portfolioReviewDate) {
+  public void setPortfolioReviewDate(LocalDate portfolioReviewDate) {
     this.portfolioReviewDate = portfolioReviewDate;
   }
 
@@ -309,6 +320,14 @@ public class AssessmentDTO implements Serializable {
 
   public void setPya(String pya) {
     this.pya = pya;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
   }
 
   public OutcomeDTO getOutcome() {

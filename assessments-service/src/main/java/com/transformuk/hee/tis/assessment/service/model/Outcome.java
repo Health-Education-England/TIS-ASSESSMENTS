@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -45,10 +46,10 @@ public class Outcome implements Serializable {
   private String comments;
 
   @Column(name = "trainingCompletionDate")
-  private ZonedDateTime trainingCompletionDate;
+  private LocalDate trainingCompletionDate;
 
   @Column(name = "extendedTrainingCompletionDate")
-  private ZonedDateTime extendedTrainingCompletionDate;
+  private LocalDate extendedTrainingCompletionDate;
 
   @Column(name = "extendedTrainingTimeInMonths")
   private Integer extendedTrainingTimeInMonths;
@@ -69,7 +70,10 @@ public class Outcome implements Serializable {
   private Boolean traineeNotifiedOfOutcome;
 
   @Column(name = "nextReviewDate")
-  private ZonedDateTime nextReviewDate;
+  private LocalDate nextReviewDate;
+
+  @Column(name = "intrepidId")
+  private String intrepidId;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
   public Long getId() {
@@ -132,28 +136,28 @@ public class Outcome implements Serializable {
     return this;
   }
 
-  public ZonedDateTime getTrainingCompletionDate() {
+  public LocalDate getTrainingCompletionDate() {
     return trainingCompletionDate;
   }
 
-  public void setTrainingCompletionDate(ZonedDateTime trainingCompletionDate) {
+  public void setTrainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
   }
 
-  public Outcome trainingCompletionDate(ZonedDateTime trainingCompletionDate) {
+  public Outcome trainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
     return this;
   }
 
-  public ZonedDateTime getExtendedTrainingCompletionDate() {
+  public LocalDate getExtendedTrainingCompletionDate() {
     return extendedTrainingCompletionDate;
   }
 
-  public void setExtendedTrainingCompletionDate(ZonedDateTime extendedTrainingCompletionDate) {
+  public void setExtendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
   }
 
-  public Outcome extendedTrainingCompletionDate(ZonedDateTime extendedTrainingCompletionDate) {
+  public Outcome extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
     return this;
   }
@@ -236,18 +240,32 @@ public class Outcome implements Serializable {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 
-  public ZonedDateTime getNextReviewDate() {
+  public LocalDate getNextReviewDate() {
     return nextReviewDate;
   }
 
-  public void setNextReviewDate(ZonedDateTime nextReviewDate) {
+  public void setNextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
   }
 
-  public Outcome nextReviewDate(ZonedDateTime nextReviewDate) {
+  public Outcome nextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
     return this;
   }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public Outcome intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+    return this;
+  }
+
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
   @Override
