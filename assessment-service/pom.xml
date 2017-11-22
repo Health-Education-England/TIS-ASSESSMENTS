@@ -391,7 +391,7 @@
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
   <build>
-    <finalName>assessments.war</finalName>
+    <finalName>assessments</finalName>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
       <plugin>
