@@ -14,7 +14,6 @@
   <artifactId>assessment-service</artifactId>
   <version>1.0.0</version>
   <packaging>war</packaging>
-  <name>assessment-service</name>
 
   <properties>
     <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
@@ -24,6 +23,7 @@
     <commons-lang.version>3.5</commons-lang.version>
     <dockerfile-maven-plugin.version>1.3.4</dockerfile-maven-plugin.version>
     <!-- Overridden to get metrics-jcache -->
+    <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
     <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
     <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
     <hibernate.version>5.2.10.Final</hibernate.version>
@@ -391,8 +391,32 @@
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
   <build>
+    <finalName>assessments.war</finalName>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.1.1</version>
+        <configuration>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker-maven-plugin.version}</version>
+        <configuration>
+          <imageName>assessments</imageName>
+          <dockerDirectory>src/main/docker</dockerDirectory>
+          <resources>
+            <resource>
+              <targetPath>/</targetPath>
+              <directory>${project.build.directory}</directory>
+              <include>${project.build.finalName}.war</include>
+            </resource>
+          </resources>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -404,22 +428,7 @@
               <artifactId>mapstruct-processor</artifactId>
               <version>${mapstruct.version}</version>
             </path>
-            <!-- For JPA static metamodel generation -->
-            <path>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-jpamodelgen</artifactId>
-              <version>${hibernate.version}</version>
-            </path>
-
           </annotationProcessorPaths>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
         </configuration>
       </plugin>
       <plugin>
@@ -486,25 +495,6 @@
               </resources>
             </configuration>
           </execution>
-          <execution>
-            <id>docker-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>target/</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/docker/</directory>
-                  <filtering>false</filtering>
-                  <excludes>
-                    <exclude>**/*.yml</exclude>
-                  </excludes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -561,81 +551,8 @@
           -->
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>${dockerfile-maven-plugin.version}</version>
-        <!--
-        Uncomment the section below to build the docker image with mvn package and and push it with mvn deploy
-        <executions>
-            <execution>
-            <id>default</id>
-            <goals>
-                <goal>build</goal>
-                <goal>push</goal>
-            </goals>
-            </execution>
-        </executions>
-        -->
-        <configuration>
-          <repository>assessment</repository>
-          <tag>latest</tag>
-          <contextDirectory>${project.build.directory}</contextDirectory>
-        </configuration>
-      </plugin>
       <!-- jhipster-needle-maven-add-plugin -->
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--
-            This plugin's configuration is used to store Eclipse m2e settings only.
-            It has no influence on the Maven build itself.
-            Remove when the m2e plugin can correctly bind to Maven lifecycle
-        -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>
-                      jacoco-maven-plugin
-                    </artifactId>
-                    <versionRange>
-                      ${jacoco-maven-plugin.version}
-                    </versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <versionRange>${frontend-maven-plugin.version}</versionRange>
-                    <goals>
-                      <goal>install-node-and-yarn</goal>
-                      <goal>yarn</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
   <profiles>
     <profile>
