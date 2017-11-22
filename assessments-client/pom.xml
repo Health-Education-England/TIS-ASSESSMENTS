@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.transformuk.hee.tis</groupId>
-  <artifactId>assessment-api</artifactId>
-  <version>1.0.3</version>
+  <artifactId>assessments-client</artifactId>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -20,19 +20,19 @@
   <dependencies>
     <dependency>
       <groupId>com.transformuk.hee</groupId>
-      <artifactId>tis-parent-api</artifactId>
-      <version>1.0.1</version>
-      <type>pom</type>
+      <artifactId>tis-parent-client</artifactId>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>1.1.0.Final</version>
+      <groupId>com.transformuk.hee.tis</groupId>
+      <artifactId>assessments-api</artifactId>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>5.3.4.Final</version>
+      <groupId>com.transformuk.hee</groupId>
+      <artifactId>keycloak-client</artifactId>
+      <version>2.2.0</version>
     </dependency>
   </dependencies>
+
 </project>

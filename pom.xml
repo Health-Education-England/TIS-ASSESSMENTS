@@ -9,9 +9,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>assessment-api</module>
-		<module>assessment-service</module>
-		<module>assessment-client</module>
+		<module>assessments-api</module>
+		<module>assessments-service</module>
+		<module>assessments-client</module>
 	</modules>
 
 </project>

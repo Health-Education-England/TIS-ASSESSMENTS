@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>com.transformuk.hee.tis</groupId>
-  <artifactId>assessment-service</artifactId>
+  <artifactId>assessments-service</artifactId>
   <version>1.0.0</version>
   <packaging>war</packaging>
 
@@ -48,6 +48,7 @@
     <profile.swagger/>
     <prometheus-simpleclient.version>0.0.20</prometheus-simpleclient.version>
     <!-- Sonar properties -->
+    <project.build.finalName>assessments</project.build.finalName>
     <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
     <run.addResources>false</run.addResources>
     <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
@@ -129,7 +130,7 @@
     </dependency>
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
-      <artifactId>assessment-api</artifactId>
+      <artifactId>assessments-api</artifactId>
       <version>1.0.3</version>
     </dependency>
     <!-- TIS END -->
@@ -391,7 +392,6 @@
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
   <build>
-    <finalName>assessments</finalName>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
       <plugin>
