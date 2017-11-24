@@ -1,12 +1,14 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
@@ -133,6 +135,9 @@ public class AssessmentResourceIntTest {
   private AssessmentRepository assessmentRepository;
 
   @Autowired
+  private AssessmentDetailRepository assessmentDetailRepository;
+
+  @Autowired
   private AssessmentMapper assessmentMapper;
 
   @Autowired
@@ -194,6 +199,40 @@ public class AssessmentResourceIntTest {
     return assessment;
   }
 
+  public static AssessmentDTO createDTO() {
+    AssessmentDetailDTO assessmentDetailDTO = new AssessmentDetailDTO()
+        .curriculumId(DEFAULT_CURRICULUM_ID)
+        .curriculumName(DEFAULT_CURRICULUM_NAME)
+        .curriculumStartDate(DEFAULT_CURRICULUM_START_DATE)
+        .curriculumEndDate(DEFAULT_CURRICULUM_END_DATE)
+        .curriculumSpecialtyId(DEFAULT_CURRICULUM_SPECIALTY_ID)
+        .curriculumSpecialty(DEFAULT_CURRICULUM_SPECIALTY)
+        .curriculumSubType(DEFAULT_CURRICULUM_SUB_TYPE)
+        .membershipType(DEFAULT_MEMBERSHIP_TYPE)
+        .gradeAbbreviation(DEFAULT_GRADE_ABBREVIATION)
+        .gradeName(DEFAULT_GRADE_NAME)
+        .periodCoveredFrom(DEFAULT_PERIOD_COVERED_FROM)
+        .periodCoveredTo(DEFAULT_PERIOD_COVERED_TO)
+        .portfolioReviewDate(DEFAULT_PORTFOLIO_REVIEW_DATE)
+        .monthsWTEDuringPeriod(DEFAULT_MONTHS_WTE_DURING_PERIOD)
+        .monthsCountedToTraining(DEFAULT_MONTHS_COUNTED_TO_TRAINING)
+        .traineeNTN(DEFAULT_TRAINEE_NTN)
+        .pya(DEFAULT_PYA);
+
+    AssessmentDTO assessmentDTO = new AssessmentDTO()
+        .personId(DEFAULT_PERSON_ID)
+        .firstName(DEFAULT_FIRST_NAME)
+        .lastName(DEFAULT_LAST_NAME)
+        .startDate(DEFAULT_START_DATE)
+        .endDate(DEFAULT_END_DATE)
+        .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
+        .programmeName(DEFAULT_PROGRAMME_NAME)
+        .type(DEFAULT_ASSESSMENT_TYPE)
+        .intrepidId(DEFAULT_INTREPID_ID)
+        .detail(assessmentDetailDTO);
+    return assessmentDTO;
+  }
+
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
@@ -205,10 +244,6 @@ public class AssessmentResourceIntTest {
         .setMessageConverters(jacksonMessageConverter).build();
   }
 
-  @Before
-  public void initTest() {
-    assessment = createEntity(em);
-  }
 
   @Test
   @Transactional
@@ -216,7 +251,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeCreate = assessmentRepository.findAll().size();
 
     // Create the Assessment
-    AssessmentDTO assessmentDTO = assessmentMapper.toDto(assessment);
+    AssessmentDTO assessmentDTO = createDTO();
     restAssessmentMockMvc.perform(post("/api/assessments")
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
@@ -234,23 +269,9 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
     assertThat(testAssessment.getType()).isEqualTo(DEFAULT_ASSESSMENT_TYPE);
-    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
-    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(DEFAULT_CURRICULUM_NAME);
-    assertThat(testAssessment.getDetail().getCurriculumStartDate()).isEqualTo(DEFAULT_CURRICULUM_START_DATE);
-    assertThat(testAssessment.getDetail().getCurriculumEndDate()).isEqualTo(DEFAULT_CURRICULUM_END_DATE);
-    assertThat(testAssessment.getDetail().getCurriculumSpecialtyId()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY_ID);
-    assertThat(testAssessment.getDetail().getCurriculumSpecialty()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY);
-    assertThat(testAssessment.getDetail().getCurriculumSubType()).isEqualTo(DEFAULT_CURRICULUM_SUB_TYPE);
-    assertThat(testAssessment.getDetail().getMembershipType()).isEqualTo(DEFAULT_MEMBERSHIP_TYPE);
-    assertThat(testAssessment.getDetail().getGradeAbbreviation()).isEqualTo(DEFAULT_GRADE_ABBREVIATION);
-    assertThat(testAssessment.getDetail().getGradeName()).isEqualTo(DEFAULT_GRADE_NAME);
-    assertThat(testAssessment.getDetail().getPeriodCoveredFrom()).isEqualTo(DEFAULT_PERIOD_COVERED_FROM);
-    assertThat(testAssessment.getDetail().getPeriodCoveredTo()).isEqualTo(DEFAULT_PERIOD_COVERED_TO);
-    assertThat(testAssessment.getDetail().getPortfolioReviewDate()).isEqualTo(DEFAULT_PORTFOLIO_REVIEW_DATE);
-    assertThat(testAssessment.getDetail().getMonthsWTEDuringPeriod()).isEqualTo(DEFAULT_MONTHS_WTE_DURING_PERIOD);
-    assertThat(testAssessment.getDetail().getMonthsCountedToTraining()).isEqualTo(DEFAULT_MONTHS_COUNTED_TO_TRAINING);
-    assertThat(testAssessment.getDetail().getTraineeNTN()).isEqualTo(DEFAULT_TRAINEE_NTN);
-    assertThat(testAssessment.getDetail().getPya()).isEqualTo(DEFAULT_PYA);
+    assertThat(testAssessment.getDetail()).isNull();
+    assertThat(testAssessment.getOutcome()).containsNull();
+    assertThat(testAssessment.getRevalidation()).isNull();
   }
 
   @Test
@@ -259,6 +280,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeCreate = assessmentRepository.findAll().size();
 
     // Create the Assessment with an existing ID
+    assessment = createEntity(em);
     assessment.setId(1L);
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(assessment);
 
@@ -277,6 +299,8 @@ public class AssessmentResourceIntTest {
   @Transactional
   public void getAllAssessments() throws Exception {
     // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
     assessmentRepository.saveAndFlush(assessment);
 
     // Get all the assessmentList
@@ -315,6 +339,8 @@ public class AssessmentResourceIntTest {
   @Transactional
   public void getAssessment() throws Exception {
     // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
     assessmentRepository.saveAndFlush(assessment);
 
     // Get the assessment
@@ -361,6 +387,8 @@ public class AssessmentResourceIntTest {
   @Transactional
   public void updateAssessment() throws Exception {
     // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
     assessmentRepository.saveAndFlush(assessment);
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
@@ -412,23 +440,7 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getEndDate()).isEqualTo(UPDATED_END_DATE);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
-    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
-    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
-    assertThat(testAssessment.getDetail().getCurriculumStartDate()).isEqualTo(UPDATED_CURRICULUM_START_DATE);
-    assertThat(testAssessment.getDetail().getCurriculumEndDate()).isEqualTo(UPDATED_CURRICULUM_END_DATE);
-    assertThat(testAssessment.getDetail().getCurriculumSpecialtyId()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY_ID);
-    assertThat(testAssessment.getDetail().getCurriculumSpecialty()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY);
-    assertThat(testAssessment.getDetail().getCurriculumSubType()).isEqualTo(UPDATED_CURRICULUM_SUB_TYPE);
-    assertThat(testAssessment.getDetail().getMembershipType()).isEqualTo(UPDATED_MEMBERSHIP_TYPE);
-    assertThat(testAssessment.getDetail().getGradeAbbreviation()).isEqualTo(UPDATED_GRADE_ABBREVIATION);
-    assertThat(testAssessment.getDetail().getGradeName()).isEqualTo(UPDATED_GRADE_NAME);
-    assertThat(testAssessment.getDetail().getPeriodCoveredFrom()).isEqualTo(UPDATED_PERIOD_COVERED_FROM);
-    assertThat(testAssessment.getDetail().getPeriodCoveredTo()).isEqualTo(UPDATED_PERIOD_COVERED_TO);
-    assertThat(testAssessment.getDetail().getPortfolioReviewDate()).isEqualTo(UPDATED_PORTFOLIO_REVIEW_DATE);
-    assertThat(testAssessment.getDetail().getMonthsWTEDuringPeriod()).isEqualTo(UPDATED_MONTHS_WTE_DURING_PERIOD);
-    assertThat(testAssessment.getDetail().getMonthsCountedToTraining()).isEqualTo(UPDATED_MONTHS_COUNTED_TO_TRAINING);
-    assertThat(testAssessment.getDetail().getTraineeNTN()).isEqualTo(UPDATED_TRAINEE_NTN);
-    assertThat(testAssessment.getDetail().getPya()).isEqualTo(UPDATED_PYA);
+    assertThat(testAssessment.getDetail()).isNull();
   }
 
   @Test
@@ -437,7 +449,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Create the Assessment
-    AssessmentDTO assessmentDTO = assessmentMapper.toDto(assessment);
+    AssessmentDTO assessmentDTO = createDTO();
 
     // If the entity doesn't have an ID, it will be created instead of just being updated
     restAssessmentMockMvc.perform(put("/api/assessments")
@@ -454,6 +466,8 @@ public class AssessmentResourceIntTest {
   @Transactional
   public void deleteAssessment() throws Exception {
     // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
     assessmentRepository.saveAndFlush(assessment);
     int databaseSizeBeforeDelete = assessmentRepository.findAll().size();
 

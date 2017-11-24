@@ -68,7 +68,7 @@ public class Assessment implements Serializable {
   @Column(name = "intrepidId")
   private String intrepidId;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne
   @JoinColumn(name = "detailId", unique = true)
   private AssessmentDetail detail;
 
@@ -79,6 +79,10 @@ public class Assessment implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "outcomeId", referencedColumnName = "id")
   )
   private List<Outcome> outcome;
+
+  @OneToOne
+  @JoinColumn(name = "revalidationId", unique = true)
+  private Revalidation revalidation;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
   public Long getId() {
@@ -245,7 +249,19 @@ public class Assessment implements Serializable {
     this.outcome = outcome;
     return this;
   }
-  // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+  public Revalidation getRevalidation() {
+    return revalidation;
+  }
+
+  public void setRevalidation(Revalidation revalidation) {
+    this.revalidation = revalidation;
+  }
+
+  public Assessment revalidation(Revalidation revalidation) {
+    this.revalidation = revalidation;
+    return this;
+  }
 
   @Override
   public boolean equals(Object o) {

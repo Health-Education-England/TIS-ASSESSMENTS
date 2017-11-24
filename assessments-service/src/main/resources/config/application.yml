@@ -23,7 +23,7 @@ management:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
 spring:
     application:
-        name: assessment
+        name: assessments
     profiles:
         # The commented value for `active` can be replaced with valid Spring profiles to load.
         # Otherwise, it will be filled in by maven when building the WAR file
@@ -62,7 +62,7 @@ flyway:
     placeholder-replacement:
     placeholder-suffix:
     placeholders.*:
-    schemas: ${DBNAME:assessment}
+    schemas: ${DBNAME:assessments}
     sql-migration-prefix: V
     sql-migration-separator:
     sql-migration-suffix: .sql
@@ -83,7 +83,7 @@ server:
     session:
         cookie:
             http-only: true
-    context-path: /assessment
+    context-path: /assessments
 
 info:
     project:
@@ -110,8 +110,8 @@ jhipster:
         #max-age: 1800
     swagger:
         default-include-pattern: /api/.*
-        title: assessment API
-        description: assessment API documentation
+        title: assessments API
+        description: assessments API documentation
         version: 1.0.0
         terms-of-service-url:
         contact-name:
@@ -133,6 +133,6 @@ jhipster:
 
 #log settings
 logging:
-    file: ${LOG_DIR:${HOME}}/assessment.log
+    file: ${LOG_DIR:${HOME}}/assessments.log
 
 application:

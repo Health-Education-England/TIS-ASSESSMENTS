@@ -1,3 +1,11 @@
+CREATE TABLE `Revalidation` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `knownConcerns` bit(1) NOT NULL DEFAULT 0,
+  `concernSummary` TEXT DEFAULT NULL,
+  `responsibleOfficerComments` TEXT DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `AssessmentDetail` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `curriculumId` bigint(20) DEFAULT NULL,
@@ -33,9 +41,12 @@ CREATE TABLE `Assessment` (
   `type` varchar(255) DEFAULT NULL,
   `intrepidId` varchar(255) DEFAULT NULL,
   `detailId` bigint(20) DEFAULT NULL,
+  `revalidationId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `detailId` (`detailId`),
-  CONSTRAINT `fk_assessment_detail_id` FOREIGN KEY (`detailId`) REFERENCES `AssessmentDetail` (`id`)
+  KEY `revalidationId` (`revalidationId`),
+  CONSTRAINT `fk_assessment_detail_id` FOREIGN KEY (`detailId`) REFERENCES `AssessmentDetail` (`id`),
+  CONSTRAINT `fk_assessment_revalidation_id` FOREIGN KEY (`revalidationId`) REFERENCES `Revalidation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Outcome` (

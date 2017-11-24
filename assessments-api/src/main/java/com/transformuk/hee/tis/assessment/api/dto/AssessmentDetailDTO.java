@@ -78,12 +78,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.id = id;
   }
 
+  public AssessmentDetailDTO id(Long id) {
+    this.id = id;
+    return this;
+  }
+
   public Long getCurriculumId() {
     return curriculumId;
   }
 
   public void setCurriculumId(Long curriculumId) {
     this.curriculumId = curriculumId;
+  }
+
+  public AssessmentDetailDTO curriculumId(Long curriculumId) {
+    this.curriculumId = curriculumId;
+    return this;
   }
 
   public String getCurriculumName() {
@@ -94,12 +104,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.curriculumName = curriculumName;
   }
 
+  public AssessmentDetailDTO curriculumName(String curriculumName) {
+    this.curriculumName = curriculumName;
+    return this;
+  }
+
   public LocalDate getCurriculumStartDate() {
     return curriculumStartDate;
   }
 
   public void setCurriculumStartDate(LocalDate curriculumStartDate) {
     this.curriculumStartDate = curriculumStartDate;
+  }
+
+  public AssessmentDetailDTO curriculumStartDate(LocalDate curriculumStartDate) {
+    this.curriculumStartDate = curriculumStartDate;
+    return this;
   }
 
   public LocalDate getCurriculumEndDate() {
@@ -110,12 +130,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.curriculumEndDate = curriculumEndDate;
   }
 
+  public AssessmentDetailDTO curriculumEndDate(LocalDate curriculumEndDate) {
+    this.curriculumEndDate = curriculumEndDate;
+    return this;
+  }
+
   public Long getCurriculumSpecialtyId() {
     return curriculumSpecialtyId;
   }
 
   public void setCurriculumSpecialtyId(Long curriculumSpecialtyId) {
     this.curriculumSpecialtyId = curriculumSpecialtyId;
+  }
+
+  public AssessmentDetailDTO curriculumSpecialtyId(Long curriculumSpecialtyId) {
+    this.curriculumSpecialtyId = curriculumSpecialtyId;
+    return this;
   }
 
   public String getCurriculumSpecialty() {
@@ -126,12 +156,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.curriculumSpecialty = curriculumSpecialty;
   }
 
+  public AssessmentDetailDTO curriculumSpecialty(String curriculumSpecialty) {
+    this.curriculumSpecialty = curriculumSpecialty;
+    return this;
+  }
+
   public String getCurriculumSubType() {
     return curriculumSubType;
   }
 
   public void setCurriculumSubType(String curriculumSubType) {
     this.curriculumSubType = curriculumSubType;
+  }
+
+  public AssessmentDetailDTO curriculumSubType(String curriculumSubType) {
+    this.curriculumSubType = curriculumSubType;
+    return this;
   }
 
   public String getMembershipType() {
@@ -142,12 +182,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.membershipType = membershipType;
   }
 
+  public AssessmentDetailDTO membershipType(String membershipType) {
+    this.membershipType = membershipType;
+    return this;
+  }
+
   public String getGradeAbbreviation() {
     return gradeAbbreviation;
   }
 
   public void setGradeAbbreviation(String gradeAbbreviation) {
     this.gradeAbbreviation = gradeAbbreviation;
+  }
+
+  public AssessmentDetailDTO gradeAbbreviation(String gradeAbbreviation) {
+    this.gradeAbbreviation = gradeAbbreviation;
+    return this;
   }
 
   public String getGradeName() {
@@ -158,12 +208,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.gradeName = gradeName;
   }
 
+  public AssessmentDetailDTO gradeName(String gradeName) {
+    this.gradeName = gradeName;
+    return this;
+  }
+
   public LocalDate getPeriodCoveredFrom() {
     return periodCoveredFrom;
   }
 
   public void setPeriodCoveredFrom(LocalDate periodCoveredFrom) {
     this.periodCoveredFrom = periodCoveredFrom;
+  }
+
+  public AssessmentDetailDTO periodCoveredFrom(LocalDate periodCoveredFrom) {
+    this.periodCoveredFrom = periodCoveredFrom;
+    return this;
   }
 
   public LocalDate getPeriodCoveredTo() {
@@ -174,12 +234,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.periodCoveredTo = periodCoveredTo;
   }
 
+  public AssessmentDetailDTO periodCoveredTo(LocalDate periodCoveredTo) {
+    this.periodCoveredTo = periodCoveredTo;
+    return this;
+  }
+
   public LocalDate getPortfolioReviewDate() {
     return portfolioReviewDate;
   }
 
   public void setPortfolioReviewDate(LocalDate portfolioReviewDate) {
     this.portfolioReviewDate = portfolioReviewDate;
+  }
+
+  public AssessmentDetailDTO portfolioReviewDate(LocalDate portfolioReviewDate) {
+    this.portfolioReviewDate = portfolioReviewDate;
+    return this;
   }
 
   public Integer getMonthsWTEDuringPeriod() {
@@ -190,12 +260,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.monthsWTEDuringPeriod = monthsWTEDuringPeriod;
   }
 
+  public AssessmentDetailDTO monthsWTEDuringPeriod(Integer monthsWTEDuringPeriod) {
+    this.monthsWTEDuringPeriod = monthsWTEDuringPeriod;
+    return this;
+  }
+
   public Integer getMonthsCountedToTraining() {
     return monthsCountedToTraining;
   }
 
   public void setMonthsCountedToTraining(Integer monthsCountedToTraining) {
     this.monthsCountedToTraining = monthsCountedToTraining;
+  }
+
+  public AssessmentDetailDTO monthsCountedToTraining(Integer monthsCountedToTraining) {
+    this.monthsCountedToTraining = monthsCountedToTraining;
+    return this;
   }
 
   public String getTraineeNTN() {
@@ -206,12 +286,22 @@ public class AssessmentDetailDTO implements Serializable {
     this.traineeNTN = traineeNTN;
   }
 
+  public AssessmentDetailDTO traineeNTN(String traineeNTN) {
+    this.traineeNTN = traineeNTN;
+    return this;
+  }
+
   public String getPya() {
     return pya;
   }
 
   public void setPya(String pya) {
     this.pya = pya;
+  }
+
+  public AssessmentDetailDTO pya(String pya) {
+    this.pya = pya;
+    return this;
   }
 
   @Override

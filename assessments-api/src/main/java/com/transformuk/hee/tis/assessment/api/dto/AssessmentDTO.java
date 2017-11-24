@@ -60,12 +60,19 @@ public class AssessmentDTO implements Serializable {
 
   private OutcomeDTO outcome;
 
+  private RevalidationDTO revalidation;
+
   public Long getId() {
     return id;
   }
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public AssessmentDTO id(Long id) {
+    this.id = id;
+    return this;
   }
 
   public Long getPersonId() {
@@ -76,12 +83,22 @@ public class AssessmentDTO implements Serializable {
     this.personId = personId;
   }
 
+  public AssessmentDTO personId(Long personId) {
+    this.personId = personId;
+    return this;
+  }
+
   public String getFirstName() {
     return firstName;
   }
 
   public void setFirstName(String firstName) {
     this.firstName = firstName;
+  }
+
+  public AssessmentDTO firstName(String firstName) {
+    this.firstName = firstName;
+    return this;
   }
 
   public String getLastName() {
@@ -92,12 +109,22 @@ public class AssessmentDTO implements Serializable {
     this.lastName = lastName;
   }
 
+  public AssessmentDTO lastName(String lastName) {
+    this.lastName = lastName;
+    return this;
+  }
+
   public LocalDate getStartDate() {
     return startDate;
   }
 
   public void setStartDate(LocalDate startDate) {
     this.startDate = startDate;
+  }
+
+  public AssessmentDTO startDate(LocalDate startDate) {
+    this.startDate = startDate;
+    return this;
   }
 
   public LocalDate getEndDate() {
@@ -108,12 +135,22 @@ public class AssessmentDTO implements Serializable {
     this.endDate = endDate;
   }
 
+  public AssessmentDTO endDate(LocalDate endDate) {
+    this.endDate = endDate;
+    return this;
+  }
+
   public Long getProgrammeNumber() {
     return programmeNumber;
   }
 
   public void setProgrammeNumber(Long programmeNumber) {
     this.programmeNumber = programmeNumber;
+  }
+
+  public AssessmentDTO programmeNumber(Long programmeNumber) {
+    this.programmeNumber = programmeNumber;
+    return this;
   }
 
   public String getProgrammeName() {
@@ -124,12 +161,22 @@ public class AssessmentDTO implements Serializable {
     this.programmeName = programmeName;
   }
 
+  public AssessmentDTO programmeName(String programmeName) {
+    this.programmeName = programmeName;
+    return this;
+  }
+
   public EventStatus getStatus() {
     return status;
   }
 
   public void setStatus(EventStatus status) {
     this.status = status;
+  }
+
+  public AssessmentDTO status(EventStatus status) {
+    this.status = status;
+    return this;
   }
 
   public AssessmentType getType() {
@@ -140,12 +187,22 @@ public class AssessmentDTO implements Serializable {
     this.type = type;
   }
 
+  public AssessmentDTO type(AssessmentType type) {
+    this.type = type;
+    return this;
+  }
+
   public String getIntrepidId() {
     return intrepidId;
   }
 
   public void setIntrepidId(String intrepidId) {
     this.intrepidId = intrepidId;
+  }
+
+  public AssessmentDTO intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+    return this;
   }
 
   public AssessmentDetailDTO getDetail() {
@@ -156,12 +213,35 @@ public class AssessmentDTO implements Serializable {
     this.detail = detail;
   }
 
+  public AssessmentDTO detail(AssessmentDetailDTO detail) {
+    this.detail = detail;
+    return this;
+  }
+
   public OutcomeDTO getOutcome() {
     return outcome;
   }
 
   public void setOutcome(OutcomeDTO outcome) {
     this.outcome = outcome;
+  }
+
+  public AssessmentDTO outcome(OutcomeDTO outcome) {
+    this.outcome = outcome;
+    return this;
+  }
+
+  public RevalidationDTO getRevalidation() {
+    return revalidation;
+  }
+
+  public void setRevalidation(RevalidationDTO revalidation) {
+    this.revalidation = revalidation;
+  }
+
+  public AssessmentDTO revalidation(RevalidationDTO revalidation) {
+    this.revalidation = revalidation;
+    return this;
   }
 
   @Override
@@ -201,6 +281,7 @@ public class AssessmentDTO implements Serializable {
         ", intrepidId='" + getIntrepidId() + "'" +
         ", detail='" + getDetail() + "'" +
         ", outcome='" + getOutcome() + "'" +
+        ", revalidation='" + getRevalidation() + "'" +
         "}";
   }
 }

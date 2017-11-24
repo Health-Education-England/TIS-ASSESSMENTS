@@ -29,7 +29,7 @@ spring:
         date-format: dd/MM/yyyy
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://${DBHOST:localhost}:${DBPORT:3306}/${DBNAME:assessment}?useUnicode=true&characterEncoding=utf8&useSSL=${USE_SSL:false}
+        url: jdbc:mysql://${DBHOST:localhost}:${DBPORT:3306}/${DBNAME:assessments}?useUnicode=true&characterEncoding=utf8&useSSL=${USE_SSL:false}
         username: ${DBUSER:root}
         password: ${DBPASSWORD:}
         hikari:
@@ -118,7 +118,7 @@ jhipster:
             enabled: false
             host: localhost
             port: 2003
-            prefix: assessment
+            prefix: assessments
         prometheus: # Use the "prometheus" Maven profile to have the Prometheus dependencies
             enabled: false
             endpoint: /prometheusMetrics

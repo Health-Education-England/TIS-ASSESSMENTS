@@ -50,6 +50,9 @@ public class AssessmentServiceImpl implements AssessmentService {
   @Override
   public AssessmentDTO save(AssessmentDTO assessmentDTO) {
     log.debug("Request to save Assessment : {}", assessmentDTO);
+    assessmentDTO.setDetail(null);
+    assessmentDTO.setOutcome(null);
+    assessmentDTO.setRevalidation(null);
     Assessment assessment = assessmentMapper.toEntity(assessmentDTO);
     assessment = assessmentRepository.save(assessment);
     return assessmentMapper.toDto(assessment);

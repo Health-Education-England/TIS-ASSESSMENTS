@@ -40,9 +40,6 @@ public class Outcome implements Serializable {
   @Column(name = "reason")
   private OutcomeReason reason;
 
-  @Column(name = "comments")
-  private String comments;
-
   @Column(name = "trainingCompletionDate")
   private LocalDate trainingCompletionDate;
 
@@ -70,8 +67,37 @@ public class Outcome implements Serializable {
   @Column(name = "nextReviewDate")
   private LocalDate nextReviewDate;
 
+  @Column(name = "comments")
+  private String comments;
+
   @Column(name = "intrepidId")
   private String intrepidId;
+
+  //Supplementary detail
+  @Column(name = "academicCurriculumAssessed")
+  private String academicCurriculumAssessed;
+
+  @Column(name = "academicOutcome")
+  private String academicOutcome;
+
+  @Column(name = "detailedReasons")
+  private String detailedReasons;
+
+  @Column(name = "mitigatingCircumstances")
+  private String mitigatingCircumstances;
+
+  @Column(name = "competencesToBeDeveloped")
+  private String competencesToBeDeveloped;
+
+  @Column(name = "otherRecommendedActions")
+  private String otherRecommendedActions;
+
+  @Column(name = "recommendedAddtnlTrainingTime")
+  private String recommendedAdditionalTrainingTime;
+
+  @Column(name = "addCommentsFromPanel")
+  private String additionalCommentsFromPanel;
+
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
   public Long getId() {
@@ -264,6 +290,118 @@ public class Outcome implements Serializable {
     return this;
   }
 
+  public Boolean getUnderAppeal() {
+    return underAppeal;
+  }
+
+  public Boolean getTenPercentAudit() {
+    return tenPercentAudit;
+  }
+
+  public Boolean getExternalTrainer() {
+    return externalTrainer;
+  }
+
+  public Boolean getTraineeNotifiedOfOutcome() {
+    return traineeNotifiedOfOutcome;
+  }
+
+  public String getAcademicCurriculumAssessed() {
+    return academicCurriculumAssessed;
+  }
+
+  public void setAcademicCurriculumAssessed(String academicCurriculumAssessed) {
+    this.academicCurriculumAssessed = academicCurriculumAssessed;
+  }
+
+  public Outcome academicCurriculumAssessed(String academicCurriculumAssessed) {
+    this.academicCurriculumAssessed = academicCurriculumAssessed;
+    return this;
+  }
+
+  public String getAcademicOutcome() {
+    return academicOutcome;
+  }
+
+  public void setAcademicOutcome(String academicOutcome) {
+    this.academicOutcome = academicOutcome;
+  }
+
+  public Outcome academicOutcome(String academicOutcome) {
+    this.academicOutcome = academicOutcome;
+    return this;
+  }
+
+  public String getDetailedReasons() {
+    return detailedReasons;
+  }
+
+  public Outcome detailedReasons(String detailedReasons) {
+    this.detailedReasons = detailedReasons;
+    return this;
+  }
+
+  public String getMitigatingCircumstances() {
+    return mitigatingCircumstances;
+  }
+
+  public Outcome mitigatingCircumstances(String mitigatingCircumstances) {
+    this.mitigatingCircumstances = mitigatingCircumstances;
+    return this;
+  }
+
+  public String getCompetencesToBeDeveloped() {
+    return competencesToBeDeveloped;
+  }
+
+  public void setCompetencesToBeDeveloped(String competencesToBeDeveloped) {
+    this.competencesToBeDeveloped = competencesToBeDeveloped;
+  }
+
+  public Outcome competencesToBeDeveloped(String competencesToBeDeveloped) {
+    this.competencesToBeDeveloped = competencesToBeDeveloped;
+    return this;
+  }
+
+  public String getOtherRecommendedActions() {
+    return otherRecommendedActions;
+  }
+
+  public void setOtherRecommendedActions(String otherRecommendedActions) {
+    this.otherRecommendedActions = otherRecommendedActions;
+  }
+
+  public Outcome otherRecommendedActions(String otherRecommendedActions) {
+    this.otherRecommendedActions = otherRecommendedActions;
+    return this;
+  }
+
+  public String getRecommendedAdditionalTrainingTime() {
+    return recommendedAdditionalTrainingTime;
+  }
+
+  public void setRecommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
+    this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
+  }
+
+  public Outcome recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
+    this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
+    return this;
+  }
+
+  public String getAdditionalCommentsFromPanel() {
+    return additionalCommentsFromPanel;
+  }
+
+  public void setAdditionalCommentsFromPanel(String additionalCommentsFromPanel) {
+    this.additionalCommentsFromPanel = additionalCommentsFromPanel;
+  }
+
+  public Outcome additionalCommentsFromPanel(String additionalCommentsFromPanel) {
+    this.additionalCommentsFromPanel = additionalCommentsFromPanel;
+    return this;
+  }
+
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
   @Override
@@ -303,6 +441,18 @@ public class Outcome implements Serializable {
         ", nextRotationGradeName='" + getNextRotationGradeName() + "'" +
         ", traineeNotifiedOfOutcome='" + isTraineeNotifiedOfOutcome() + "'" +
         ", nextReviewDate='" + getNextReviewDate() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
+        ", academicCurriculumAssessed='" + getAcademicCurriculumAssessed() + "'" +
+        ", academicOutcome='" + getAcademicOutcome() + "'" +
+        ", detailedReasons='" + getDetailedReasons() + "'" +
+        ", mitigatingCircumstances='" + getMitigatingCircumstances() + "'" +
+        ", competencesToBeDeveloped='" + getCompetencesToBeDeveloped() + "'" +
+        ", otherRecommendedActions='" + getOtherRecommendedActions() + "'" +
+        ", recommendedAdditionalTrainingTime='" + getRecommendedAdditionalTrainingTime() + "'" +
+        ", additionalCommentsFromPanel='" + getAdditionalCommentsFromPanel() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
         "}";
   }
