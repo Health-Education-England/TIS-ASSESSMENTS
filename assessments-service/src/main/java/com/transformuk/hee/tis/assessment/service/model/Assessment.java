@@ -4,7 +4,6 @@ package com.transformuk.hee.tis.assessment.service.model;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

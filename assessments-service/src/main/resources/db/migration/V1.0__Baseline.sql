@@ -54,7 +54,7 @@ CREATE TABLE `Outcome` (
   `outcome` varchar(255) DEFAULT NULL,
   `underAppeal` bit(1) NOT NULL DEFAULT 0,
   `reason` varchar(255) DEFAULT NULL,
-  `comments` varchar(255) DEFAULT NULL,
+  `comments` TEXT DEFAULT NULL,
   `trainingCompletionDate` timestamp NULL,
   `extendedTrainingCompletionDate` timestamp NULL,
   `extendedTrainingTimeInMonths` int(11) DEFAULT NULL,
@@ -65,6 +65,14 @@ CREATE TABLE `Outcome` (
   `traineeNotifiedOfOutcome` bit(1) NOT NULL DEFAULT 0,
   `nextReviewDate` timestamp NULL,
   `intrepidId` varchar(255) DEFAULT NULL,
+  `academicCurriculumAssessed` varchar(255) DEFAULT NULL,
+  `academicOutcome` varchar(255) DEFAULT NULL,
+  `detailedReasons` TEXT DEFAULT NULL,
+  `mitigatingCircumstances` varchar(255) DEFAULT NULL,
+  `competencesToBeDeveloped` varchar(255) DEFAULT NULL,
+  `otherRecommendedActions` varchar(255) DEFAULT NULL,
+  `recommendedAddtnlTrainingTime` varchar(255) DEFAULT NULL,
+  `addCommentsFromPanel` TEXT DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
