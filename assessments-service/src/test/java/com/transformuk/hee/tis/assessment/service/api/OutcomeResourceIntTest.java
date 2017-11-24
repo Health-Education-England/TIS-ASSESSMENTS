@@ -29,7 +29,7 @@ import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,11 +63,11 @@ public class OutcomeResourceIntTest {
   private static final String DEFAULT_COMMENTS = "AAAAAAAAAA";
   private static final String UPDATED_COMMENTS = "BBBBBBBBBB";
 
-  private static final ZonedDateTime DEFAULT_TRAINING_COMPLETION_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_TRAINING_COMPLETION_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_TRAINING_COMPLETION_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_TRAINING_COMPLETION_DATE = LocalDate.now();
 
-  private static final ZonedDateTime DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_EXTENDED_TRAINING_COMPLETION_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_EXTENDED_TRAINING_COMPLETION_DATE = LocalDate.now();
 
   private static final Integer DEFAULT_EXTENDED_TRAINING_TIME_IN_MONTHS = 1;
   private static final Integer UPDATED_EXTENDED_TRAINING_TIME_IN_MONTHS = 2;
@@ -87,8 +87,9 @@ public class OutcomeResourceIntTest {
   private static final Boolean DEFAULT_TRAINEE_NOTIFIED_OF_OUTCOME = false;
   private static final Boolean UPDATED_TRAINEE_NOTIFIED_OF_OUTCOME = true;
 
-  private static final ZonedDateTime DEFAULT_NEXT_REVIEW_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-  private static final ZonedDateTime UPDATED_NEXT_REVIEW_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+  private static final LocalDate DEFAULT_NEXT_REVIEW_DATE = LocalDate.ofEpochDay(0L);
+  private static final LocalDate UPDATED_NEXT_REVIEW_DATE = LocalDate.now();
+  public static final String DEFAULT_INTREPID_ID = "1111111";
 
   @Autowired
   private OutcomeRepository outcomeRepository;
@@ -135,7 +136,8 @@ public class OutcomeResourceIntTest {
         .nextRotationGradeId(DEFAULT_NEXT_ROTATION_GRADE_ID)
         .nextRotationGradeName(DEFAULT_NEXT_ROTATION_GRADE_NAME)
         .traineeNotifiedOfOutcome(DEFAULT_TRAINEE_NOTIFIED_OF_OUTCOME)
-        .nextReviewDate(DEFAULT_NEXT_REVIEW_DATE);
+        .nextReviewDate(DEFAULT_NEXT_REVIEW_DATE)
+        .intrepidId(DEFAULT_INTREPID_ID);
     return outcome;
   }
 
@@ -221,15 +223,15 @@ public class OutcomeResourceIntTest {
         .andExpect(jsonPath("$.[*].underAppeal").value(hasItem(DEFAULT_UNDER_APPEAL.booleanValue())))
         .andExpect(jsonPath("$.[*].reason").value(hasItem(DEFAULT_REASON.toString())))
         .andExpect(jsonPath("$.[*].comments").value(hasItem(DEFAULT_COMMENTS.toString())))
-        .andExpect(jsonPath("$.[*].trainingCompletionDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_TRAINING_COMPLETION_DATE))))
-        .andExpect(jsonPath("$.[*].extendedTrainingCompletionDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE))))
+        .andExpect(jsonPath("$.[*].trainingCompletionDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_TRAINING_COMPLETION_DATE))))
+        .andExpect(jsonPath("$.[*].extendedTrainingCompletionDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE))))
         .andExpect(jsonPath("$.[*].extendedTrainingTimeInMonths").value(hasItem(DEFAULT_EXTENDED_TRAINING_TIME_IN_MONTHS)))
         .andExpect(jsonPath("$.[*].tenPercentAudit").value(hasItem(DEFAULT_TEN_PERCENT_AUDIT.booleanValue())))
         .andExpect(jsonPath("$.[*].externalTrainer").value(hasItem(DEFAULT_EXTERNAL_TRAINER.booleanValue())))
         .andExpect(jsonPath("$.[*].nextRotationGradeId").value(hasItem(DEFAULT_NEXT_ROTATION_GRADE_ID.intValue())))
         .andExpect(jsonPath("$.[*].nextRotationGradeName").value(hasItem(DEFAULT_NEXT_ROTATION_GRADE_NAME.toString())))
         .andExpect(jsonPath("$.[*].traineeNotifiedOfOutcome").value(hasItem(DEFAULT_TRAINEE_NOTIFIED_OF_OUTCOME.booleanValue())))
-        .andExpect(jsonPath("$.[*].nextReviewDate").value(Matchers.hasItem(TestUtil.sameInstant(DEFAULT_NEXT_REVIEW_DATE))));
+        .andExpect(jsonPath("$.[*].nextReviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_NEXT_REVIEW_DATE))));
   }
 
   @Test
@@ -247,15 +249,15 @@ public class OutcomeResourceIntTest {
         .andExpect(jsonPath("$.underAppeal").value(DEFAULT_UNDER_APPEAL.booleanValue()))
         .andExpect(jsonPath("$.reason").value(DEFAULT_REASON.toString()))
         .andExpect(jsonPath("$.comments").value(DEFAULT_COMMENTS.toString()))
-        .andExpect(jsonPath("$.trainingCompletionDate").value(TestUtil.sameInstant(DEFAULT_TRAINING_COMPLETION_DATE)))
-        .andExpect(jsonPath("$.extendedTrainingCompletionDate").value(TestUtil.sameInstant(DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE)))
+        .andExpect(jsonPath("$.trainingCompletionDate").value(TestUtil.sameDate(DEFAULT_TRAINING_COMPLETION_DATE)))
+        .andExpect(jsonPath("$.extendedTrainingCompletionDate").value(TestUtil.sameDate(DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE)))
         .andExpect(jsonPath("$.extendedTrainingTimeInMonths").value(DEFAULT_EXTENDED_TRAINING_TIME_IN_MONTHS))
         .andExpect(jsonPath("$.tenPercentAudit").value(DEFAULT_TEN_PERCENT_AUDIT.booleanValue()))
         .andExpect(jsonPath("$.externalTrainer").value(DEFAULT_EXTERNAL_TRAINER.booleanValue()))
         .andExpect(jsonPath("$.nextRotationGradeId").value(DEFAULT_NEXT_ROTATION_GRADE_ID.intValue()))
         .andExpect(jsonPath("$.nextRotationGradeName").value(DEFAULT_NEXT_ROTATION_GRADE_NAME.toString()))
         .andExpect(jsonPath("$.traineeNotifiedOfOutcome").value(DEFAULT_TRAINEE_NOTIFIED_OF_OUTCOME.booleanValue()))
-        .andExpect(jsonPath("$.nextReviewDate").value(TestUtil.sameInstant(DEFAULT_NEXT_REVIEW_DATE)));
+        .andExpect(jsonPath("$.nextReviewDate").value(TestUtil.sameDate(DEFAULT_NEXT_REVIEW_DATE)));
   }
 
   @Test

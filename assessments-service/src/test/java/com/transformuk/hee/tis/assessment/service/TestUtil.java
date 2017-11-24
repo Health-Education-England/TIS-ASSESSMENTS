@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -154,7 +155,7 @@ public class TestUtil {
     @Override
     protected boolean matchesSafely(String item, Description mismatchDescription) {
       try {
-        if (!date.isEqual(LocalDate.parse(item))) {
+        if (!date.isEqual(LocalDate.parse(item, DateTimeFormatter.ofPattern("dd/MM/yyyy")))) {
           mismatchDescription.appendText("was ").appendValue(item);
           return false;
         }

@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
-
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeReason;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 
@@ -15,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -305,6 +303,7 @@ public class Outcome implements Serializable {
         ", nextRotationGradeName='" + getNextRotationGradeName() + "'" +
         ", traineeNotifiedOfOutcome='" + isTraineeNotifiedOfOutcome() + "'" +
         ", nextReviewDate='" + getNextReviewDate() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
         "}";
   }
 }

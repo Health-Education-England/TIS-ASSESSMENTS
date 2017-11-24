@@ -6,6 +6,7 @@ import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -124,6 +126,8 @@ public class AssessmentResourceIntTest {
   private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
 
   private static final AssessmentType DEFAULT_ASSESSMENT_TYPE = AssessmentType.ARCP;
+  private static final String DEFAULT_INTREPID_ID = "1234567";
+
 
   @Autowired
   private AssessmentRepository assessmentRepository;
@@ -157,15 +161,7 @@ public class AssessmentResourceIntTest {
    * if they test an entity which requires the current entity.
    */
   public static Assessment createEntity(EntityManager em) {
-    Assessment assessment = new Assessment()
-        .personId(DEFAULT_PERSON_ID)
-        .firstName(DEFAULT_FIRST_NAME)
-        .lastName(DEFAULT_LAST_NAME)
-        .startDate(DEFAULT_START_DATE)
-        .endDate(DEFAULT_END_DATE)
-        .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
-        .programmeName(DEFAULT_PROGRAMME_NAME)
-        .type(DEFAULT_ASSESSMENT_TYPE)
+    AssessmentDetail assessmentDetail = new AssessmentDetail()
         .curriculumId(DEFAULT_CURRICULUM_ID)
         .curriculumName(DEFAULT_CURRICULUM_NAME)
         .curriculumStartDate(DEFAULT_CURRICULUM_START_DATE)
@@ -183,6 +179,18 @@ public class AssessmentResourceIntTest {
         .monthsCountedToTraining(DEFAULT_MONTHS_COUNTED_TO_TRAINING)
         .traineeNTN(DEFAULT_TRAINEE_NTN)
         .pya(DEFAULT_PYA);
+
+    Assessment assessment = new Assessment()
+        .personId(DEFAULT_PERSON_ID)
+        .firstName(DEFAULT_FIRST_NAME)
+        .lastName(DEFAULT_LAST_NAME)
+        .startDate(DEFAULT_START_DATE)
+        .endDate(DEFAULT_END_DATE)
+        .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
+        .programmeName(DEFAULT_PROGRAMME_NAME)
+        .type(DEFAULT_ASSESSMENT_TYPE)
+        .intrepidId(DEFAULT_INTREPID_ID)
+        .detail(assessmentDetail);
     return assessment;
   }
 
@@ -226,23 +234,23 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
     assertThat(testAssessment.getType()).isEqualTo(DEFAULT_ASSESSMENT_TYPE);
-    assertThat(testAssessment.getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
-    assertThat(testAssessment.getCurriculumName()).isEqualTo(DEFAULT_CURRICULUM_NAME);
-    assertThat(testAssessment.getCurriculumStartDate()).isEqualTo(DEFAULT_CURRICULUM_START_DATE);
-    assertThat(testAssessment.getCurriculumEndDate()).isEqualTo(DEFAULT_CURRICULUM_END_DATE);
-    assertThat(testAssessment.getCurriculumSpecialtyId()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY_ID);
-    assertThat(testAssessment.getCurriculumSpecialty()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY);
-    assertThat(testAssessment.getCurriculumSubType()).isEqualTo(DEFAULT_CURRICULUM_SUB_TYPE);
-    assertThat(testAssessment.getMembershipType()).isEqualTo(DEFAULT_MEMBERSHIP_TYPE);
-    assertThat(testAssessment.getGradeAbbreviation()).isEqualTo(DEFAULT_GRADE_ABBREVIATION);
-    assertThat(testAssessment.getGradeName()).isEqualTo(DEFAULT_GRADE_NAME);
-    assertThat(testAssessment.getPeriodCoveredFrom()).isEqualTo(DEFAULT_PERIOD_COVERED_FROM);
-    assertThat(testAssessment.getPeriodCoveredTo()).isEqualTo(DEFAULT_PERIOD_COVERED_TO);
-    assertThat(testAssessment.getPortfolioReviewDate()).isEqualTo(DEFAULT_PORTFOLIO_REVIEW_DATE);
-    assertThat(testAssessment.getMonthsWTEDuringPeriod()).isEqualTo(DEFAULT_MONTHS_WTE_DURING_PERIOD);
-    assertThat(testAssessment.getMonthsCountedToTraining()).isEqualTo(DEFAULT_MONTHS_COUNTED_TO_TRAINING);
-    assertThat(testAssessment.getTraineeNTN()).isEqualTo(DEFAULT_TRAINEE_NTN);
-    assertThat(testAssessment.getPya()).isEqualTo(DEFAULT_PYA);
+    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
+    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(DEFAULT_CURRICULUM_NAME);
+    assertThat(testAssessment.getDetail().getCurriculumStartDate()).isEqualTo(DEFAULT_CURRICULUM_START_DATE);
+    assertThat(testAssessment.getDetail().getCurriculumEndDate()).isEqualTo(DEFAULT_CURRICULUM_END_DATE);
+    assertThat(testAssessment.getDetail().getCurriculumSpecialtyId()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY_ID);
+    assertThat(testAssessment.getDetail().getCurriculumSpecialty()).isEqualTo(DEFAULT_CURRICULUM_SPECIALTY);
+    assertThat(testAssessment.getDetail().getCurriculumSubType()).isEqualTo(DEFAULT_CURRICULUM_SUB_TYPE);
+    assertThat(testAssessment.getDetail().getMembershipType()).isEqualTo(DEFAULT_MEMBERSHIP_TYPE);
+    assertThat(testAssessment.getDetail().getGradeAbbreviation()).isEqualTo(DEFAULT_GRADE_ABBREVIATION);
+    assertThat(testAssessment.getDetail().getGradeName()).isEqualTo(DEFAULT_GRADE_NAME);
+    assertThat(testAssessment.getDetail().getPeriodCoveredFrom()).isEqualTo(DEFAULT_PERIOD_COVERED_FROM);
+    assertThat(testAssessment.getDetail().getPeriodCoveredTo()).isEqualTo(DEFAULT_PERIOD_COVERED_TO);
+    assertThat(testAssessment.getDetail().getPortfolioReviewDate()).isEqualTo(DEFAULT_PORTFOLIO_REVIEW_DATE);
+    assertThat(testAssessment.getDetail().getMonthsWTEDuringPeriod()).isEqualTo(DEFAULT_MONTHS_WTE_DURING_PERIOD);
+    assertThat(testAssessment.getDetail().getMonthsCountedToTraining()).isEqualTo(DEFAULT_MONTHS_COUNTED_TO_TRAINING);
+    assertThat(testAssessment.getDetail().getTraineeNTN()).isEqualTo(DEFAULT_TRAINEE_NTN);
+    assertThat(testAssessment.getDetail().getPya()).isEqualTo(DEFAULT_PYA);
   }
 
   @Test
@@ -284,23 +292,23 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber().intValue())))
         .andExpect(jsonPath("$.[*].programmeName").value(hasItem(assessment.getProgrammeName())))
         .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
-        .andExpect(jsonPath("$.[*].curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
-        .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
-        .andExpect(jsonPath("$.[*].curriculumStartDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE))))
-        .andExpect(jsonPath("$.[*].curriculumEndDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE))))
-        .andExpect(jsonPath("$.[*].curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue())))
-        .andExpect(jsonPath("$.[*].curriculumSpecialty").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY.toString())))
-        .andExpect(jsonPath("$.[*].curriculumSubType").value(hasItem(DEFAULT_CURRICULUM_SUB_TYPE.toString())))
-        .andExpect(jsonPath("$.[*].membershipType").value(hasItem(DEFAULT_MEMBERSHIP_TYPE.toString())))
-        .andExpect(jsonPath("$.[*].gradeAbbreviation").value(hasItem(DEFAULT_GRADE_ABBREVIATION.toString())))
-        .andExpect(jsonPath("$.[*].gradeName").value(hasItem(DEFAULT_GRADE_NAME.toString())))
-        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM))))
-        .andExpect(jsonPath("$.[*].periodCoveredTo").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO))))
-        .andExpect(jsonPath("$.[*].portfolioReviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE))))
-        .andExpect(jsonPath("$.[*].monthsWTEDuringPeriod").value(hasItem(DEFAULT_MONTHS_WTE_DURING_PERIOD)))
-        .andExpect(jsonPath("$.[*].monthsCountedToTraining").value(hasItem(DEFAULT_MONTHS_COUNTED_TO_TRAINING)))
-        .andExpect(jsonPath("$.[*].traineeNTN").value(hasItem(DEFAULT_TRAINEE_NTN.toString())))
-        .andExpect(jsonPath("$.[*].pya").value(hasItem(DEFAULT_PYA.toString())));
+        .andExpect(jsonPath("$.[*].detail.curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
+        .andExpect(jsonPath("$.[*].detail.curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
+        .andExpect(jsonPath("$.[*].detail.curriculumStartDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE))))
+        .andExpect(jsonPath("$.[*].detail.curriculumEndDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE))))
+        .andExpect(jsonPath("$.[*].detail.curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue())))
+        .andExpect(jsonPath("$.[*].detail.curriculumSpecialty").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY.toString())))
+        .andExpect(jsonPath("$.[*].detail.curriculumSubType").value(hasItem(DEFAULT_CURRICULUM_SUB_TYPE.toString())))
+        .andExpect(jsonPath("$.[*].detail.membershipType").value(hasItem(DEFAULT_MEMBERSHIP_TYPE.toString())))
+        .andExpect(jsonPath("$.[*].detail.gradeAbbreviation").value(hasItem(DEFAULT_GRADE_ABBREVIATION.toString())))
+        .andExpect(jsonPath("$.[*].detail.gradeName").value(hasItem(DEFAULT_GRADE_NAME.toString())))
+        .andExpect(jsonPath("$.[*].detail.periodCoveredFrom").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM))))
+        .andExpect(jsonPath("$.[*].detail.periodCoveredTo").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO))))
+        .andExpect(jsonPath("$.[*].detail.portfolioReviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE))))
+        .andExpect(jsonPath("$.[*].detail.monthsWTEDuringPeriod").value(hasItem(DEFAULT_MONTHS_WTE_DURING_PERIOD)))
+        .andExpect(jsonPath("$.[*].detail.monthsCountedToTraining").value(hasItem(DEFAULT_MONTHS_COUNTED_TO_TRAINING)))
+        .andExpect(jsonPath("$.[*].detail.traineeNTN").value(hasItem(DEFAULT_TRAINEE_NTN.toString())))
+        .andExpect(jsonPath("$.[*].detail.pya").value(hasItem(DEFAULT_PYA.toString())));
   }
 
   @Test
@@ -322,23 +330,23 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber().intValue()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
         .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
-        .andExpect(jsonPath("$.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
-        .andExpect(jsonPath("$.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
-        .andExpect(jsonPath("$.curriculumStartDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
-        .andExpect(jsonPath("$.curriculumEndDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
-        .andExpect(jsonPath("$.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue()))
-        .andExpect(jsonPath("$.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
-        .andExpect(jsonPath("$.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
-        .andExpect(jsonPath("$.membershipType").value(DEFAULT_MEMBERSHIP_TYPE.toString()))
-        .andExpect(jsonPath("$.gradeAbbreviation").value(DEFAULT_GRADE_ABBREVIATION.toString()))
-        .andExpect(jsonPath("$.gradeName").value(DEFAULT_GRADE_NAME.toString()))
-        .andExpect(jsonPath("$.periodCoveredFrom").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM)))
-        .andExpect(jsonPath("$.periodCoveredTo").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO)))
-        .andExpect(jsonPath("$.portfolioReviewDate").value(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE)))
-        .andExpect(jsonPath("$.monthsWTEDuringPeriod").value(DEFAULT_MONTHS_WTE_DURING_PERIOD))
-        .andExpect(jsonPath("$.monthsCountedToTraining").value(DEFAULT_MONTHS_COUNTED_TO_TRAINING))
-        .andExpect(jsonPath("$.traineeNTN").value(DEFAULT_TRAINEE_NTN.toString()))
-        .andExpect(jsonPath("$.pya").value(DEFAULT_PYA.toString()));
+        .andExpect(jsonPath("$.detail.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
+        .andExpect(jsonPath("$.detail.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
+        .andExpect(jsonPath("$.detail.curriculumStartDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
+        .andExpect(jsonPath("$.detail.curriculumEndDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
+        .andExpect(jsonPath("$.detail.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue()))
+        .andExpect(jsonPath("$.detail.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
+        .andExpect(jsonPath("$.detail.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
+        .andExpect(jsonPath("$.detail.membershipType").value(DEFAULT_MEMBERSHIP_TYPE.toString()))
+        .andExpect(jsonPath("$.detail.gradeAbbreviation").value(DEFAULT_GRADE_ABBREVIATION.toString()))
+        .andExpect(jsonPath("$.detail.gradeName").value(DEFAULT_GRADE_NAME.toString()))
+        .andExpect(jsonPath("$.detail.periodCoveredFrom").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM)))
+        .andExpect(jsonPath("$.detail.periodCoveredTo").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO)))
+        .andExpect(jsonPath("$.detail.portfolioReviewDate").value(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE)))
+        .andExpect(jsonPath("$.detail.monthsWTEDuringPeriod").value(DEFAULT_MONTHS_WTE_DURING_PERIOD))
+        .andExpect(jsonPath("$.detail.monthsCountedToTraining").value(DEFAULT_MONTHS_COUNTED_TO_TRAINING))
+        .andExpect(jsonPath("$.detail.traineeNTN").value(DEFAULT_TRAINEE_NTN.toString()))
+        .andExpect(jsonPath("$.detail.pya").value(DEFAULT_PYA.toString()));
   }
 
   @Test
@@ -365,7 +373,9 @@ public class AssessmentResourceIntTest {
         .startDate(UPDATED_START_DATE)
         .endDate(UPDATED_END_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
-        .programmeName(UPDATED_PROGRAMME_NAME)
+        .programmeName(UPDATED_PROGRAMME_NAME);
+
+    updatedAssessment.getDetail()
         .curriculumId(UPDATED_CURRICULUM_ID)
         .curriculumName(UPDATED_CURRICULUM_NAME)
         .curriculumStartDate(UPDATED_CURRICULUM_START_DATE)
@@ -383,6 +393,7 @@ public class AssessmentResourceIntTest {
         .monthsCountedToTraining(UPDATED_MONTHS_COUNTED_TO_TRAINING)
         .traineeNTN(UPDATED_TRAINEE_NTN)
         .pya(UPDATED_PYA);
+
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
 
     restAssessmentMockMvc.perform(put("/api/assessments")
@@ -401,23 +412,23 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getEndDate()).isEqualTo(UPDATED_END_DATE);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
-    assertThat(testAssessment.getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
-    assertThat(testAssessment.getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
-    assertThat(testAssessment.getCurriculumStartDate()).isEqualTo(UPDATED_CURRICULUM_START_DATE);
-    assertThat(testAssessment.getCurriculumEndDate()).isEqualTo(UPDATED_CURRICULUM_END_DATE);
-    assertThat(testAssessment.getCurriculumSpecialtyId()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY_ID);
-    assertThat(testAssessment.getCurriculumSpecialty()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY);
-    assertThat(testAssessment.getCurriculumSubType()).isEqualTo(UPDATED_CURRICULUM_SUB_TYPE);
-    assertThat(testAssessment.getMembershipType()).isEqualTo(UPDATED_MEMBERSHIP_TYPE);
-    assertThat(testAssessment.getGradeAbbreviation()).isEqualTo(UPDATED_GRADE_ABBREVIATION);
-    assertThat(testAssessment.getGradeName()).isEqualTo(UPDATED_GRADE_NAME);
-    assertThat(testAssessment.getPeriodCoveredFrom()).isEqualTo(UPDATED_PERIOD_COVERED_FROM);
-    assertThat(testAssessment.getPeriodCoveredTo()).isEqualTo(UPDATED_PERIOD_COVERED_TO);
-    assertThat(testAssessment.getPortfolioReviewDate()).isEqualTo(UPDATED_PORTFOLIO_REVIEW_DATE);
-    assertThat(testAssessment.getMonthsWTEDuringPeriod()).isEqualTo(UPDATED_MONTHS_WTE_DURING_PERIOD);
-    assertThat(testAssessment.getMonthsCountedToTraining()).isEqualTo(UPDATED_MONTHS_COUNTED_TO_TRAINING);
-    assertThat(testAssessment.getTraineeNTN()).isEqualTo(UPDATED_TRAINEE_NTN);
-    assertThat(testAssessment.getPya()).isEqualTo(UPDATED_PYA);
+    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
+    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
+    assertThat(testAssessment.getDetail().getCurriculumStartDate()).isEqualTo(UPDATED_CURRICULUM_START_DATE);
+    assertThat(testAssessment.getDetail().getCurriculumEndDate()).isEqualTo(UPDATED_CURRICULUM_END_DATE);
+    assertThat(testAssessment.getDetail().getCurriculumSpecialtyId()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY_ID);
+    assertThat(testAssessment.getDetail().getCurriculumSpecialty()).isEqualTo(UPDATED_CURRICULUM_SPECIALTY);
+    assertThat(testAssessment.getDetail().getCurriculumSubType()).isEqualTo(UPDATED_CURRICULUM_SUB_TYPE);
+    assertThat(testAssessment.getDetail().getMembershipType()).isEqualTo(UPDATED_MEMBERSHIP_TYPE);
+    assertThat(testAssessment.getDetail().getGradeAbbreviation()).isEqualTo(UPDATED_GRADE_ABBREVIATION);
+    assertThat(testAssessment.getDetail().getGradeName()).isEqualTo(UPDATED_GRADE_NAME);
+    assertThat(testAssessment.getDetail().getPeriodCoveredFrom()).isEqualTo(UPDATED_PERIOD_COVERED_FROM);
+    assertThat(testAssessment.getDetail().getPeriodCoveredTo()).isEqualTo(UPDATED_PERIOD_COVERED_TO);
+    assertThat(testAssessment.getDetail().getPortfolioReviewDate()).isEqualTo(UPDATED_PORTFOLIO_REVIEW_DATE);
+    assertThat(testAssessment.getDetail().getMonthsWTEDuringPeriod()).isEqualTo(UPDATED_MONTHS_WTE_DURING_PERIOD);
+    assertThat(testAssessment.getDetail().getMonthsCountedToTraining()).isEqualTo(UPDATED_MONTHS_COUNTED_TO_TRAINING);
+    assertThat(testAssessment.getDetail().getTraineeNTN()).isEqualTo(UPDATED_TRAINEE_NTN);
+    assertThat(testAssessment.getDetail().getPya()).isEqualTo(UPDATED_PYA);
   }
 
   @Test
@@ -487,10 +498,4 @@ public class AssessmentResourceIntTest {
     assertThat(assessmentDTO1).isNotEqualTo(assessmentDTO2);
   }
 
-  @Test
-  @Transactional
-  public void testEntityFromId() {
-    assertThat(assessmentMapper.fromId(42L).getId()).isEqualTo(42);
-    assertThat(assessmentMapper.fromId(null)).isNull();
-  }
 }

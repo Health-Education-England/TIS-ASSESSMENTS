@@ -1,6 +1,8 @@
 package com.transformuk.hee.tis.assessment.service.service.mapper;
 
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
 import org.mapstruct.Mapper;
 
@@ -9,6 +11,10 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface OutcomeMapper extends EntityMapper<OutcomeDTO, Outcome> {
+
+  OutcomeDTO toDto(Outcome outcome);
+
+  Outcome toEntity(OutcomeDTO outcomeDTO);
 
 
   default Outcome fromId(Long id) {

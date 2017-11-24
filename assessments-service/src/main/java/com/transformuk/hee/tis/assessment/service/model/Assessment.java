@@ -4,18 +4,23 @@ package com.transformuk.hee.tis.assessment.service.model;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -60,63 +65,20 @@ public class Assessment implements Serializable {
   @Column(name = "type")
   private AssessmentType type;
 
-  @Column(name = "curriculumId")
-  private Long curriculumId;
-
-  @Column(name = "curriculumName")
-  private String curriculumName;
-
-  @Column(name = "curriculumStartDate")
-  private LocalDate curriculumStartDate;
-
-  @Column(name = "curriculumEndDate")
-  private LocalDate curriculumEndDate;
-
-  @Column(name = "curriculumSpecialtyId")
-  private Long curriculumSpecialtyId;
-
-  @Column(name = "curriculumSpecialty")
-  private String curriculumSpecialty;
-
-  @Column(name = "curriculumSubType")
-  private String curriculumSubType;
-
-  @Column(name = "membershipType")
-  private String membershipType;
-
-  @Column(name = "gradeAbbreviation")
-  private String gradeAbbreviation;
-
-  @Column(name = "gradeName")
-  private String gradeName;
-
-  @Column(name = "periodCoveredFrom")
-  private LocalDate periodCoveredFrom;
-
-  @Column(name = "periodCoveredTo")
-  private LocalDate periodCoveredTo;
-
-  @Column(name = "portfolioReviewDate")
-  private LocalDate portfolioReviewDate;
-
-  @Column(name = "monthsWteDuringPeriod")
-  private Integer monthsWTEDuringPeriod;
-
-  @Column(name = "monthsCountedToTraining")
-  private Integer monthsCountedToTraining;
-
-  @Column(name = "traineeNtn")
-  private String traineeNTN;
-
-  @Column(name = "pya")
-  private String pya;
-
   @Column(name = "intrepidId")
   private String intrepidId;
 
-  @OneToOne
-  @JoinColumn(name = "outcomeId", unique = true)
-  private Outcome outcome;
+  @OneToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "detailId", unique = true)
+  private AssessmentDetail detail;
+
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "AssessmentOutcome",
+      joinColumns = @JoinColumn(name = "assessmentId", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "outcomeId", referencedColumnName = "id")
+  )
+  private List<Outcome> outcome;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
   public Long getId() {
@@ -244,226 +206,6 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public Long getCurriculumId() {
-    return curriculumId;
-  }
-
-  public void setCurriculumId(Long curriculumId) {
-    this.curriculumId = curriculumId;
-  }
-
-  public Assessment curriculumId(Long curriculumId) {
-    this.curriculumId = curriculumId;
-    return this;
-  }
-
-  public String getCurriculumName() {
-    return curriculumName;
-  }
-
-  public void setCurriculumName(String curriculumName) {
-    this.curriculumName = curriculumName;
-  }
-
-  public Assessment curriculumName(String curriculumName) {
-    this.curriculumName = curriculumName;
-    return this;
-  }
-
-  public LocalDate getCurriculumStartDate() {
-    return curriculumStartDate;
-  }
-
-  public void setCurriculumStartDate(LocalDate curriculumStartDate) {
-    this.curriculumStartDate = curriculumStartDate;
-  }
-
-  public Assessment curriculumStartDate(LocalDate curriculumStartDate) {
-    this.curriculumStartDate = curriculumStartDate;
-    return this;
-  }
-
-  public LocalDate getCurriculumEndDate() {
-    return curriculumEndDate;
-  }
-
-  public void setCurriculumEndDate(LocalDate curriculumEndDate) {
-    this.curriculumEndDate = curriculumEndDate;
-  }
-
-  public Assessment curriculumEndDate(LocalDate curriculumEndDate) {
-    this.curriculumEndDate = curriculumEndDate;
-    return this;
-  }
-
-  public Long getCurriculumSpecialtyId() {
-    return curriculumSpecialtyId;
-  }
-
-  public void setCurriculumSpecialtyId(Long curriculumSpecialtyId) {
-    this.curriculumSpecialtyId = curriculumSpecialtyId;
-  }
-
-  public Assessment curriculumSpecialtyId(Long curriculumSpecialtyId) {
-    this.curriculumSpecialtyId = curriculumSpecialtyId;
-    return this;
-  }
-
-  public String getCurriculumSpecialty() {
-    return curriculumSpecialty;
-  }
-
-  public void setCurriculumSpecialty(String curriculumSpecialty) {
-    this.curriculumSpecialty = curriculumSpecialty;
-  }
-
-  public Assessment curriculumSpecialty(String curriculumSpecialty) {
-    this.curriculumSpecialty = curriculumSpecialty;
-    return this;
-  }
-
-  public String getCurriculumSubType() {
-    return curriculumSubType;
-  }
-
-  public void setCurriculumSubType(String curriculumSubType) {
-    this.curriculumSubType = curriculumSubType;
-  }
-
-  public Assessment curriculumSubType(String curriculumSubType) {
-    this.curriculumSubType = curriculumSubType;
-    return this;
-  }
-
-  public String getMembershipType() {
-    return membershipType;
-  }
-
-  public void setMembershipType(String membershipType) {
-    this.membershipType = membershipType;
-  }
-
-  public Assessment membershipType(String membershipType) {
-    this.membershipType = membershipType;
-    return this;
-  }
-
-  public String getGradeAbbreviation() {
-    return gradeAbbreviation;
-  }
-
-  public void setGradeAbbreviation(String gradeAbbreviation) {
-    this.gradeAbbreviation = gradeAbbreviation;
-  }
-
-  public Assessment gradeAbbreviation(String gradeAbbreviation) {
-    this.gradeAbbreviation = gradeAbbreviation;
-    return this;
-  }
-
-  public String getGradeName() {
-    return gradeName;
-  }
-
-  public void setGradeName(String gradeName) {
-    this.gradeName = gradeName;
-  }
-
-  public Assessment gradeName(String gradeName) {
-    this.gradeName = gradeName;
-    return this;
-  }
-
-  public LocalDate getPeriodCoveredFrom() {
-    return periodCoveredFrom;
-  }
-
-  public void setPeriodCoveredFrom(LocalDate periodCoveredFrom) {
-    this.periodCoveredFrom = periodCoveredFrom;
-  }
-
-  public Assessment periodCoveredFrom(LocalDate periodCoveredFrom) {
-    this.periodCoveredFrom = periodCoveredFrom;
-    return this;
-  }
-
-  public LocalDate getPeriodCoveredTo() {
-    return periodCoveredTo;
-  }
-
-  public void setPeriodCoveredTo(LocalDate periodCoveredTo) {
-    this.periodCoveredTo = periodCoveredTo;
-  }
-
-  public Assessment periodCoveredTo(LocalDate periodCoveredTo) {
-    this.periodCoveredTo = periodCoveredTo;
-    return this;
-  }
-
-  public LocalDate getPortfolioReviewDate() {
-    return portfolioReviewDate;
-  }
-
-  public void setPortfolioReviewDate(LocalDate portfolioReviewDate) {
-    this.portfolioReviewDate = portfolioReviewDate;
-  }
-
-  public Assessment portfolioReviewDate(LocalDate portfolioReviewDate) {
-    this.portfolioReviewDate = portfolioReviewDate;
-    return this;
-  }
-
-  public Integer getMonthsWTEDuringPeriod() {
-    return monthsWTEDuringPeriod;
-  }
-
-  public void setMonthsWTEDuringPeriod(Integer monthsWTEDuringPeriod) {
-    this.monthsWTEDuringPeriod = monthsWTEDuringPeriod;
-  }
-
-  public Assessment monthsWTEDuringPeriod(Integer monthsWTEDuringPeriod) {
-    this.monthsWTEDuringPeriod = monthsWTEDuringPeriod;
-    return this;
-  }
-
-  public Integer getMonthsCountedToTraining() {
-    return monthsCountedToTraining;
-  }
-
-  public void setMonthsCountedToTraining(Integer monthsCountedToTraining) {
-    this.monthsCountedToTraining = monthsCountedToTraining;
-  }
-
-  public Assessment monthsCountedToTraining(Integer monthsCountedToTraining) {
-    this.monthsCountedToTraining = monthsCountedToTraining;
-    return this;
-  }
-
-  public String getTraineeNTN() {
-    return traineeNTN;
-  }
-
-  public void setTraineeNTN(String traineeNTN) {
-    this.traineeNTN = traineeNTN;
-  }
-
-  public Assessment traineeNTN(String traineeNTN) {
-    this.traineeNTN = traineeNTN;
-    return this;
-  }
-
-  public String getPya() {
-    return pya;
-  }
-
-  public void setPya(String pya) {
-    this.pya = pya;
-  }
-
-  public Assessment pya(String pya) {
-    this.pya = pya;
-    return this;
-  }
 
   public String getIntrepidId() {
     return intrepidId;
@@ -478,15 +220,28 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public Outcome getOutcome() {
+  public AssessmentDetail getDetail() {
+    return detail;
+  }
+
+  public void setDetail(AssessmentDetail detail) {
+    this.detail = detail;
+  }
+
+  public Assessment detail(AssessmentDetail detail) {
+    this.detail = detail;
+    return this;
+  }
+
+  public List<Outcome> getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(Outcome outcome) {
+  public void setOutcome(List<Outcome> outcome) {
     this.outcome = outcome;
   }
 
-  public Assessment outcome(Outcome outcome) {
+  public Assessment outcome(List<Outcome> outcome) {
     this.outcome = outcome;
     return this;
   }
@@ -525,23 +280,7 @@ public class Assessment implements Serializable {
         ", programmeName='" + getProgrammeName() + "'" +
         ", status='" + getStatus() + "'" +
         ", type='" + getType() + "'" +
-        ", curriculumId='" + getCurriculumId() + "'" +
-        ", curriculumName='" + getCurriculumName() + "'" +
-        ", curriculumStartDate='" + getCurriculumStartDate() + "'" +
-        ", curriculumEndDate='" + getCurriculumEndDate() + "'" +
-        ", curriculumSpecialtyId='" + getCurriculumSpecialtyId() + "'" +
-        ", curriculumSpecialty='" + getCurriculumSpecialty() + "'" +
-        ", curriculumSubType='" + getCurriculumSubType() + "'" +
-        ", membershipType='" + getMembershipType() + "'" +
-        ", gradeAbbreviation='" + getGradeAbbreviation() + "'" +
-        ", gradeName='" + getGradeName() + "'" +
-        ", periodCoveredFrom='" + getPeriodCoveredFrom() + "'" +
-        ", periodCoveredTo='" + getPeriodCoveredTo() + "'" +
-        ", portfolioReviewDate='" + getPortfolioReviewDate() + "'" +
-        ", monthsWTEDuringPeriod='" + getMonthsWTEDuringPeriod() + "'" +
-        ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
-        ", traineeNTN='" + getTraineeNTN() + "'" +
-        ", pya='" + getPya() + "'" +
+        ", intrepidId='" + getIntrepidId() + "'" +
         "}";
   }
 }
