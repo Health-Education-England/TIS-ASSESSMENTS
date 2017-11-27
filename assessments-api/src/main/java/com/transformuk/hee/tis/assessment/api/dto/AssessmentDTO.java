@@ -23,8 +23,8 @@ public class AssessmentDTO implements Serializable {
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
   private Long id;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "personId cannot be null")
-  private Long personId;
+  @NotNull(groups = {Create.class, Update.class}, message = "traineeId cannot be null")
+  private String traineeId;
 
   @NotNull(groups = {Create.class, Update.class}, message = "first name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "first name should be at least 1 character long")
@@ -77,16 +77,16 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public Long getPersonId() {
-    return personId;
+  public String getTraineeId() {
+    return traineeId;
   }
 
-  public void setPersonId(Long personId) {
-    this.personId = personId;
+  public void setTraineeId(String traineeId) {
+    this.traineeId = traineeId;
   }
 
-  public AssessmentDTO personId(Long personId) {
-    this.personId = personId;
+  public AssessmentDTO personId(String personId) {
+    this.traineeId = personId;
     return this;
   }
 
@@ -284,7 +284,7 @@ public class AssessmentDTO implements Serializable {
   public String toString() {
     return "AssessmentDTO{" +
         "id=" + getId() +
-        ", personId='" + getPersonId() + "'" +
+        ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", startDate='" + getStartDate() + "'" +

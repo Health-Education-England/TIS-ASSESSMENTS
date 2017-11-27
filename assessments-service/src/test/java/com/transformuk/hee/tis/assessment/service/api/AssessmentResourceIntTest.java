@@ -28,12 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -106,8 +101,8 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PYA = "AAAAAAAAAA";
   private static final String UPDATED_PYA = "BBBBBBBBBB";
 
-  private static final long DEFAULT_PERSON_ID = 12345L;
-  private static final long UPDATED_PERSON_ID = 67890L;
+  private static final String DEFAULT_PERSON_ID = "12345";
+  private static final String UPDATED_PERSON_ID = "67890";
 
   private static final String DEFAULT_FIRST_NAME = "firstName-AAAAAA";
   private static final String UPDATED_FIRST_NAME = "firstName-BBBBBB";
@@ -186,7 +181,7 @@ public class AssessmentResourceIntTest {
         .pya(DEFAULT_PYA);
 
     Assessment assessment = new Assessment()
-        .personId(DEFAULT_PERSON_ID)
+        .traineeId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
         .startDate(DEFAULT_START_DATE)
@@ -252,7 +247,7 @@ public class AssessmentResourceIntTest {
 
     // Create the Assessment
     AssessmentDTO assessmentDTO = createDTO();
-    restAssessmentMockMvc.perform(post("/api/assessments")
+    restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
@@ -261,7 +256,7 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeCreate + 1);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
-    assertThat(testAssessment.getPersonId()).isEqualTo(DEFAULT_PERSON_ID);
+    assertThat(testAssessment.getTraineeId()).isEqualTo(DEFAULT_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
     assertThat(testAssessment.getStartDate()).isEqualTo(DEFAULT_START_DATE);
@@ -285,7 +280,7 @@ public class AssessmentResourceIntTest {
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(assessment);
 
     // An entity with an existing ID cannot be created, so this API call must fail
-    restAssessmentMockMvc.perform(post("/api/assessments")
+    restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isBadRequest());
@@ -304,11 +299,11 @@ public class AssessmentResourceIntTest {
     assessmentRepository.saveAndFlush(assessment);
 
     // Get all the assessmentList
-    restAssessmentMockMvc.perform(get("/api/assessments?sort=id,desc"))
+    restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
-        .andExpect(jsonPath("$.[*].personId").value(hasItem(assessment.getPersonId().intValue())))
+        .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
@@ -344,11 +339,11 @@ public class AssessmentResourceIntTest {
     assessmentRepository.saveAndFlush(assessment);
 
     // Get the assessment
-    restAssessmentMockMvc.perform(get("/api/assessments/{id}", assessment.getId()))
+    restAssessmentMockMvc.perform(get("/api/trainee/{traineeId}/assessments/{assessmentId}", DEFAULT_PERSON_ID, assessment.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.id").value(assessment.getId().intValue()))
-        .andExpect(jsonPath("$.personId").value(assessment.getPersonId().intValue()))
+        .andExpect(jsonPath("$.traineeId").value(assessment.getTraineeId()))
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
         .andExpect(jsonPath("$.startDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
@@ -395,7 +390,7 @@ public class AssessmentResourceIntTest {
     // Update the assessment
     Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
     updatedAssessment
-        .personId(UPDATED_PERSON_ID)
+//        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
         .lastName(UPDATED_LAST_NAME)
         .startDate(UPDATED_START_DATE)
@@ -424,7 +419,7 @@ public class AssessmentResourceIntTest {
 
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
 
-    restAssessmentMockMvc.perform(put("/api/assessments")
+    restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isOk());
@@ -433,7 +428,7 @@ public class AssessmentResourceIntTest {
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
     Assessment testAssessment = assessmentList.get(assessmentList.size() - 1);
-    assertThat(testAssessment.getPersonId()).isEqualTo(UPDATED_PERSON_ID);
+//    assertThat(testAssessment.getTraineeId()).isEqualTo(UPDATED_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
     assertThat(testAssessment.getStartDate()).isEqualTo(UPDATED_START_DATE);
@@ -452,7 +447,7 @@ public class AssessmentResourceIntTest {
     AssessmentDTO assessmentDTO = createDTO();
 
     // If the entity doesn't have an ID, it will be created instead of just being updated
-    restAssessmentMockMvc.perform(put("/api/assessments")
+    restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
@@ -460,25 +455,6 @@ public class AssessmentResourceIntTest {
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate + 1);
-  }
-
-  @Test
-  @Transactional
-  public void deleteAssessment() throws Exception {
-    // Initialize the database
-    assessment = createEntity(em);
-    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
-    assessmentRepository.saveAndFlush(assessment);
-    int databaseSizeBeforeDelete = assessmentRepository.findAll().size();
-
-    // Get the assessment
-    restAssessmentMockMvc.perform(delete("/api/assessments/{id}", assessment.getId())
-        .accept(TestUtil.APPLICATION_JSON_UTF8))
-        .andExpect(status().isOk());
-
-    // Validate the database is empty
-    List<Assessment> assessmentList = assessmentRepository.findAll();
-    assertThat(assessmentList).hasSize(databaseSizeBeforeDelete - 1);
   }
 
   @Test

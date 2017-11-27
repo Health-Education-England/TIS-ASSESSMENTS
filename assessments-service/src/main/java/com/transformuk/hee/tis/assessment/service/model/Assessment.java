@@ -37,8 +37,8 @@ public class Assessment implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "personId")
-  private Long personId;
+  @Column(name = "traineeId")
+  private String traineeId;
 
   @Column(name = "firstName")
   private String firstName;
@@ -97,16 +97,16 @@ public class Assessment implements Serializable {
     this.id = id;
   }
 
-  public Long getPersonId() {
-    return personId;
+  public String getTraineeId() {
+    return traineeId;
   }
 
-  public void setPersonId(Long personId) {
-    this.personId = personId;
+  public void setTraineeId(String traineeId) {
+    this.traineeId = traineeId;
   }
 
-  public Assessment personId(Long personId) {
-    this.personId = personId;
+  public Assessment traineeId(String trainee) {
+    this.traineeId = trainee;
     return this;
   }
 
@@ -304,7 +304,7 @@ public class Assessment implements Serializable {
   public String toString() {
     return "Assessment{" +
         "id=" + getId() +
-        ", personId='" + getPersonId() + "'" +
+        ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", startDate='" + getStartDate() + "'" +

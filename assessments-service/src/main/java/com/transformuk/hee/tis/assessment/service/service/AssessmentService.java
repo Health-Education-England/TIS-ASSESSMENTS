@@ -45,6 +45,16 @@ public interface AssessmentService {
    */
   AssessmentDTO findOne(Long id);
 
+
+  /**
+   * Get an assessment linked to a trainee.
+   *
+   * @param traineeId the id of the trainee
+   * @param assessmentId the id of the assessment
+   * @return the entity
+   */
+  AssessmentDTO findTraineeAssessment(Long traineeId, Long assessmentId);
+
   /**
    * Delete the "id" assessment.
    *
@@ -53,4 +63,6 @@ public interface AssessmentService {
   void delete(Long id);
 
   Page<AssessmentDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
+
+  Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page);
 }

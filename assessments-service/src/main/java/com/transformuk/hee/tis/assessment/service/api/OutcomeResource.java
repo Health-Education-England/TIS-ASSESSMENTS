@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * REST controller for managing Outcome.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/trainee")
 public class OutcomeResource {
 
   private static final String ENTITY_NAME = "outcome";
@@ -51,94 +51,50 @@ public class OutcomeResource {
   }
 
   /**
-   * POST  /outcomes : Create a new outcome.
+   * GET  /:traineeId/assessments/:assessmentId/outcomes : get the an outcome that's linked to a trainee's assessment.
    *
-   * @param outcomeDTO the outcomeDTO to create
-   * @return the ResponseEntity with status 201 (Created) and with body the new outcomeDTO, or with status 400 (Bad Request) if the outcome has already an ID
-   * @throws URISyntaxException if the Location URI syntax is incorrect
+   * @param traineeId the id of the trainee
+   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
-  @PostMapping("/outcomes")
+  @GetMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:add:modify:entities')")
-  public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
-    log.debug("REST request to save Outcome : {}", outcomeDTO);
-    if (outcomeDTO.getId() != null) {
-      throw new BadRequestAlertException("A new outcome cannot already have an ID", ENTITY_NAME, "idexists");
-    }
-    OutcomeDTO result = outcomeService.save(outcomeDTO);
-    return ResponseEntity.created(new URI("/api/outcomes/" + result.getId()))
-        .headers(HeaderUtil
-            .createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-        .body(result);
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<OutcomeDTO> getTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    return ResponseUtil.wrapOrNotFound(Optional.empty());
   }
 
   /**
-   * PUT  /outcomes : Updates an existing outcome.
+   * POST  /:traineeId/assessments/:assessmentId/outcomes : create/update the an outcome that's linked to a trainee's assessment.
    *
-   * @param outcomeDTO the outcomeDTO to update
-   * @return the ResponseEntity with status 200 (OK) and with body the updated outcomeDTO,
-   * or with status 400 (Bad Request) if the outcomeDTO is not valid,
-   * or with status 500 (Internal Server Error) if the outcomeDTO couldn't be updated
-   * @throws URISyntaxException if the Location URI syntax is incorrect
+   * @param traineeId the id of the trainee
+   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
-  @PutMapping("/outcomes")
+  @PostMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:add:modify:entities')")
-  public ResponseEntity<OutcomeDTO> updateOutcome(@RequestBody OutcomeDTO outcomeDTO) throws URISyntaxException {
-    log.debug("REST request to update Outcome : {}", outcomeDTO);
-    if (outcomeDTO.getId() == null) {
-      return createOutcome(outcomeDTO);
-    }
-    OutcomeDTO result = outcomeService.save(outcomeDTO);
-    return ResponseEntity.ok()
-        .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, outcomeDTO.getId().toString()))
-        .body(result);
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<OutcomeDTO> createTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    return ResponseUtil.wrapOrNotFound(Optional.empty());
   }
 
   /**
-   * GET  /outcomes : get all the outcomes.
+   * PUT  /:traineeId/assessments/:assessmentId/outcomes : update the an outcome that's linked to a trainee's assessment.
    *
-   * @return the ResponseEntity with status 200 (OK) and the list of outcomes in body
+   * @param traineeId the id of the trainee
+   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
-  @GetMapping("/outcomes")
+  @PutMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('outcomes:view:entities')")
-  public List<OutcomeDTO> getAllOutcomes() {
-    log.debug("REST request to get all Outcomes");
-    return outcomeService.findAll();
-  }
-
-  /**
-   * GET  /outcomes/:id : get the "id" outcome.
-   *
-   * @param id the id of the outcomeDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the outcomeDTO, or with status 404 (Not Found)
-   */
-  @GetMapping("/outcomes/{id}")
-  @Timed
-  @PreAuthorize("hasAuthority('outcomes:view:entities')")
-  public ResponseEntity<OutcomeDTO> getOutcome(@PathVariable Long id) {
-    log.debug("REST request to get Outcome : {}", id);
-    OutcomeDTO outcomeDTO = outcomeService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(outcomeDTO));
-  }
-
-  /**
-   * DELETE  /outcomes/:id : delete the "id" outcome.
-   *
-   * @param id the id of the outcomeDTO to delete
-   * @return the ResponseEntity with status 200 (OK)
-   */
-  @DeleteMapping("/outcomes/{id}")
-  @Timed
-  @PreAuthorize("hasAuthority('outcomes:delete:entities')")
-  public ResponseEntity<Void> deleteOutcome(@PathVariable Long id) {
-    log.debug("REST request to delete Outcome : {}", id);
-    outcomeService.delete(id);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<OutcomeDTO> updateTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    return ResponseUtil.wrapOrNotFound(Optional.empty());
   }
 
 
+
+  // BULK ENDPOINTS START
 
   /**
    * POST  /bulk-outcomes : Bulk create a new Outcomes.

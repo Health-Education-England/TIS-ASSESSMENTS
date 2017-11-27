@@ -32,7 +32,7 @@ CREATE TABLE `AssessmentDetail` (
 
 CREATE TABLE `Assessment` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `personId` bigint(20) DEFAULT NULL,
+  `traineeId` varchar(255) DEFAULT NULL,
   `firstName` varchar(255) DEFAULT NULL,
   `lastName` varchar(255) DEFAULT NULL,
   `startDate` timestamp NULL,

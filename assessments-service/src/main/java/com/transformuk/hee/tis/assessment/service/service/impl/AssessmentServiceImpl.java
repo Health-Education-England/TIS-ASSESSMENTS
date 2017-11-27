@@ -9,6 +9,7 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMappe
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -130,5 +131,17 @@ public class AssessmentServiceImpl implements AssessmentService {
     Page<Assessment> result = assessmentRepository.findAll(fullSpec, pageable);
 
     return result.map(person -> assessmentMapper.toDto(person));
+  }
+
+  @Override
+  public AssessmentDTO findTraineeAssessment(Long traineeId, Long assessmentId) {
+    return null;
+  }
+
+  @Override
+  public Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page) {
+    Assessment example = new Assessment().traineeId(traineeId);
+    return assessmentRepository.findAll(Example.of(example), page)
+        .map(assessmentMapper::toDto);
   }
 }

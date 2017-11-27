@@ -33,7 +33,7 @@ entity Outcome {
 
 entity Event {
 	id Long,
-    personId Long,
+    traineeId Long,
     firstName String,
     lastName String,
     startDate ZonedDateTime,
