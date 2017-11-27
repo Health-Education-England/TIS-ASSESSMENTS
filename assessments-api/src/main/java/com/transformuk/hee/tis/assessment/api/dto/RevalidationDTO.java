@@ -24,6 +24,8 @@ public class RevalidationDTO implements Serializable {
 
   private String responsibleOfficerComments;
 
+  private String amendedDate;
+
   public Long getId() {
     return id;
   }
@@ -76,6 +78,19 @@ public class RevalidationDTO implements Serializable {
     return this;
   }
 
+  public String getAmendedDate() {
+    return amendedDate;
+  }
+
+  public void setAmendedDate(String amendedDate) {
+    this.amendedDate = amendedDate;
+  }
+
+  public RevalidationDTO amendedDate(String amendedDate) {
+    this.amendedDate = amendedDate;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -104,6 +119,7 @@ public class RevalidationDTO implements Serializable {
         ", knownConcerns=" + knownConcerns +
         ", concernSummary='" + concernSummary + '\'' +
         ", responsibleOfficerComments='" + responsibleOfficerComments + '\'' +
+        ", amendedDate='" + amendedDate + '\'' +
         '}';
   }
 }

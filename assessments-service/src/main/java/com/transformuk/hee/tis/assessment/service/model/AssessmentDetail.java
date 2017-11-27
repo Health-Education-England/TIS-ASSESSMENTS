@@ -6,7 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -67,6 +69,9 @@ public class AssessmentDetail {
 
   @Column(name = "pya")
   private String pya;
+
+  @Version
+  private LocalDateTime amendedDate;
 
   public Long getId() {
     return id;
@@ -298,6 +303,20 @@ public class AssessmentDetail {
     return this;
   }
 
+
+  public LocalDateTime getAmendedDate() {
+    return amendedDate;
+  }
+
+  public void setAmendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+  }
+
+  public AssessmentDetail amendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -339,6 +358,7 @@ public class AssessmentDetail {
         ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
         ", traineeNTN='" + getTraineeNTN() + "'" +
         ", pya='" + getPya() + "'" +
+        ", amendedDate='" + getAmendedDate() + "'" +
         "}";
   }
 }

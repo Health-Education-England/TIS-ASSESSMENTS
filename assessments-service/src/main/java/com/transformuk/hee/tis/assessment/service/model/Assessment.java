@@ -17,8 +17,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,6 +68,9 @@ public class Assessment implements Serializable {
 
   @Column(name = "intrepidId")
   private String intrepidId;
+
+  @Version
+  private LocalDateTime amendedDate;
 
   @OneToOne
   @JoinColumn(name = "detailId", unique = true)
@@ -262,6 +267,19 @@ public class Assessment implements Serializable {
     return this;
   }
 
+  public LocalDateTime getAmendedDate() {
+    return amendedDate;
+  }
+
+  public void setAmendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+  }
+
+  public Assessment amendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -296,6 +314,7 @@ public class Assessment implements Serializable {
         ", status='" + getStatus() + "'" +
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
+        ", amendedDate='" + getAmendedDate() + "'" +
         "}";
   }
 }

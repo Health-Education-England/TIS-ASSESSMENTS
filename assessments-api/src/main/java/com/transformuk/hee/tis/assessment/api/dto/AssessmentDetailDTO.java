@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -69,6 +70,8 @@ public class AssessmentDetailDTO implements Serializable {
   private String traineeNTN;
 
   private String pya;
+
+  private LocalDateTime amendedDate;
 
   public Long getId() {
     return id;
@@ -304,6 +307,19 @@ public class AssessmentDetailDTO implements Serializable {
     return this;
   }
 
+  public LocalDateTime getAmendedDate() {
+    return amendedDate;
+  }
+
+  public void setAmendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+  }
+
+  public AssessmentDetailDTO amendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -346,6 +362,7 @@ public class AssessmentDetailDTO implements Serializable {
         ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
         ", traineeNTN='" + getTraineeNTN() + "'" +
         ", pya='" + getPya() + "'" +
+        ", amendDate='" + getAmendedDate() + "'" +
         "}";
   }
 }

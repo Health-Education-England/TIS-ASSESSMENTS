@@ -6,7 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -27,6 +29,9 @@ public class Revalidation implements Serializable {
   private String concernSummary;
 
   private String responsibleOfficerComments;
+
+  @Version
+  private LocalDateTime amendedDate;
 
   public Long getId() {
     return id;
@@ -80,6 +85,20 @@ public class Revalidation implements Serializable {
     return this;
   }
 
+
+  public LocalDateTime getAmendedDate() {
+    return amendedDate;
+  }
+
+  public void setAmendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+  }
+
+  public Revalidation amendedDate(LocalDateTime amendedDate) {
+    this.amendedDate = amendedDate;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -107,6 +126,7 @@ public class Revalidation implements Serializable {
         ", knownConcerns=" + knownConcerns +
         ", concernSummary='" + concernSummary + '\'' +
         ", responsibleOfficerComments='" + responsibleOfficerComments + '\'' +
+        ", amendedDate='" + amendedDate + '\'' +
         '}';
   }
 }

@@ -3,6 +3,7 @@ CREATE TABLE `Revalidation` (
   `knownConcerns` bit(1) NOT NULL DEFAULT 0,
   `concernSummary` TEXT DEFAULT NULL,
   `responsibleOfficerComments` TEXT DEFAULT NULL,
+  `amendedDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -25,6 +26,7 @@ CREATE TABLE `AssessmentDetail` (
   `monthsCountedToTraining` int(11) DEFAULT NULL,
   `traineeNtn` varchar(255) DEFAULT NULL,
   `pya` varchar(255) DEFAULT NULL,
+  `amendedDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -42,6 +44,7 @@ CREATE TABLE `Assessment` (
   `intrepidId` varchar(255) DEFAULT NULL,
   `detailId` bigint(20) DEFAULT NULL,
   `revalidationId` bigint(20) DEFAULT NULL,
+  `amendedDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   KEY `detailId` (`detailId`),
   KEY `revalidationId` (`revalidationId`),
@@ -68,9 +71,9 @@ CREATE TABLE `Outcome` (
   `academicCurriculumAssessed` varchar(255) DEFAULT NULL,
   `academicOutcome` varchar(255) DEFAULT NULL,
   `detailedReasons` TEXT DEFAULT NULL,
-  `mitigatingCircumstances` varchar(255) DEFAULT NULL,
-  `competencesToBeDeveloped` varchar(255) DEFAULT NULL,
-  `otherRecommendedActions` varchar(255) DEFAULT NULL,
+  `mitigatingCircumstances` TEXT DEFAULT NULL,
+  `competencesToBeDeveloped` TEXT DEFAULT NULL,
+  `otherRecommendedActions` TEXT DEFAULT NULL,
   `recommendedAddtnlTrainingTime` varchar(255) DEFAULT NULL,
   `addCommentsFromPanel` TEXT DEFAULT NULL,
   PRIMARY KEY (`id`)
