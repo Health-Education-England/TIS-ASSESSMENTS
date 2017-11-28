@@ -53,7 +53,7 @@ public class Assessment implements Serializable {
   private LocalDate endDate;
 
   @Column(name = "programmeNumber")
-  private Long programmeNumber;
+  private String programmeNumber;
 
   @Column(name = "programmeName")
   private String programmeName;
@@ -162,15 +162,15 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public Long getProgrammeNumber() {
+  public String getProgrammeNumber() {
     return programmeNumber;
   }
 
-  public void setProgrammeNumber(Long programmeNumber) {
+  public void setProgrammeNumber(String programmeNumber) {
     this.programmeNumber = programmeNumber;
   }
 
-  public Assessment programmeNumber(Long programmeNumber) {
+  public Assessment programmeNumber(String programmeNumber) {
     this.programmeNumber = programmeNumber;
     return this;
   }

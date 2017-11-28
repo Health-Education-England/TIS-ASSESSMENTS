@@ -62,8 +62,8 @@ public class AssessmentResourceIntTest {
   private static final LocalDate DEFAULT_CURRICULUM_END_DATE = LocalDate.ofEpochDay(0L);
   private static final LocalDate UPDATED_CURRICULUM_END_DATE = LocalDate.now();
 
-  private static final Long DEFAULT_CURRICULUM_SPECIALTY_ID = 1L;
-  private static final Long UPDATED_CURRICULUM_SPECIALTY_ID = 2L;
+  private static final String DEFAULT_CURRICULUM_SPECIALTY_ID = "11111";
+  private static final String UPDATED_CURRICULUM_SPECIALTY_ID = "22222";
 
   private static final String DEFAULT_CURRICULUM_SPECIALTY = "AAAAAAAAAA";
   private static final String UPDATED_CURRICULUM_SPECIALTY = "BBBBBBBBBB";
@@ -116,8 +116,8 @@ public class AssessmentResourceIntTest {
   private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
   private static final LocalDate UPDATED_END_DATE = LocalDate.now();
 
-  private static final long DEFAULT_PROGRAMME_NUMBER = 12345L;
-  private static final long UPDATED_PROGRAMME_NUMBER = 67890L;
+  private static final String DEFAULT_PROGRAMME_NUMBER = "12345";
+  private static final String UPDATED_PROGRAMME_NUMBER = "67890";
 
   private static final String DEFAULT_PROGRAMME_NAME = "programmeName-AAAAA";
   private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
@@ -308,14 +308,14 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
         .andExpect(jsonPath("$.[*].endDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_END_DATE))))
-        .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber().intValue())))
+        .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber())))
         .andExpect(jsonPath("$.[*].programmeName").value(hasItem(assessment.getProgrammeName())))
         .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
         .andExpect(jsonPath("$.[*].detail.curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
         .andExpect(jsonPath("$.[*].detail.curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
         .andExpect(jsonPath("$.[*].detail.curriculumStartDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE))))
         .andExpect(jsonPath("$.[*].detail.curriculumEndDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE))))
-        .andExpect(jsonPath("$.[*].detail.curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue())))
+        .andExpect(jsonPath("$.[*].detail.curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID)))
         .andExpect(jsonPath("$.[*].detail.curriculumSpecialty").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY.toString())))
         .andExpect(jsonPath("$.[*].detail.curriculumSubType").value(hasItem(DEFAULT_CURRICULUM_SUB_TYPE.toString())))
         .andExpect(jsonPath("$.[*].detail.membershipType").value(hasItem(DEFAULT_MEMBERSHIP_TYPE.toString())))
@@ -348,14 +348,14 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
         .andExpect(jsonPath("$.startDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
         .andExpect(jsonPath("$.endDate").value(TestUtil.sameDate(DEFAULT_END_DATE)))
-        .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber().intValue()))
+        .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
         .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
         .andExpect(jsonPath("$.detail.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
         .andExpect(jsonPath("$.detail.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
         .andExpect(jsonPath("$.detail.curriculumStartDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
         .andExpect(jsonPath("$.detail.curriculumEndDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
-        .andExpect(jsonPath("$.detail.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID.intValue()))
+        .andExpect(jsonPath("$.detail.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID))
         .andExpect(jsonPath("$.detail.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
         .andExpect(jsonPath("$.detail.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
         .andExpect(jsonPath("$.detail.membershipType").value(DEFAULT_MEMBERSHIP_TYPE.toString()))

@@ -35,7 +35,7 @@ public class OutcomeDTO implements Serializable {
 
   private Boolean externalTrainer;
 
-  private Long nextRotationGradeId;
+  private String nextRotationGradeId;
 
   private String nextRotationGradeName;
 
@@ -193,15 +193,15 @@ public class OutcomeDTO implements Serializable {
     return this;
   }
 
-  public Long getNextRotationGradeId() {
+  public String getNextRotationGradeId() {
     return nextRotationGradeId;
   }
 
-  public void setNextRotationGradeId(Long nextRotationGradeId) {
+  public void setNextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
   }
 
-  public OutcomeDTO nextRotationGradeId(Long nextRotationGradeId) {
+  public OutcomeDTO nextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }

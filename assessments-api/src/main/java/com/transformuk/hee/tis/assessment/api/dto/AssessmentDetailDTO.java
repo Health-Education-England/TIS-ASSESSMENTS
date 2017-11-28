@@ -36,7 +36,7 @@ public class AssessmentDetailDTO implements Serializable {
   @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate curriculumEndDate;
 
-  private Long curriculumSpecialtyId;
+  private String curriculumSpecialtyId;
 
   private String curriculumSpecialty;
 
@@ -138,15 +138,15 @@ public class AssessmentDetailDTO implements Serializable {
     return this;
   }
 
-  public Long getCurriculumSpecialtyId() {
+  public String getCurriculumSpecialtyId() {
     return curriculumSpecialtyId;
   }
 
-  public void setCurriculumSpecialtyId(Long curriculumSpecialtyId) {
+  public void setCurriculumSpecialtyId(String curriculumSpecialtyId) {
     this.curriculumSpecialtyId = curriculumSpecialtyId;
   }
 
-  public AssessmentDetailDTO curriculumSpecialtyId(Long curriculumSpecialtyId) {
+  public AssessmentDetailDTO curriculumSpecialtyId(String curriculumSpecialtyId) {
     this.curriculumSpecialtyId = curriculumSpecialtyId;
     return this;
   }

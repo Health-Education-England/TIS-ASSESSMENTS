@@ -34,7 +34,6 @@ public class AssessmentServiceImpl implements AssessmentService {
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
   private final AssessmentRepository assessmentRepository;
-
   private final AssessmentMapper assessmentMapper;
 
   public AssessmentServiceImpl(AssessmentRepository assessmentRepository, AssessmentMapper assessmentMapper) {
@@ -58,6 +57,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     assessment = assessmentRepository.save(assessment);
     return assessmentMapper.toDto(assessment);
   }
+
 
   @Override
   public List<AssessmentDTO> save(List<AssessmentDTO> assessmentDTOs) {

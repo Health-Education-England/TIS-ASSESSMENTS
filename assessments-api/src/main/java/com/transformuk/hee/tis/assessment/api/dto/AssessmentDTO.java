@@ -43,7 +43,7 @@ public class AssessmentDTO implements Serializable {
   private LocalDate endDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
-  private Long programmeNumber;
+  private String programmeNumber;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "programme name should be at least 1 character long")
@@ -142,15 +142,15 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public Long getProgrammeNumber() {
+  public String getProgrammeNumber() {
     return programmeNumber;
   }
 
-  public void setProgrammeNumber(Long programmeNumber) {
+  public void setProgrammeNumber(String programmeNumber) {
     this.programmeNumber = programmeNumber;
   }
 
-  public AssessmentDTO programmeNumber(Long programmeNumber) {
+  public AssessmentDTO programmeNumber(String programmeNumber) {
     this.programmeNumber = programmeNumber;
     return this;
   }

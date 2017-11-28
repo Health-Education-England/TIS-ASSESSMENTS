@@ -32,7 +32,7 @@ public class AssessmentDetail {
   private LocalDate curriculumEndDate;
 
   @Column(name = "curriculumSpecialtyId")
-  private Long curriculumSpecialtyId;
+  private String curriculumSpecialtyId;
 
   @Column(name = "curriculumSpecialty")
   private String curriculumSpecialty;
@@ -134,15 +134,15 @@ public class AssessmentDetail {
     return this;
   }
 
-  public Long getCurriculumSpecialtyId() {
+  public String getCurriculumSpecialtyId() {
     return curriculumSpecialtyId;
   }
 
-  public void setCurriculumSpecialtyId(Long curriculumSpecialtyId) {
+  public void setCurriculumSpecialtyId(String curriculumSpecialtyId) {
     this.curriculumSpecialtyId = curriculumSpecialtyId;
   }
 
-  public AssessmentDetail curriculumSpecialtyId(Long curriculumSpecialtyId) {
+  public AssessmentDetail curriculumSpecialtyId(String curriculumSpecialtyId) {
     this.curriculumSpecialtyId = curriculumSpecialtyId;
     return this;
   }
