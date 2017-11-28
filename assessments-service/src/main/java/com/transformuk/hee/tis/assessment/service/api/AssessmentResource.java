@@ -7,9 +7,9 @@ import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.ColumnFilterUtil;
-import com.transformuk.hee.tis.assessment.service.exception.BadRequestAlertException;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
 import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
+import com.transformuk.hee.tis.assessment.service.exception.BadRequestAlertException;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -28,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -121,7 +120,7 @@ public class AssessmentResource {
   /**
    * POST  /:traineeId/assessments : Create a new assessment.
    *
-   * @param traineeId the trainee Id to link the new assessment with
+   * @param traineeId     the trainee Id to link the new assessment with
    * @param assessmentDTO the assessmentDTO to create
    * @return the ResponseEntity with status 201 (Created) and with body the new assessmentDTO, or with status 400 (Bad Request) if the assessment has already an ID
    * @throws URISyntaxException if the Location URI syntax is incorrect
@@ -129,7 +128,7 @@ public class AssessmentResource {
   @PostMapping("/{traineeId}/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@PathVariable String traineeId, @RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO) throws URISyntaxException {
+  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO, @PathVariable String traineeId) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
       throw new BadRequestAlertException("A new assessment cannot already have an ID", ENTITY_NAME, "idexists");
@@ -143,7 +142,7 @@ public class AssessmentResource {
   /**
    * PUT  /assessments : Updates an existing assessment.
    *
-   * @param traineeId the trainee Id to link the new assessment with
+   * @param traineeId     the trainee Id to link the new assessment with
    * @param assessmentDTO the assessmentDTO to update
    * @return the ResponseEntity with status 200 (OK) and with body the updated assessmentDTO,
    * or with status 400 (Bad Request) if the assessmentDTO is not valid,
@@ -153,10 +152,11 @@ public class AssessmentResource {
   @PutMapping("/{traineeId}/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@PathVariable String traineeId, @RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO) throws URISyntaxException {
+  public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO,
+                                                               @PathVariable String traineeId) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
-      return createTraineeAssessment(traineeId, assessmentDTO);
+      return createTraineeAssessment(assessmentDTO, traineeId);
     }
     AssessmentDTO result = assessmentService.save(assessmentDTO);
     return ResponseEntity.ok()
@@ -165,49 +165,66 @@ public class AssessmentResource {
   }
 
   /**
-   * GET  /:traineeId/assessments/:id : get the an assessment thats linked to a trainee.
+   * GET  /:traineeId/assessments/:assessmentId : get the an assessment thats linked to a trainee.
    *
-   * @param traineeId the id of the trainee
-   * @param id the id of the assessmentDTO to retrieve
+   * @param traineeId    the assessmentId of the trainee
+   * @param assessmentId the assessmentId of the assessmentDTO to retrieve
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
-  @GetMapping("/{traineeId}/assessments/{id}")
+  @GetMapping("/{traineeId}/assessments/{assessmentId}")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDTO> getTraineeAssessment(@PathVariable Long traineeId, @PathVariable Long id) {
-    log.debug("REST request to get Assessment : {}", id);
-    AssessmentDTO assessmentDTO = assessmentService.findOne(id);
+  public ResponseEntity<AssessmentDTO> getTraineeAssessment(@PathVariable String traineeId, @PathVariable Long assessmentId) {
+    log.debug("REST request to get Assessment : {}", assessmentId);
+    Optional<AssessmentDTO> assessmentDTO = assessmentService.findTraineeAssessment(traineeId, assessmentId);
+    return ResponseUtil.wrapOrNotFound(assessmentDTO);
+  }
+
+  /**
+   * POST  /:traineeId/assessments/:assessmentId : get the an assessment thats linked to a trainee.
+   *
+   * @param traineeId     the id of the trainee
+   * @param assessmentId  the id of the assessmentDTO to retrieve
+   * @param assessmentDTO the payload of the assessment to create
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   */
+  @PostMapping("/{traineeId}/assessments/{assessmentId}")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO,
+                                                               @PathVariable String traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
+    if (!StringUtils.equalsIgnoreCase(assessmentDTO.getTraineeId(), traineeId) || !assessmentId.equals(assessmentDTO.getId())) {
+      throw new BadRequestAlertException("Trainee Id or assessment Id do not match the payload Ids", ENTITY_NAME, "idexists");
+    }
+
+    return createTraineeAssessment(assessmentDTO, traineeId);
+  }
+
+  /**
+   * PUT  /:traineeId/assessments/:assessmentId : get the an assessment thats linked to a trainee.
+   *
+   * @param traineeId     the assessmentId of the trainee
+   * @param assessmentId  the assessmentId of the assessmentDTO to retrieve
+   * @param assessmentDTO the payload of the assessmentDTO to update
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   */
+  @PutMapping("/{traineeId}/assessments/{assessmentId}")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO,
+                                                               @PathVariable String traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
+    if (!StringUtils.equalsIgnoreCase(assessmentDTO.getTraineeId(), traineeId) || !assessmentId.equals(assessmentDTO.getId())) {
+      throw new BadRequestAlertException("Trainee Id or assessment Id do not match the payload Ids", ENTITY_NAME, "idexists");
+    }
+    return updateTraineeAssessment(assessmentDTO, traineeId);
+  }
+
+  //Kept to allow compatability with audit service
+  private ResponseEntity<AssessmentDTO> getAssessment(@PathVariable Long assessmentId) {
+    log.debug("REST request to get Assessment : {}", assessmentId);
+    AssessmentDTO assessmentDTO = assessmentService.findOne(assessmentId);
     return ResponseUtil.wrapOrNotFound(Optional.ofNullable(assessmentDTO));
   }
-
-  /**
-   * POST  /:traineeId/assessments/:id : get the an assessment thats linked to a trainee.
-   *
-   * @param traineeId the id of the trainee
-   * @param id the id of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
-   */
-  @PostMapping("/{traineeId}/assessments/{id}")
-  @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@PathVariable Long traineeId, @PathVariable Long id) {
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(null));
-  }
-
-  /**
-   * PUT  /:traineeId/assessments/:id : get the an assessment thats linked to a trainee.
-   *
-   * @param traineeId the id of the trainee
-   * @param id the id of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
-   */
-  @PutMapping("/{traineeId}/assessments/{id}")
-  @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@PathVariable Long traineeId, @PathVariable Long id) {
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(null));
-  }
-
 
 
   // BULK ENDPOINTS START

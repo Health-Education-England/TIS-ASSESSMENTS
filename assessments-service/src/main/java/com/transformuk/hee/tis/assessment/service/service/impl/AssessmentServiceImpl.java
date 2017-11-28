@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
@@ -134,8 +135,10 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-  public AssessmentDTO findTraineeAssessment(Long traineeId, Long assessmentId) {
-    return null;
+  public Optional<AssessmentDTO> findTraineeAssessment(String traineeId, Long assessmentId) {
+    Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
+    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
+    return Optional.ofNullable(assessmentMapper.toDto(foundAssessment));
   }
 
   @Override

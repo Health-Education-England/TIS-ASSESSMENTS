@@ -97,6 +97,11 @@ public class Assessment implements Serializable {
     this.id = id;
   }
 
+  public Assessment id(Long id) {
+    this.id = id;
+    return this;
+  }
+
   public String getTraineeId() {
     return traineeId;
   }

@@ -98,6 +98,7 @@ public class AuditingAspect {
         // if the idFieldValue is null means it's new record so don't fetch old value from db
         if (idFieldValue != null) {
           final Method method = joinPoint.getTarget().getClass().getDeclaredMethod(GET_PREFIX + entityName, new Class[]{Long.class});
+          method.setAccessible(true);
           final Object responseEntity = method.invoke(joinPoint.getTarget(), idField.get(newValue));
           oldValue = ((ResponseEntity) responseEntity).getBody();
           oldJsonNode = mapper.convertValue(oldValue, JsonNode.class);
