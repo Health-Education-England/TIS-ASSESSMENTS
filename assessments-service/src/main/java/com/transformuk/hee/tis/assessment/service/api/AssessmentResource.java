@@ -3,6 +3,7 @@ package com.transformuk.hee.tis.assessment.service.api;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
@@ -79,7 +80,7 @@ public class AssessmentResource {
   @GetMapping("/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<AssessmentDTO>> getAllAssessments(
+  public ResponseEntity<List<AssessmentListDTO>> getAllAssessments(
       @ApiParam Pageable pageable,
       @ApiParam(value = "any wildcard string to be searched")
       @RequestParam(value = "searchQuery", required = false) String searchQuery,
@@ -89,7 +90,7 @@ public class AssessmentResource {
     searchQuery = sanitize(searchQuery);
     List<Class> filterEnumList = Lists.newArrayList(EventStatus.class);
     List<ColumnFilter> columnFilters = ColumnFilterUtil.getColumnFilters(columnFilterJson, filterEnumList);
-    Page<AssessmentDTO> page;
+    Page<AssessmentListDTO> page;
     if (StringUtils.isEmpty(searchQuery) && StringUtils.isEmpty(columnFilterJson)) {
       page = assessmentService.findAll(pageable);
     } else {

@@ -36,7 +36,7 @@ public class AssessmentDTO implements Serializable {
 
   @NotNull(groups = {Create.class, Update.class}, message = "start date cannot be null")
   @JsonFormat(pattern = "dd/MM/yyyy")
-  private LocalDate startDate;
+  private LocalDate reviewDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "end date cannot be null")
   @JsonFormat(pattern = "dd/MM/yyyy")
@@ -116,16 +116,16 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public LocalDate getStartDate() {
-    return startDate;
+  public LocalDate getReviewDate() {
+    return reviewDate;
   }
 
-  public void setStartDate(LocalDate startDate) {
-    this.startDate = startDate;
+  public void setReviewDate(LocalDate reviewDate) {
+    this.reviewDate = reviewDate;
   }
 
   public AssessmentDTO startDate(LocalDate startDate) {
-    this.startDate = startDate;
+    this.reviewDate = startDate;
     return this;
   }
 
@@ -287,7 +287,7 @@ public class AssessmentDTO implements Serializable {
         ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
-        ", startDate='" + getStartDate() + "'" +
+        ", reviewDate='" + getReviewDate() + "'" +
         ", endDate='" + getEndDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +

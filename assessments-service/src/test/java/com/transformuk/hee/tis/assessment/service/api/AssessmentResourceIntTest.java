@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -125,6 +126,7 @@ public class AssessmentResourceIntTest {
   private static final AssessmentType DEFAULT_ASSESSMENT_TYPE = AssessmentType.ARCP;
   private static final String DEFAULT_INTREPID_ID = "1234567";
 
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
   @Autowired
   private AssessmentRepository assessmentRepository;
@@ -259,7 +261,7 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getTraineeId()).isEqualTo(DEFAULT_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-    assertThat(testAssessment.getStartDate()).isEqualTo(DEFAULT_START_DATE);
+    assertThat(testAssessment.getReviewDate()).isEqualTo(DEFAULT_START_DATE);
     assertThat(testAssessment.getEndDate()).isEqualTo(DEFAULT_END_DATE);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
@@ -306,28 +308,11 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
-        .andExpect(jsonPath("$.[*].startDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
-        .andExpect(jsonPath("$.[*].endDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_END_DATE))))
-        .andExpect(jsonPath("$.[*].programmeNumber").value(hasItem(assessment.getProgrammeNumber())))
-        .andExpect(jsonPath("$.[*].programmeName").value(hasItem(assessment.getProgrammeName())))
-        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
-        .andExpect(jsonPath("$.[*].detail.curriculumId").value(hasItem(DEFAULT_CURRICULUM_ID.intValue())))
-        .andExpect(jsonPath("$.[*].detail.curriculumName").value(hasItem(DEFAULT_CURRICULUM_NAME.toString())))
-        .andExpect(jsonPath("$.[*].detail.curriculumStartDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE))))
-        .andExpect(jsonPath("$.[*].detail.curriculumEndDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE))))
-        .andExpect(jsonPath("$.[*].detail.curriculumSpecialtyId").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY_ID)))
-        .andExpect(jsonPath("$.[*].detail.curriculumSpecialty").value(hasItem(DEFAULT_CURRICULUM_SPECIALTY.toString())))
-        .andExpect(jsonPath("$.[*].detail.curriculumSubType").value(hasItem(DEFAULT_CURRICULUM_SUB_TYPE.toString())))
-        .andExpect(jsonPath("$.[*].detail.membershipType").value(hasItem(DEFAULT_MEMBERSHIP_TYPE.toString())))
-        .andExpect(jsonPath("$.[*].detail.gradeAbbreviation").value(hasItem(DEFAULT_GRADE_ABBREVIATION.toString())))
-        .andExpect(jsonPath("$.[*].detail.gradeName").value(hasItem(DEFAULT_GRADE_NAME.toString())))
-        .andExpect(jsonPath("$.[*].detail.periodCoveredFrom").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM))))
-        .andExpect(jsonPath("$.[*].detail.periodCoveredTo").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO))))
-        .andExpect(jsonPath("$.[*].detail.portfolioReviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE))))
-        .andExpect(jsonPath("$.[*].detail.monthsWTEDuringPeriod").value(hasItem(DEFAULT_MONTHS_WTE_DURING_PERIOD)))
-        .andExpect(jsonPath("$.[*].detail.monthsCountedToTraining").value(hasItem(DEFAULT_MONTHS_COUNTED_TO_TRAINING)))
-        .andExpect(jsonPath("$.[*].detail.traineeNTN").value(hasItem(DEFAULT_TRAINEE_NTN.toString())))
-        .andExpect(jsonPath("$.[*].detail.pya").value(hasItem(DEFAULT_PYA.toString())));
+        .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
+        .andExpect(jsonPath("$.[*].assessmentType").value(hasItem(assessment.getType().toString())))
+        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
+        .andExpect(jsonPath("$.[*].periodCoveredTo").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
+        .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(assessment.getDetail().getCurriculumName())));
   }
 
   @Test
@@ -346,7 +331,7 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.traineeId").value(assessment.getTraineeId()))
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
-        .andExpect(jsonPath("$.startDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
+        .andExpect(jsonPath("$.reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
         .andExpect(jsonPath("$.endDate").value(TestUtil.sameDate(DEFAULT_END_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
@@ -431,7 +416,7 @@ public class AssessmentResourceIntTest {
 //    assertThat(testAssessment.getTraineeId()).isEqualTo(UPDATED_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-    assertThat(testAssessment.getStartDate()).isEqualTo(UPDATED_START_DATE);
+    assertThat(testAssessment.getReviewDate()).isEqualTo(UPDATED_START_DATE);
     assertThat(testAssessment.getEndDate()).isEqualTo(UPDATED_END_DATE);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);

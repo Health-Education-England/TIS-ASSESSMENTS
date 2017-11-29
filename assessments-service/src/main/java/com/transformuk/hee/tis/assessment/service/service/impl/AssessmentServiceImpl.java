@@ -1,10 +1,12 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,10 +38,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private final AssessmentRepository assessmentRepository;
   private final AssessmentMapper assessmentMapper;
+  private final AssessmentListMapper assessmentListMapper;
 
-  public AssessmentServiceImpl(AssessmentRepository assessmentRepository, AssessmentMapper assessmentMapper) {
+  public AssessmentServiceImpl(AssessmentRepository assessmentRepository, AssessmentMapper assessmentMapper,
+                               AssessmentListMapper assessmentListMapper) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentMapper = assessmentMapper;
+    this.assessmentListMapper = assessmentListMapper;
   }
 
   /**
@@ -76,10 +81,10 @@ public class AssessmentServiceImpl implements AssessmentService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentDTO> findAll(Pageable pageable) {
+  public Page<AssessmentListDTO> findAll(Pageable pageable) {
     log.debug("Request to get all Assessments");
     return assessmentRepository.findAll(pageable)
-        .map(assessmentMapper::toDto);
+        .map(assessmentListMapper::toDto);
   }
 
   /**
@@ -108,7 +113,7 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-  public Page<AssessmentDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable) {
+  public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable) {
     List<Specification<Assessment>> specs = new ArrayList<>();
     //add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
@@ -131,7 +136,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
     Page<Assessment> result = assessmentRepository.findAll(fullSpec, pageable);
 
-    return result.map(person -> assessmentMapper.toDto(person));
+    return result.map(assessmentListMapper::toDto);
   }
 
   @Override

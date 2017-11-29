@@ -46,8 +46,8 @@ public class Assessment implements Serializable {
   @Column(name = "lastName")
   private String lastName;
 
-  @Column(name = "startDate")
-  private LocalDate startDate;
+  @Column(name = "reviewDate")
+  private LocalDate reviewDate;
 
   @Column(name = "endDate")
   private LocalDate endDate;
@@ -141,16 +141,16 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public LocalDate getStartDate() {
-    return startDate;
+  public LocalDate getReviewDate() {
+    return reviewDate;
   }
 
-  public void setStartDate(LocalDate startDate) {
-    this.startDate = startDate;
+  public void setReviewDate(LocalDate reviewDate) {
+    this.reviewDate = reviewDate;
   }
 
   public Assessment startDate(LocalDate startDate) {
-    this.startDate = startDate;
+    this.reviewDate = startDate;
     return this;
   }
 
@@ -312,7 +312,7 @@ public class Assessment implements Serializable {
         ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
-        ", startDate='" + getStartDate() + "'" +
+        ", reviewDate='" + getReviewDate() + "'" +
         ", endDate='" + getEndDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +

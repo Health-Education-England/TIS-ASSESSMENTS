@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.service;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public interface AssessmentService {
    * @param pageable the pagination information
    * @return the list of entities
    */
-  Page<AssessmentDTO> findAll(Pageable pageable);
+  Page<AssessmentListDTO> findAll(Pageable pageable);
 
   /**
    * Get the "id" assessment.
@@ -73,7 +74,7 @@ public interface AssessmentService {
    */
   void delete(Long id);
 
-  Page<AssessmentDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
+  Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
 
   Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page);
 }
