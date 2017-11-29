@@ -2,6 +2,7 @@ package com.transformuk.hee.tis.assessment.service.service;
 
 
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
 
 import java.util.List;
 
@@ -17,6 +18,15 @@ public interface OutcomeService {
    * @return the persisted entity
    */
   OutcomeDTO save(OutcomeDTO outcomeDTO);
+
+  /**
+   * Save a outcome and link it to the assessment, do not update, always create a new outcome.
+   *
+   * @param assessment the assessment to link the outcome to
+   * @param outcomeDTO the entity to save
+   * @return the persisted entity
+   */
+  OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO);
 
   /**
    * Save a collection outcomes.

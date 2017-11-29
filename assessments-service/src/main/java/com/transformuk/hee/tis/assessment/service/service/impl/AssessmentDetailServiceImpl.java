@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
@@ -10,8 +9,11 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailServic
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class AssessmentDetailServiceImpl implements AssessmentDetailService {
@@ -31,33 +33,39 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   /**
    * Get one assessment detail by assessment id.
    *
-   * @param id the id of the entity
+   * @param assessmentId the id of the assessment entity
    * @return the entity
    */
   @Override
   @Transactional(readOnly = true)
-  public AssessmentDetailDTO findOne(Long id) {
-    log.debug("Request to get Assessment : {}", id);
-    Assessment assessment = assessmentRepository.findOne(id);
-    return assessmentDetailMapper.toDto(assessment.getDetail());
+  public Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId) {
+    Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
+    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
+    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
+    return Optional.ofNullable(assessmentDetailDTO);
   }
 
   /**
    * Save an assessment detail.
    *
-   * @param assessmentId the id of the assessment to link the details to
+   * @param assessment          the assessment to link the details to
    * @param assessmentDetailDTO the entity to save
    * @return the persisted entity
    */
   @Override
-  public AssessmentDetailDTO save(Long assessmentId, AssessmentDetailDTO assessmentDetailDTO) {
-
-    Assessment assessment = assessmentRepository.findOne(assessmentId);
-
+  public AssessmentDetailDTO save(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
     AssessmentDetail assessmentDetail = assessmentDetailMapper.toEntity(assessmentDetailDTO);
     assessmentDetail = assessmentDetailRepository.save(assessmentDetail);
     assessment.setDetail(assessmentDetail);
     assessmentRepository.save(assessment);
+    return assessmentDetailMapper.toDto(assessmentDetail);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public AssessmentDetailDTO findOne(Long assessmentDetailId) {
+    log.debug("Request to get Assessment : {}", assessmentDetailId);
+    AssessmentDetail assessmentDetail = assessmentDetailRepository.findOne(assessmentDetailId);
     return assessmentDetailMapper.toDto(assessmentDetail);
   }
 }

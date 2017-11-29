@@ -135,10 +135,16 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-  public Optional<AssessmentDTO> findTraineeAssessment(String traineeId, Long assessmentId) {
+  public Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId) {
+    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+    return Optional.ofNullable(assessmentMapper.toDto(traineeAssessment.orElse(null)));
+  }
+
+  @Override
+  public Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId) {
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    return Optional.ofNullable(assessmentMapper.toDto(foundAssessment));
+    return Optional.ofNullable(foundAssessment);
   }
 
   @Override

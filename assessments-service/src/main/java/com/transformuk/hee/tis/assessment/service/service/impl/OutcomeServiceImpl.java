@@ -1,8 +1,13 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.collect.Lists;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.repository.OutcomeRepository;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
 import org.slf4j.Logger;
@@ -10,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -24,12 +31,17 @@ public class OutcomeServiceImpl implements OutcomeService {
   private final Logger log = LoggerFactory.getLogger(OutcomeServiceImpl.class);
 
   private final OutcomeRepository outcomeRepository;
-
   private final OutcomeMapper outcomeMapper;
+  private final AssessmentService assessmentService;
+  private final AssessmentRepository assessmentRepository;
 
-  public OutcomeServiceImpl(OutcomeRepository outcomeRepository, OutcomeMapper outcomeMapper) {
+
+  public OutcomeServiceImpl(OutcomeRepository outcomeRepository, OutcomeMapper outcomeMapper,
+                            AssessmentService assessmentService, AssessmentRepository assessmentRepository) {
     this.outcomeRepository = outcomeRepository;
     this.outcomeMapper = outcomeMapper;
+    this.assessmentService = assessmentService;
+    this.assessmentRepository = assessmentRepository;
   }
 
   /**
@@ -43,6 +55,17 @@ public class OutcomeServiceImpl implements OutcomeService {
     log.debug("Request to save Outcome : {}", outcomeDTO);
     Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
     outcome = outcomeRepository.save(outcome);
+    return outcomeMapper.toDto(outcome);
+  }
+
+  @Override
+  public OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO) {
+    Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
+    outcome = outcomeRepository.save(outcome);
+    List<Outcome> assessmentOutcomes = Lists.newArrayList(assessment.getOutcome());
+    assessmentOutcomes.add(outcome);
+    assessment.setOutcome(assessmentOutcomes);
+    assessmentRepository.save(assessment);
     return outcomeMapper.toDto(outcome);
   }
 

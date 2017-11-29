@@ -8,6 +8,7 @@ import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
 import com.transformuk.hee.tis.assessment.service.repository.OutcomeRepository;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
 import org.junit.Before;
@@ -99,6 +100,9 @@ public class OutcomeResourceIntTest {
   private OutcomeService outcomeService;
 
   @Autowired
+  private AssessmentService assessmentService;
+
+  @Autowired
   private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
   @Autowired
@@ -142,7 +146,7 @@ public class OutcomeResourceIntTest {
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    final OutcomeResource outcomeResource = new OutcomeResource(outcomeService);
+    final OutcomeResource outcomeResource = new OutcomeResource(outcomeService, assessmentService);
     this.restOutcomeMockMvc = MockMvcBuilders.standaloneSetup(outcomeResource)
         .setCustomArgumentResolvers(pageableArgumentResolver)
         .setControllerAdvice(exceptionTranslator)
@@ -252,7 +256,7 @@ public class OutcomeResourceIntTest {
 //    int databaseSizeBeforeUpdate = outcomeRepository.findAll().size();
 //
 //    // Update the outcome
-//    Outcome updatedOutcome = outcomeRepository.findOne(outcome.getId());
+//    Outcome updatedOutcome = outcomeRepository.findAssessmentDetailBy(outcome.getId());
 //    updatedOutcome
 //        .outcome(UPDATED_OUTCOME)
 //        .underAppeal(UPDATED_UNDER_APPEAL)
