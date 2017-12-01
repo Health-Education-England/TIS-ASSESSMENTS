@@ -38,10 +38,6 @@ public class AssessmentDTO implements Serializable {
   @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate reviewDate;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "end date cannot be null")
-  @JsonFormat(pattern = "dd/MM/yyyy")
-  private LocalDate endDate;
-
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
   private String programmeNumber;
 
@@ -52,7 +48,7 @@ public class AssessmentDTO implements Serializable {
   private EventStatus status;
 
   @NotNull(groups = {Create.class, Update.class}, message = "type cannot be null")
-  private AssessmentType type;
+  private String type;
 
   private String intrepidId;
 
@@ -129,19 +125,6 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public LocalDate getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(LocalDate endDate) {
-    this.endDate = endDate;
-  }
-
-  public AssessmentDTO endDate(LocalDate endDate) {
-    this.endDate = endDate;
-    return this;
-  }
-
   public String getProgrammeNumber() {
     return programmeNumber;
   }
@@ -181,15 +164,15 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public AssessmentType getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(AssessmentType type) {
+  public void setType(String type) {
     this.type = type;
   }
 
-  public AssessmentDTO type(AssessmentType type) {
+  public AssessmentDTO type(String type) {
     this.type = type;
     return this;
   }
@@ -288,7 +271,6 @@ public class AssessmentDTO implements Serializable {
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
-        ", endDate='" + getEndDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
         ", status='" + getStatus() + "'" +

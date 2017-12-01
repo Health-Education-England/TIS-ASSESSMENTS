@@ -28,13 +28,18 @@ public enum AssessmentType {
   SUPERVISION("Supervision"),
   TAB("TAB");
 
-  private String label;
+  private String name;
 
-  AssessmentType(String label) {
-    this.label = label;
+  AssessmentType(String name) {
+    this.name = name;
   }
 
-  public String getLabel(){
-    return this.label;
+  public String getName(){
+    return this.name;
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

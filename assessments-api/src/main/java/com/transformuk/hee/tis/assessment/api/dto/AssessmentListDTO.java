@@ -8,7 +8,7 @@ public class AssessmentListDTO {
 
   private Long id;
 
-  private AssessmentType assessmentType;
+  private String assessmentType;
 
   @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate reviewDate;
@@ -38,11 +38,11 @@ public class AssessmentListDTO {
     this.id = id;
   }
 
-  public AssessmentType getAssessmentType() {
+  public String getAssessmentType() {
     return assessmentType;
   }
 
-  public void setAssessmentType(AssessmentType assessmentType) {
+  public void setAssessmentType(String assessmentType) {
     this.assessmentType = assessmentType;
   }
 

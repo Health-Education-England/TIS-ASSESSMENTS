@@ -123,7 +123,7 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PROGRAMME_NAME = "programmeName-AAAAA";
   private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
 
-  private static final AssessmentType DEFAULT_ASSESSMENT_TYPE = AssessmentType.ARCP;
+  private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
 
   private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -186,8 +186,7 @@ public class AssessmentResourceIntTest {
         .traineeId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
-        .startDate(DEFAULT_START_DATE)
-        .endDate(DEFAULT_END_DATE)
+        .reviewDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
         .type(DEFAULT_ASSESSMENT_TYPE)
@@ -221,7 +220,6 @@ public class AssessmentResourceIntTest {
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
         .startDate(DEFAULT_START_DATE)
-        .endDate(DEFAULT_END_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
         .type(DEFAULT_ASSESSMENT_TYPE)
@@ -262,7 +260,6 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
     assertThat(testAssessment.getReviewDate()).isEqualTo(DEFAULT_START_DATE);
-    assertThat(testAssessment.getEndDate()).isEqualTo(DEFAULT_END_DATE);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
     assertThat(testAssessment.getType()).isEqualTo(DEFAULT_ASSESSMENT_TYPE);
@@ -378,8 +375,7 @@ public class AssessmentResourceIntTest {
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
         .lastName(UPDATED_LAST_NAME)
-        .startDate(UPDATED_START_DATE)
-        .endDate(UPDATED_END_DATE)
+        .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
         .programmeName(UPDATED_PROGRAMME_NAME);
 
@@ -417,7 +413,6 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
     assertThat(testAssessment.getReviewDate()).isEqualTo(UPDATED_START_DATE);
-    assertThat(testAssessment.getEndDate()).isEqualTo(UPDATED_END_DATE);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
     assertThat(testAssessment.getDetail()).isNull();

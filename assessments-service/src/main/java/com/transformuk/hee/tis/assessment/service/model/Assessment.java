@@ -49,9 +49,6 @@ public class Assessment implements Serializable {
   @Column(name = "reviewDate")
   private LocalDate reviewDate;
 
-  @Column(name = "endDate")
-  private LocalDate endDate;
-
   @Column(name = "programmeNumber")
   private String programmeNumber;
 
@@ -62,9 +59,8 @@ public class Assessment implements Serializable {
   @Column(name = "status")
   private EventStatus status;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "type")
-  private AssessmentType type;
+  private String type;
 
   @Column(name = "intrepidId")
   private String intrepidId;
@@ -149,21 +145,8 @@ public class Assessment implements Serializable {
     this.reviewDate = reviewDate;
   }
 
-  public Assessment startDate(LocalDate startDate) {
-    this.reviewDate = startDate;
-    return this;
-  }
-
-  public LocalDate getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(LocalDate endDate) {
-    this.endDate = endDate;
-  }
-
-  public Assessment endDate(LocalDate endDate) {
-    this.endDate = endDate;
+  public Assessment reviewDate(LocalDate reviewDate) {
+    this.reviewDate = reviewDate;
     return this;
   }
 
@@ -206,15 +189,15 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public AssessmentType getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(AssessmentType type) {
+  public void setType(String type) {
     this.type = type;
   }
 
-  public Assessment type(AssessmentType type) {
+  public Assessment type(String type) {
     this.type = type;
     return this;
   }
@@ -313,7 +296,6 @@ public class Assessment implements Serializable {
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
-        ", endDate='" + getEndDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
         ", status='" + getStatus() + "'" +
