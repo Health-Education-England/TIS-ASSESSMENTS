@@ -329,7 +329,6 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
         .andExpect(jsonPath("$.reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
-        .andExpect(jsonPath("$.endDate").value(TestUtil.sameDate(DEFAULT_END_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
         .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
