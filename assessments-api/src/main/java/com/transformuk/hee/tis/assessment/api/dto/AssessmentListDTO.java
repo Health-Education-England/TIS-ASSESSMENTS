@@ -29,6 +29,8 @@ public class AssessmentListDTO {
 
   private EventStatus status;
 
+  private String outcome;
+
 
   public Long getId() {
     return id;
@@ -110,6 +112,14 @@ public class AssessmentListDTO {
     this.status = status;
   }
 
+  public String getOutcome() {
+    return outcome;
+  }
+
+  public void setOutcome(String outcome) {
+    this.outcome = outcome;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -118,7 +128,8 @@ public class AssessmentListDTO {
     AssessmentListDTO that = (AssessmentListDTO) o;
 
     if (id != null ? !id.equals(that.id) : that.id != null) return false;
-    if (assessmentType != that.assessmentType) return false;
+    if (assessmentType != null ? !assessmentType.equals(that.assessmentType) : that.assessmentType != null)
+      return false;
     if (reviewDate != null ? !reviewDate.equals(that.reviewDate) : that.reviewDate != null) return false;
     if (traineeId != null ? !traineeId.equals(that.traineeId) : that.traineeId != null) return false;
     if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
@@ -129,7 +140,8 @@ public class AssessmentListDTO {
       return false;
     if (curriculumName != null ? !curriculumName.equals(that.curriculumName) : that.curriculumName != null)
       return false;
-    return status == that.status;
+    if (status != that.status) return false;
+    return outcome != null ? outcome.equals(that.outcome) : that.outcome == null;
   }
 
   @Override
@@ -144,6 +156,7 @@ public class AssessmentListDTO {
     result = 31 * result + (periodCoveredTo != null ? periodCoveredTo.hashCode() : 0);
     result = 31 * result + (curriculumName != null ? curriculumName.hashCode() : 0);
     result = 31 * result + (status != null ? status.hashCode() : 0);
+    result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
     return result;
   }
 
@@ -151,7 +164,7 @@ public class AssessmentListDTO {
   public String toString() {
     return "AssessmentListDTO{" +
         "id=" + id +
-        ", assessmentType=" + assessmentType +
+        ", assessmentType='" + assessmentType + '\'' +
         ", reviewDate=" + reviewDate +
         ", traineeId='" + traineeId + '\'' +
         ", firstName='" + firstName + '\'' +
@@ -160,6 +173,7 @@ public class AssessmentListDTO {
         ", periodCoveredTo=" + periodCoveredTo +
         ", curriculumName='" + curriculumName + '\'' +
         ", status=" + status +
+        ", outcome='" + outcome + '\'' +
         '}';
   }
 }
