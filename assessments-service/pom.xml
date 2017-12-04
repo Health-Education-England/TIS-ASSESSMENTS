@@ -131,7 +131,7 @@
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
       <artifactId>assessments-api</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.11</version>
     </dependency>
     <!-- TIS END -->
 

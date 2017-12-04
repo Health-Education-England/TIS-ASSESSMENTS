@@ -67,6 +67,8 @@ public class AssessmentDetailDTO implements Serializable {
 
   private Integer monthsCountedToTraining;
 
+  private Integer daysOutOfTraining;
+
   private String traineeNTN;
 
   private String pya;
@@ -281,6 +283,19 @@ public class AssessmentDetailDTO implements Serializable {
     return this;
   }
 
+  public Integer getDaysOutOfTraining() {
+    return daysOutOfTraining;
+  }
+
+  public void setDaysOutOfTraining(Integer daysOutOfTraining) {
+    this.daysOutOfTraining = daysOutOfTraining;
+  }
+
+  public AssessmentDetailDTO daysOutOfTraining(Integer daysOutOfTraining) {
+    this.daysOutOfTraining = daysOutOfTraining;
+    return this;
+  }
+
   public String getTraineeNTN() {
     return traineeNTN;
   }
@@ -360,6 +375,7 @@ public class AssessmentDetailDTO implements Serializable {
         ", portfolioReviewDate='" + getPortfolioReviewDate() + "'" +
         ", monthsWTEDuringPeriod='" + getMonthsWTEDuringPeriod() + "'" +
         ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
+        ", daysOutOfTraining='" + getDaysOutOfTraining() + "'" +
         ", traineeNTN='" + getTraineeNTN() + "'" +
         ", pya='" + getPya() + "'" +
         ", amendDate='" + getAmendedDate() + "'" +

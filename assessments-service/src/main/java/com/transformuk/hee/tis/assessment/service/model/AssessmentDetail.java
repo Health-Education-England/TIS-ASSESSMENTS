@@ -64,6 +64,9 @@ public class AssessmentDetail {
   @Column(name = "monthsCountedToTraining")
   private Integer monthsCountedToTraining;
 
+  @Column(name = "daysOutOfTraining")
+  private Integer daysOutOfTraining;
+
   @Column(name = "traineeNtn")
   private String traineeNTN;
 
@@ -277,6 +280,19 @@ public class AssessmentDetail {
     return this;
   }
 
+  public Integer getDaysOutOfTraining() {
+    return daysOutOfTraining;
+  }
+
+  public void setDaysOutOfTraining(Integer daysOutOfTraining) {
+    this.daysOutOfTraining = daysOutOfTraining;
+  }
+
+  public AssessmentDetail daysOutOfTraining(Integer daysOutOfTraining) {
+    this.daysOutOfTraining = daysOutOfTraining;
+    return this;
+  }
+
   public String getTraineeNTN() {
     return traineeNTN;
   }
@@ -356,6 +372,7 @@ public class AssessmentDetail {
         ", portfolioReviewDate='" + getPortfolioReviewDate() + "'" +
         ", monthsWTEDuringPeriod='" + getMonthsWTEDuringPeriod() + "'" +
         ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
+        ", daysOutOfTraining='" + getDaysOutOfTraining() + "'" +
         ", traineeNTN='" + getTraineeNTN() + "'" +
         ", pya='" + getPya() + "'" +
         ", amendedDate='" + getAmendedDate() + "'" +
