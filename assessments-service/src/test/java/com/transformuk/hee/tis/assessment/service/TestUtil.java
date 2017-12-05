@@ -155,7 +155,7 @@ public class TestUtil {
     @Override
     protected boolean matchesSafely(String item, Description mismatchDescription) {
       try {
-        if (!date.isEqual(LocalDate.parse(item, DateTimeFormatter.ofPattern("dd/MM/yyyy")))) {
+        if (!date.isEqual(LocalDate.parse(item))) {
           mismatchDescription.appendText("was ").appendValue(item);
           return false;
         }

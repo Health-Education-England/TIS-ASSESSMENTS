@@ -126,8 +126,6 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
 
-  private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
   @Autowired
   private AssessmentRepository assessmentRepository;
 
