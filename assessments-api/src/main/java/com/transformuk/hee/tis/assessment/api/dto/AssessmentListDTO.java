@@ -1,7 +1,5 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
 
 public class AssessmentListDTO {
@@ -10,7 +8,6 @@ public class AssessmentListDTO {
 
   private String assessmentType;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate reviewDate;
 
   private String traineeId;
@@ -19,10 +16,8 @@ public class AssessmentListDTO {
 
   private String lastName;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate periodCoveredFrom;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate periodCoveredTo;
 
   private String curriculumName;

@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import org.hibernate.validator.constraints.Length;
@@ -30,10 +29,8 @@ public class AssessmentDetailDTO implements Serializable {
   @Length(min = 1, groups = {Create.class, Update.class}, message = "curriculum name should be at least 1 character long")
   private String curriculumName;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate curriculumStartDate;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate curriculumEndDate;
 
   private String curriculumSpecialtyId;
@@ -53,14 +50,11 @@ public class AssessmentDetailDTO implements Serializable {
   private String gradeName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "period covered from cannot be null")
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate periodCoveredFrom;
 
   @NotNull(groups = {Create.class, Update.class}, message = "period covered to cannot be null")
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate periodCoveredTo;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate portfolioReviewDate;
 
   private Integer monthsWTEDuringPeriod;

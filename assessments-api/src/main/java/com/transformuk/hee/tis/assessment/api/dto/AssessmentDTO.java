@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import org.hibernate.validator.constraints.Length;
@@ -35,7 +34,6 @@ public class AssessmentDTO implements Serializable {
   private String lastName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "start date cannot be null")
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate reviewDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")

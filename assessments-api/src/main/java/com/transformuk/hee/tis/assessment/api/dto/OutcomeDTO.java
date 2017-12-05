@@ -1,11 +1,8 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -23,10 +20,8 @@ public class OutcomeDTO implements Serializable {
 
   private String comments;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate trainingCompletionDate;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate extendedTrainingCompletionDate;
 
   private Integer extendedTrainingTimeInMonths;
@@ -41,7 +36,6 @@ public class OutcomeDTO implements Serializable {
 
   private Boolean traineeNotifiedOfOutcome;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate nextReviewDate;
 
   private String intrepidId;
@@ -91,10 +85,6 @@ public class OutcomeDTO implements Serializable {
 
   public Boolean isUnderAppeal() {
     return underAppeal;
-  }
-
-  public void setUnderAppeal(Boolean underAppeal) {
-    this.underAppeal = underAppeal;
   }
 
   public OutcomeDTO underAppeal(Boolean underAppeal) {
@@ -171,10 +161,6 @@ public class OutcomeDTO implements Serializable {
     return tenPercentAudit;
   }
 
-  public void setTenPercentAudit(Boolean tenPercentAudit) {
-    this.tenPercentAudit = tenPercentAudit;
-  }
-
   public OutcomeDTO tenPercentAudit(Boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
     return this;
@@ -182,10 +168,6 @@ public class OutcomeDTO implements Serializable {
 
   public Boolean isExternalTrainer() {
     return externalTrainer;
-  }
-
-  public void setExternalTrainer(Boolean externalTrainer) {
-    this.externalTrainer = externalTrainer;
   }
 
   public OutcomeDTO externalTrainer(Boolean externalTrainer) {
@@ -223,10 +205,6 @@ public class OutcomeDTO implements Serializable {
     return traineeNotifiedOfOutcome;
   }
 
-  public void setTraineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
-    this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
-  }
-
   public OutcomeDTO traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
@@ -258,21 +236,36 @@ public class OutcomeDTO implements Serializable {
     return this;
   }
 
-
   public Boolean getUnderAppeal() {
     return underAppeal;
+  }
+
+  public void setUnderAppeal(Boolean underAppeal) {
+    this.underAppeal = underAppeal;
   }
 
   public Boolean getTenPercentAudit() {
     return tenPercentAudit;
   }
 
+  public void setTenPercentAudit(Boolean tenPercentAudit) {
+    this.tenPercentAudit = tenPercentAudit;
+  }
+
   public Boolean getExternalTrainer() {
     return externalTrainer;
   }
 
+  public void setExternalTrainer(Boolean externalTrainer) {
+    this.externalTrainer = externalTrainer;
+  }
+
   public Boolean getTraineeNotifiedOfOutcome() {
     return traineeNotifiedOfOutcome;
+  }
+
+  public void setTraineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+    this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 
   public String getAcademicCurriculumAssessed() {

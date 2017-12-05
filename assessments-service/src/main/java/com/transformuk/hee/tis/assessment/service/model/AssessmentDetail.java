@@ -76,6 +76,9 @@ public class AssessmentDetail {
   @Version
   private LocalDateTime amendedDate;
 
+  @Column(name = "intrepidId")
+  private String intrepidId;
+
   public Long getId() {
     return id;
   }
@@ -333,6 +336,19 @@ public class AssessmentDetail {
     return this;
   }
 
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public AssessmentDetail intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -355,27 +371,28 @@ public class AssessmentDetail {
 
   @Override
   public String toString() {
-    return "Assessment{" +
-        "id=" + getId() +
-        ", curriculumId='" + getCurriculumId() + "'" +
-        ", curriculumName='" + getCurriculumName() + "'" +
-        ", curriculumStartDate='" + getCurriculumStartDate() + "'" +
-        ", curriculumEndDate='" + getCurriculumEndDate() + "'" +
-        ", curriculumSpecialtyId='" + getCurriculumSpecialtyId() + "'" +
-        ", curriculumSpecialty='" + getCurriculumSpecialty() + "'" +
-        ", curriculumSubType='" + getCurriculumSubType() + "'" +
-        ", membershipType='" + getMembershipType() + "'" +
-        ", gradeAbbreviation='" + getGradeAbbreviation() + "'" +
-        ", gradeName='" + getGradeName() + "'" +
-        ", periodCoveredFrom='" + getPeriodCoveredFrom() + "'" +
-        ", periodCoveredTo='" + getPeriodCoveredTo() + "'" +
-        ", portfolioReviewDate='" + getPortfolioReviewDate() + "'" +
-        ", monthsWTEDuringPeriod='" + getMonthsWTEDuringPeriod() + "'" +
-        ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
-        ", daysOutOfTraining='" + getDaysOutOfTraining() + "'" +
-        ", traineeNTN='" + getTraineeNTN() + "'" +
-        ", pya='" + getPya() + "'" +
-        ", amendedDate='" + getAmendedDate() + "'" +
-        "}";
+    return "AssessmentDetail{" +
+        "id=" + id +
+        ", curriculumId=" + curriculumId +
+        ", curriculumName='" + curriculumName + '\'' +
+        ", curriculumStartDate=" + curriculumStartDate +
+        ", curriculumEndDate=" + curriculumEndDate +
+        ", curriculumSpecialtyId='" + curriculumSpecialtyId + '\'' +
+        ", curriculumSpecialty='" + curriculumSpecialty + '\'' +
+        ", curriculumSubType='" + curriculumSubType + '\'' +
+        ", membershipType='" + membershipType + '\'' +
+        ", gradeAbbreviation='" + gradeAbbreviation + '\'' +
+        ", gradeName='" + gradeName + '\'' +
+        ", periodCoveredFrom=" + periodCoveredFrom +
+        ", periodCoveredTo=" + periodCoveredTo +
+        ", portfolioReviewDate=" + portfolioReviewDate +
+        ", monthsWTEDuringPeriod=" + monthsWTEDuringPeriod +
+        ", monthsCountedToTraining=" + monthsCountedToTraining +
+        ", daysOutOfTraining=" + daysOutOfTraining +
+        ", traineeNTN='" + traineeNTN + '\'' +
+        ", pya='" + pya + '\'' +
+        ", amendedDate=" + amendedDate +
+        ", intrepidId='" + intrepidId + '\'' +
+        '}';
   }
 }
