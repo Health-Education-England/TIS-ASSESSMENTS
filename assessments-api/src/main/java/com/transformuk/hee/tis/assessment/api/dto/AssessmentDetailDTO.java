@@ -65,7 +65,7 @@ public class AssessmentDetailDTO implements Serializable {
 
   private String traineeNTN;
 
-  private String pya;
+  private Boolean pya;
 
   private LocalDateTime amendedDate;
 
@@ -303,15 +303,15 @@ public class AssessmentDetailDTO implements Serializable {
     return this;
   }
 
-  public String getPya() {
+  public Boolean getPya() {
     return pya;
   }
 
-  public void setPya(String pya) {
+  public void setPya(Boolean pya) {
     this.pya = pya;
   }
 
-  public AssessmentDetailDTO pya(String pya) {
+  public AssessmentDetailDTO pya(Boolean pya) {
     this.pya = pya;
     return this;
   }

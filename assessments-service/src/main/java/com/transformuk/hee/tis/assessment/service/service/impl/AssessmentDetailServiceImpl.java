@@ -41,8 +41,11 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   public Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId) {
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
-    return Optional.ofNullable(assessmentDetailDTO);
+    if(foundAssessment != null) {
+      AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
+      return Optional.ofNullable(assessmentDetailDTO);
+    }
+    return Optional.empty();
   }
 
   /**

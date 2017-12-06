@@ -71,7 +71,7 @@ public class AssessmentDetail {
   private String traineeNTN;
 
   @Column(name = "pya")
-  private String pya;
+  private Boolean pya;
 
   @Version
   private LocalDateTime amendedDate;
@@ -309,15 +309,15 @@ public class AssessmentDetail {
     return this;
   }
 
-  public String getPya() {
+  public Boolean getPya() {
     return pya;
   }
 
-  public void setPya(String pya) {
+  public void setPya(Boolean pya) {
     this.pya = pya;
   }
 
-  public AssessmentDetail pya(String pya) {
+  public AssessmentDetail pya(Boolean pya) {
     this.pya = pya;
     return this;
   }
