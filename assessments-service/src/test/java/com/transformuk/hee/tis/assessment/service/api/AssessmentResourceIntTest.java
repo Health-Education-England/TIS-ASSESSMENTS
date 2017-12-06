@@ -99,8 +99,8 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_TRAINEE_NTN = "AAAAAAAAAA";
   private static final String UPDATED_TRAINEE_NTN = "BBBBBBBBBB";
 
-  private static final String DEFAULT_PYA = "AAAAAAAAAA";
-  private static final String UPDATED_PYA = "BBBBBBBBBB";
+  private static final Boolean DEFAULT_PYA = true;
+  private static final Boolean UPDATED_PYA = false;
 
   private static final String DEFAULT_PERSON_ID = "12345";
   private static final String UPDATED_PERSON_ID = "67890";
