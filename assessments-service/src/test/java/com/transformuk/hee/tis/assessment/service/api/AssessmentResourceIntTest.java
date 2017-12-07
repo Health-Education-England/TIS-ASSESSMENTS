@@ -125,6 +125,7 @@ public class AssessmentResourceIntTest {
 
   private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
+  public static final long DEFAULT_ID = 1L;
 
   @Autowired
   private AssessmentRepository assessmentRepository;
@@ -162,6 +163,7 @@ public class AssessmentResourceIntTest {
    */
   public static Assessment createEntity(EntityManager em) {
     AssessmentDetail assessmentDetail = new AssessmentDetail()
+        .id(DEFAULT_ID)
         .curriculumId(DEFAULT_CURRICULUM_ID)
         .curriculumName(DEFAULT_CURRICULUM_NAME)
         .curriculumStartDate(DEFAULT_CURRICULUM_START_DATE)
@@ -181,6 +183,7 @@ public class AssessmentResourceIntTest {
         .pya(DEFAULT_PYA);
 
     Assessment assessment = new Assessment()
+        .id(DEFAULT_ID)
         .traineeId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)

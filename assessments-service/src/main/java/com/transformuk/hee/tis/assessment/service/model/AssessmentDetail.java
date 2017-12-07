@@ -93,6 +93,12 @@ public class AssessmentDetail {
   }
 
 
+  public AssessmentDetail id(Long id) {
+    this.id = id;
+    return this;
+  }
+
+
   public Long getCurriculumId() {
     return curriculumId;
   }
