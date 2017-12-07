@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
@@ -21,7 +23,6 @@ public class Revalidation implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private Boolean knownConcerns;
@@ -29,6 +30,10 @@ public class Revalidation implements Serializable {
   private String concernSummary;
 
   private String responsibleOfficerComments;
+
+  @OneToOne
+  @JoinColumn(name = "id")
+  private Assessment assessment;
 
   @Version
   private LocalDateTime amendedDate;
@@ -85,6 +90,18 @@ public class Revalidation implements Serializable {
     return this;
   }
 
+  public Assessment getAssessment() {
+    return assessment;
+  }
+
+  public void setAssessment(Assessment assessment) {
+    this.assessment = assessment;
+  }
+
+  public Revalidation assessment(Assessment assessment) {
+    this.assessment = assessment;
+    return this;
+  }
 
   public LocalDateTime getAmendedDate() {
     return amendedDate;

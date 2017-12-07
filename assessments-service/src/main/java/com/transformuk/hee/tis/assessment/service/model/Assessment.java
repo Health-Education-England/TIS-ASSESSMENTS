@@ -67,8 +67,7 @@ public class Assessment implements Serializable {
   @Version
   private LocalDateTime amendedDate;
 
-  @OneToOne
-  @JoinColumn(name = "detailId", unique = true)
+  @OneToOne(mappedBy = "assessment")
   private AssessmentDetail detail;
 
   @OneToMany(fetch = FetchType.EAGER)
@@ -79,8 +78,7 @@ public class Assessment implements Serializable {
   )
   private List<Outcome> outcome;
 
-  @OneToOne
-  @JoinColumn(name = "revalidationId", unique = true)
+  @OneToOne(mappedBy = "assessment")
   private Revalidation revalidation;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

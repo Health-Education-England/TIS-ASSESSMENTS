@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.LocalDate;
@@ -16,7 +18,6 @@ import java.util.Objects;
 public class AssessmentDetail {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(name = "curriculumId")
@@ -78,6 +79,10 @@ public class AssessmentDetail {
 
   @Column(name = "intrepidId")
   private String intrepidId;
+
+  @OneToOne
+  @JoinColumn(name = "id")
+  private Assessment assessment;
 
   public Long getId() {
     return id;
@@ -346,6 +351,19 @@ public class AssessmentDetail {
 
   public AssessmentDetail intrepidId(String intrepidId) {
     this.intrepidId = intrepidId;
+    return this;
+  }
+
+  public Assessment getAssessment() {
+    return assessment;
+  }
+
+  public void setAssessment(Assessment assessment) {
+    this.assessment = assessment;
+  }
+
+  public AssessmentDetail assessment(Assessment assessment) {
+    this.assessment = assessment;
     return this;
   }
 

@@ -33,7 +33,7 @@ public class AssessmentDTO implements Serializable {
   @Length(min = 1, groups = {Create.class, Update.class}, message = "last name should be at least 1 character long")
   private String lastName;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "start date cannot be null")
+  @NotNull(groups = {Create.class, Update.class}, message = "review date cannot be null")
   private LocalDate reviewDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
