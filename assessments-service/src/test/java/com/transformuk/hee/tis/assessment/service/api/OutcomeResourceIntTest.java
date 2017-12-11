@@ -69,8 +69,8 @@ public class OutcomeResourceIntTest {
   private static final Boolean DEFAULT_EXTERNAL_TRAINER = false;
   private static final Boolean UPDATED_EXTERNAL_TRAINER = true;
 
-  private static final Long DEFAULT_NEXT_ROTATION_GRADE_ID = 1L;
-  private static final Long UPDATED_NEXT_ROTATION_GRADE_ID = 2L;
+  private static final String DEFAULT_NEXT_ROTATION_GRADE_ID = "AAAA";
+  private static final String UPDATED_NEXT_ROTATION_GRADE_ID = "BBBB";
 
   private static final String DEFAULT_NEXT_ROTATION_GRADE_NAME = "AAAAAAAAAA";
   private static final String UPDATED_NEXT_ROTATION_GRADE_NAME = "BBBBBBBBBB";
