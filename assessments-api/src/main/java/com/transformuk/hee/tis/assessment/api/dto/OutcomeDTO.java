@@ -16,7 +16,7 @@ public class OutcomeDTO implements Serializable {
 
   private Boolean underAppeal;
 
-  private OutcomeReason reason;
+  private String reason;
 
   private String comments;
 
@@ -92,15 +92,15 @@ public class OutcomeDTO implements Serializable {
     return this;
   }
 
-  public OutcomeReason getReason() {
+  public String getReason() {
     return reason;
   }
 
-  public void setReason(OutcomeReason reason) {
+  public void setReason(String reason) {
     this.reason = reason;
   }
 
-  public OutcomeDTO reason(OutcomeReason reason) {
+  public OutcomeDTO reason(String reason) {
     this.reason = reason;
     return this;
   }

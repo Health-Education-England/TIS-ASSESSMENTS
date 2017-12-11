@@ -2,15 +2,13 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -24,7 +22,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "Outcome")
-@EntityListeners(AuditingEntityListener.class)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Outcome implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -58,7 +56,7 @@ public class Outcome implements Serializable {
   private Boolean externalTrainer;
 
   @Column(name = "nextRotationGradeId")
-  private Long nextRotationGradeId;
+  private String nextRotationGradeId;
 
   @Column(name = "nextRotationGradeName")
   private String nextRotationGradeName;
@@ -132,10 +130,6 @@ public class Outcome implements Serializable {
   public Outcome underAppeal(Boolean underAppeal) {
     this.underAppeal = underAppeal;
     return this;
-  }
-
-  public void setUnderAppeal(Boolean underAppeal) {
-    this.underAppeal = underAppeal;
   }
 
   public String getReason() {
@@ -212,10 +206,6 @@ public class Outcome implements Serializable {
     return this;
   }
 
-  public void setTenPercentAudit(Boolean tenPercentAudit) {
-    this.tenPercentAudit = tenPercentAudit;
-  }
-
   public Boolean isExternalTrainer() {
     return externalTrainer;
   }
@@ -225,19 +215,15 @@ public class Outcome implements Serializable {
     return this;
   }
 
-  public void setExternalTrainer(Boolean externalTrainer) {
-    this.externalTrainer = externalTrainer;
-  }
-
-  public Long getNextRotationGradeId() {
+  public String getNextRotationGradeId() {
     return nextRotationGradeId;
   }
 
-  public void setNextRotationGradeId(Long nextRotationGradeId) {
+  public void setNextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
   }
 
-  public Outcome nextRotationGradeId(Long nextRotationGradeId) {
+  public Outcome nextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
@@ -262,10 +248,6 @@ public class Outcome implements Serializable {
   public Outcome traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
-  }
-
-  public void setTraineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
-    this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 
   public LocalDate getNextReviewDate() {
@@ -298,16 +280,32 @@ public class Outcome implements Serializable {
     return underAppeal;
   }
 
+  public void setUnderAppeal(Boolean underAppeal) {
+    this.underAppeal = underAppeal;
+  }
+
   public Boolean getTenPercentAudit() {
     return tenPercentAudit;
+  }
+
+  public void setTenPercentAudit(Boolean tenPercentAudit) {
+    this.tenPercentAudit = tenPercentAudit;
   }
 
   public Boolean getExternalTrainer() {
     return externalTrainer;
   }
 
+  public void setExternalTrainer(Boolean externalTrainer) {
+    this.externalTrainer = externalTrainer;
+  }
+
   public Boolean getTraineeNotifiedOfOutcome() {
     return traineeNotifiedOfOutcome;
+  }
+
+  public void setTraineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+    this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 
   public String getAcademicCurriculumAssessed() {
@@ -340,6 +338,10 @@ public class Outcome implements Serializable {
     return detailedReasons;
   }
 
+  public void setDetailedReasons(String detailedReasons) {
+    this.detailedReasons = detailedReasons;
+  }
+
   public Outcome detailedReasons(String detailedReasons) {
     this.detailedReasons = detailedReasons;
     return this;
@@ -347,6 +349,10 @@ public class Outcome implements Serializable {
 
   public String getMitigatingCircumstances() {
     return mitigatingCircumstances;
+  }
+
+  public void setMitigatingCircumstances(String mitigatingCircumstances) {
+    this.mitigatingCircumstances = mitigatingCircumstances;
   }
 
   public Outcome mitigatingCircumstances(String mitigatingCircumstances) {
@@ -404,14 +410,6 @@ public class Outcome implements Serializable {
   public Outcome additionalCommentsFromPanel(String additionalCommentsFromPanel) {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
     return this;
-  }
-
-  public void setDetailedReasons(String detailedReasons) {
-    this.detailedReasons = detailedReasons;
-  }
-
-  public void setMitigatingCircumstances(String mitigatingCircumstances) {
-    this.mitigatingCircumstances = mitigatingCircumstances;
   }
 
   public Assessment getAssessment() {

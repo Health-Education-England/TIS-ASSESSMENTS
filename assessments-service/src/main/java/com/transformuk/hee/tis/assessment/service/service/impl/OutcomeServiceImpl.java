@@ -3,18 +3,14 @@ package com.transformuk.hee.tis.assessment.service.service.impl;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
-import com.transformuk.hee.tis.assessment.service.model.OutcomeHistory;
-import com.transformuk.hee.tis.assessment.service.repository.OutcomeHistoryRepository;
 import com.transformuk.hee.tis.assessment.service.repository.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,14 +26,11 @@ public class OutcomeServiceImpl implements OutcomeService {
 
   private final OutcomeRepository outcomeRepository;
   private final OutcomeMapper outcomeMapper;
-  private final OutcomeHistoryRepository outcomeHistoryRepository;
 
 
-  public OutcomeServiceImpl(OutcomeRepository outcomeRepository, OutcomeMapper outcomeMapper,
-                            OutcomeHistoryRepository outcomeHistoryRepository) {
+  public OutcomeServiceImpl(OutcomeRepository outcomeRepository, OutcomeMapper outcomeMapper) {
     this.outcomeRepository = outcomeRepository;
     this.outcomeMapper = outcomeMapper;
-    this.outcomeHistoryRepository = outcomeHistoryRepository;
   }
 
   /**
@@ -62,26 +55,9 @@ public class OutcomeServiceImpl implements OutcomeService {
 
   @Override
   public OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO) {
-
-    OutcomeHistory outcomeHistory = createOutcomeHistory(assessment);
-    outcomeHistoryRepository.save(outcomeHistory);
     Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
     outcome = outcomeRepository.save(outcome);
     return outcomeMapper.toDto(outcome);
-  }
-
-  @Transactional(readOnly = true)
-  private OutcomeHistory createOutcomeHistory(Assessment assessment){
-    OutcomeHistory outcomeHistory = new OutcomeHistory();
-    try {
-      Outcome outcome = assessment.getOutcome();
-      BeanUtils.copyProperties(outcomeHistory, outcome);
-      outcomeHistory.setOriginalOutcomeId(outcome.getId());
-      outcome.setId(null);
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-    return outcomeHistory;
   }
 
   /**
