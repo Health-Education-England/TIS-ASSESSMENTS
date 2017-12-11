@@ -265,7 +265,7 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
     assertThat(testAssessment.getType()).isEqualTo(DEFAULT_ASSESSMENT_TYPE);
     assertThat(testAssessment.getDetail()).isNull();
-    assertThat(testAssessment.getOutcome()).containsNull();
+    assertThat(testAssessment.getOutcome()).isNull();
     assertThat(testAssessment.getRevalidation()).isNull();
   }
 

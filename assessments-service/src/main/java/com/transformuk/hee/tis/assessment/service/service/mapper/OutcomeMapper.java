@@ -1,8 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.mapper;
 
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
 import org.mapstruct.Mapper;
 

@@ -20,7 +20,15 @@ public interface OutcomeService {
   OutcomeDTO save(OutcomeDTO outcomeDTO);
 
   /**
-   * Save a outcome and link it to the assessment, do not update, always create a new outcome.
+   * create a outcome and link it to the assessment
+   *
+   * @param assessment the assessment to link the outcome to
+   * @param outcomeDTO the entity to create
+   * @return the persisted entity
+   */
+  OutcomeDTO create(Assessment assessment, OutcomeDTO outcomeDTO);  /**
+
+   * Save a outcome and link it to the assessment
    *
    * @param assessment the assessment to link the outcome to
    * @param outcomeDTO the entity to save

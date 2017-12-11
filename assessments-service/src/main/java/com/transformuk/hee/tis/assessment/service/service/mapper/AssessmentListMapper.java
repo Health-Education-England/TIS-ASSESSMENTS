@@ -23,7 +23,8 @@ public interface AssessmentListMapper extends EntityMapper<AssessmentListDTO, As
       @Mapping(source = "type", target = "assessmentType"),
       @Mapping(source = "detail.periodCoveredFrom", target = "periodCoveredFrom"),
       @Mapping(source = "detail.periodCoveredTo", target = "periodCoveredTo"),
-      @Mapping(source = "detail.curriculumName", target = "curriculumName")
+      @Mapping(source = "detail.curriculumName", target = "curriculumName"),
+      @Mapping(source = "outcome.outcome", target = "outcome")
   })
   AssessmentListDTO toDto(Assessment entity);
 
@@ -31,18 +32,4 @@ public interface AssessmentListMapper extends EntityMapper<AssessmentListDTO, As
 
   List<AssessmentListDTO> toDto(List<Assessment> entityList);
 
-  default String map(List<Outcome> outcome) {
-    if (CollectionUtils.isNotEmpty(outcome)) {
-      outcome.sort((o1, o2) -> o2.getId().compareTo(o1.getId()));
-      Outcome latestOutcome = outcome.get(0);
-      if (latestOutcome.getOutcome() != null) {
-        return latestOutcome.getOutcome().getLabel();
-      }
-    }
-    return null;
-  }
-
-  default List<Outcome> map(String outcome) {
-    return Lists.newArrayList(new Outcome().outcome(OutcomeStatus.valueOf(outcome)));
-  }
 }

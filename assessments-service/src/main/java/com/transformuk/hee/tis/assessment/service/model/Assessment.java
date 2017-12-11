@@ -70,13 +70,8 @@ public class Assessment implements Serializable {
   @OneToOne(mappedBy = "assessment")
   private AssessmentDetail detail;
 
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "AssessmentOutcome",
-      joinColumns = @JoinColumn(name = "assessmentId", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "outcomeId", referencedColumnName = "id")
-  )
-  private List<Outcome> outcome;
+  @OneToOne(mappedBy = "assessment")
+  private Outcome outcome;
 
   @OneToOne(mappedBy = "assessment")
   private Revalidation revalidation;
@@ -226,15 +221,15 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public List<Outcome> getOutcome() {
+  public Outcome getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(List<Outcome> outcome) {
+  public void setOutcome(Outcome outcome) {
     this.outcome = outcome;
   }
 
-  public Assessment outcome(List<Outcome> outcome) {
+  public Assessment outcome(Outcome outcome) {
     this.outcome = outcome;
     return this;
   }

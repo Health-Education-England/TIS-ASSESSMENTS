@@ -2,8 +2,10 @@ package com.transformuk.hee.tis.assessment.service.api;
 
 import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
+import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
@@ -16,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +64,7 @@ public class OutcomeResource {
   }
 
   /**
-   * POST  /:traineeId/assessments/:assessmentId/outcomes : create/update the an outcome that's linked to a trainee's assessment.
+   * POST  /:traineeId/assessments/:assessmentId/outcomes : create the an outcome that's linked to a trainee's assessment.
    *
    * @param outcomeDTO   the outcome to create
    * @param traineeId    the id of the trainee
@@ -77,9 +80,36 @@ public class OutcomeResource {
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     OutcomeDTO savedOutcome = null;
     if (traineeAssessment.isPresent()) {
-      savedOutcome = outcomeService.save(traineeAssessment.get(), outcomeDTO);
+      savedOutcome = outcomeService.create(traineeAssessment.get(), outcomeDTO);
     }
-    return ResponseUtil.wrapOrNotFound(Optional.of(savedOutcome));
+    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedOutcome));
   }
 
+  /**
+   * PUT  /:traineeId/assessments/:assessmentId/outcomes : update the an outcome that's linked to a trainee's assessment.
+   *
+   * @param outcomeDTO   the outcome to update
+   * @param traineeId    the id of the trainee
+   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   */
+  @PutMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<OutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDTO,
+                                                                    @PathVariable String traineeId, @PathVariable Long assessmentId) {
+    log.debug("REST request to create Outcome : {}", outcomeDTO);
+    Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
+    OutcomeDTO savedOutcome = null;
+    if (traineeAssessment.isPresent()) {
+      savedOutcome = outcomeService.save(traineeAssessment.get(), outcomeDTO);
+    }
+    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedOutcome));
+  }
+
+  //Kept to allow compatibility with audit service
+  private ResponseEntity<OutcomeDTO> getOutcome(Long outcomeId) {
+    OutcomeDTO outcomeDTO = outcomeService.findOne(outcomeId);
+    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(outcomeDTO));
+  }
 }

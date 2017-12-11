@@ -1,24 +1,22 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import com.google.common.collect.Lists;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
-import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.model.OutcomeHistory;
+import com.transformuk.hee.tis.assessment.service.repository.OutcomeHistoryRepository;
 import com.transformuk.hee.tis.assessment.service.repository.OutcomeRepository;
-import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -32,16 +30,14 @@ public class OutcomeServiceImpl implements OutcomeService {
 
   private final OutcomeRepository outcomeRepository;
   private final OutcomeMapper outcomeMapper;
-  private final AssessmentService assessmentService;
-  private final AssessmentRepository assessmentRepository;
+  private final OutcomeHistoryRepository outcomeHistoryRepository;
 
 
   public OutcomeServiceImpl(OutcomeRepository outcomeRepository, OutcomeMapper outcomeMapper,
-                            AssessmentService assessmentService, AssessmentRepository assessmentRepository) {
+                            OutcomeHistoryRepository outcomeHistoryRepository) {
     this.outcomeRepository = outcomeRepository;
     this.outcomeMapper = outcomeMapper;
-    this.assessmentService = assessmentService;
-    this.assessmentRepository = assessmentRepository;
+    this.outcomeHistoryRepository = outcomeHistoryRepository;
   }
 
   /**
@@ -59,14 +55,33 @@ public class OutcomeServiceImpl implements OutcomeService {
   }
 
   @Override
+  public OutcomeDTO create(Assessment assessment, OutcomeDTO outcomeDTO) {
+    outcomeDTO.setId(assessment.getId());
+    return save(assessment, outcomeDTO);
+  }
+
+  @Override
   public OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO) {
+
+    OutcomeHistory outcomeHistory = createOutcomeHistory(assessment);
+    outcomeHistoryRepository.save(outcomeHistory);
     Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
     outcome = outcomeRepository.save(outcome);
-    List<Outcome> assessmentOutcomes = Lists.newArrayList(assessment.getOutcome());
-    assessmentOutcomes.add(outcome);
-    assessment.setOutcome(assessmentOutcomes);
-    assessmentRepository.save(assessment);
     return outcomeMapper.toDto(outcome);
+  }
+
+  @Transactional(readOnly = true)
+  private OutcomeHistory createOutcomeHistory(Assessment assessment){
+    OutcomeHistory outcomeHistory = new OutcomeHistory();
+    try {
+      Outcome outcome = assessment.getOutcome();
+      BeanUtils.copyProperties(outcomeHistory, outcome);
+      outcomeHistory.setOriginalOutcomeId(outcome.getId());
+      outcome.setId(null);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return outcomeHistory;
   }
 
   /**
@@ -76,6 +91,7 @@ public class OutcomeServiceImpl implements OutcomeService {
    * @return the persisted entity
    */
   @Override
+
   public List<OutcomeDTO> save(List<OutcomeDTO> outcomeDTOs) {
     log.debug("Request to save a collection of Outcomes : {}", outcomeDTOs);
     List<Outcome> outcome = outcomeMapper.toEntity(outcomeDTOs);

@@ -2,35 +2,35 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 /**
- * A Outcome.
+ * An Outcome History.
+ *
+ * All previous version of an outcome are stored here
  */
 @Entity
-@Table(name = "Outcome")
-@EntityListeners(AuditingEntityListener.class)
-public class Outcome implements Serializable {
+@Table(name = "OutcomeHistory")
+public class OutcomeHistory implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(name = "outcomeId")
+  private Long originalOutcomeId;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "outcome")
@@ -100,16 +100,28 @@ public class Outcome implements Serializable {
   @Column(name = "addCommentsFromPanel")
   private String additionalCommentsFromPanel;
 
-  @OneToOne
-  @JoinColumn(name = "id")
-  private Assessment assessment;
-
   public Long getId() {
     return id;
   }
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getOriginalOutcomeId() {
+    return originalOutcomeId;
+  }
+
+  public void setOriginalOutcomeId(Long originalOutcomeId) {
+    this.originalOutcomeId = originalOutcomeId;
+  }
+
+  public void setDetailedReasons(String detailedReasons) {
+    this.detailedReasons = detailedReasons;
+  }
+
+  public void setMitigatingCircumstances(String mitigatingCircumstances) {
+    this.mitigatingCircumstances = mitigatingCircumstances;
   }
 
   public OutcomeStatus getOutcome() {
@@ -120,7 +132,7 @@ public class Outcome implements Serializable {
     this.outcome = outcome;
   }
 
-  public Outcome outcome(OutcomeStatus outcome) {
+  public OutcomeHistory outcome(OutcomeStatus outcome) {
     this.outcome = outcome;
     return this;
   }
@@ -129,7 +141,7 @@ public class Outcome implements Serializable {
     return underAppeal;
   }
 
-  public Outcome underAppeal(Boolean underAppeal) {
+  public OutcomeHistory underAppeal(Boolean underAppeal) {
     this.underAppeal = underAppeal;
     return this;
   }
@@ -146,7 +158,7 @@ public class Outcome implements Serializable {
     this.reason = reason;
   }
 
-  public Outcome reason(String reason) {
+  public OutcomeHistory reason(String reason) {
     this.reason = reason;
     return this;
   }
@@ -159,7 +171,7 @@ public class Outcome implements Serializable {
     this.comments = comments;
   }
 
-  public Outcome comments(String comments) {
+  public OutcomeHistory comments(String comments) {
     this.comments = comments;
     return this;
   }
@@ -172,7 +184,7 @@ public class Outcome implements Serializable {
     this.trainingCompletionDate = trainingCompletionDate;
   }
 
-  public Outcome trainingCompletionDate(LocalDate trainingCompletionDate) {
+  public OutcomeHistory trainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
     return this;
   }
@@ -185,7 +197,7 @@ public class Outcome implements Serializable {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
   }
 
-  public Outcome extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
+  public OutcomeHistory extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
     return this;
   }
@@ -198,7 +210,7 @@ public class Outcome implements Serializable {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
   }
 
-  public Outcome extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
+  public OutcomeHistory extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
     return this;
   }
@@ -207,7 +219,7 @@ public class Outcome implements Serializable {
     return tenPercentAudit;
   }
 
-  public Outcome tenPercentAudit(Boolean tenPercentAudit) {
+  public OutcomeHistory tenPercentAudit(Boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
     return this;
   }
@@ -220,7 +232,7 @@ public class Outcome implements Serializable {
     return externalTrainer;
   }
 
-  public Outcome externalTrainer(Boolean externalTrainer) {
+  public OutcomeHistory externalTrainer(Boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
     return this;
   }
@@ -237,7 +249,7 @@ public class Outcome implements Serializable {
     this.nextRotationGradeId = nextRotationGradeId;
   }
 
-  public Outcome nextRotationGradeId(Long nextRotationGradeId) {
+  public OutcomeHistory nextRotationGradeId(Long nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
@@ -250,7 +262,7 @@ public class Outcome implements Serializable {
     this.nextRotationGradeName = nextRotationGradeName;
   }
 
-  public Outcome nextRotationGradeName(String nextRotationGradeName) {
+  public OutcomeHistory nextRotationGradeName(String nextRotationGradeName) {
     this.nextRotationGradeName = nextRotationGradeName;
     return this;
   }
@@ -259,7 +271,7 @@ public class Outcome implements Serializable {
     return traineeNotifiedOfOutcome;
   }
 
-  public Outcome traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+  public OutcomeHistory traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
   }
@@ -276,7 +288,7 @@ public class Outcome implements Serializable {
     this.nextReviewDate = nextReviewDate;
   }
 
-  public Outcome nextReviewDate(LocalDate nextReviewDate) {
+  public OutcomeHistory nextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
     return this;
   }
@@ -289,7 +301,7 @@ public class Outcome implements Serializable {
     this.intrepidId = intrepidId;
   }
 
-  public Outcome intrepidId(String intrepidId) {
+  public OutcomeHistory intrepidId(String intrepidId) {
     this.intrepidId = intrepidId;
     return this;
   }
@@ -318,7 +330,7 @@ public class Outcome implements Serializable {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
   }
 
-  public Outcome academicCurriculumAssessed(String academicCurriculumAssessed) {
+  public OutcomeHistory academicCurriculumAssessed(String academicCurriculumAssessed) {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
     return this;
   }
@@ -331,7 +343,7 @@ public class Outcome implements Serializable {
     this.academicOutcome = academicOutcome;
   }
 
-  public Outcome academicOutcome(String academicOutcome) {
+  public OutcomeHistory academicOutcome(String academicOutcome) {
     this.academicOutcome = academicOutcome;
     return this;
   }
@@ -340,7 +352,7 @@ public class Outcome implements Serializable {
     return detailedReasons;
   }
 
-  public Outcome detailedReasons(String detailedReasons) {
+  public OutcomeHistory detailedReasons(String detailedReasons) {
     this.detailedReasons = detailedReasons;
     return this;
   }
@@ -349,7 +361,7 @@ public class Outcome implements Serializable {
     return mitigatingCircumstances;
   }
 
-  public Outcome mitigatingCircumstances(String mitigatingCircumstances) {
+  public OutcomeHistory mitigatingCircumstances(String mitigatingCircumstances) {
     this.mitigatingCircumstances = mitigatingCircumstances;
     return this;
   }
@@ -362,7 +374,7 @@ public class Outcome implements Serializable {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
   }
 
-  public Outcome competencesToBeDeveloped(String competencesToBeDeveloped) {
+  public OutcomeHistory competencesToBeDeveloped(String competencesToBeDeveloped) {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
     return this;
   }
@@ -375,7 +387,7 @@ public class Outcome implements Serializable {
     this.otherRecommendedActions = otherRecommendedActions;
   }
 
-  public Outcome otherRecommendedActions(String otherRecommendedActions) {
+  public OutcomeHistory otherRecommendedActions(String otherRecommendedActions) {
     this.otherRecommendedActions = otherRecommendedActions;
     return this;
   }
@@ -388,7 +400,7 @@ public class Outcome implements Serializable {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
   }
 
-  public Outcome recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
+  public OutcomeHistory recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
     return this;
   }
@@ -401,52 +413,93 @@ public class Outcome implements Serializable {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
   }
 
-  public Outcome additionalCommentsFromPanel(String additionalCommentsFromPanel) {
+  public OutcomeHistory additionalCommentsFromPanel(String additionalCommentsFromPanel) {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
     return this;
   }
 
-  public void setDetailedReasons(String detailedReasons) {
-    this.detailedReasons = detailedReasons;
-  }
-
-  public void setMitigatingCircumstances(String mitigatingCircumstances) {
-    this.mitigatingCircumstances = mitigatingCircumstances;
-  }
-
-  public Assessment getAssessment() {
-    return assessment;
-  }
-
-  public void setAssessment(Assessment assessment) {
-    this.assessment = assessment;
-  }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    OutcomeHistory that = (OutcomeHistory) o;
+
+    if (originalOutcomeId != null ? !originalOutcomeId.equals(that.originalOutcomeId) : that.originalOutcomeId != null)
       return false;
-    }
-    Outcome outcome = (Outcome) o;
-    if (outcome.getId() == null || getId() == null) {
+    if (outcome != that.outcome) return false;
+    if (underAppeal != null ? !underAppeal.equals(that.underAppeal) : that.underAppeal != null) return false;
+    if (reason != null ? !reason.equals(that.reason) : that.reason != null) return false;
+    if (trainingCompletionDate != null ? !trainingCompletionDate.equals(that.trainingCompletionDate) : that.trainingCompletionDate != null)
       return false;
-    }
-    return Objects.equals(getId(), outcome.getId());
+    if (extendedTrainingCompletionDate != null ? !extendedTrainingCompletionDate.equals(that.extendedTrainingCompletionDate) : that.extendedTrainingCompletionDate != null)
+      return false;
+    if (extendedTrainingTimeInMonths != null ? !extendedTrainingTimeInMonths.equals(that.extendedTrainingTimeInMonths) : that.extendedTrainingTimeInMonths != null)
+      return false;
+    if (tenPercentAudit != null ? !tenPercentAudit.equals(that.tenPercentAudit) : that.tenPercentAudit != null)
+      return false;
+    if (externalTrainer != null ? !externalTrainer.equals(that.externalTrainer) : that.externalTrainer != null)
+      return false;
+    if (nextRotationGradeId != null ? !nextRotationGradeId.equals(that.nextRotationGradeId) : that.nextRotationGradeId != null)
+      return false;
+    if (nextRotationGradeName != null ? !nextRotationGradeName.equals(that.nextRotationGradeName) : that.nextRotationGradeName != null)
+      return false;
+    if (traineeNotifiedOfOutcome != null ? !traineeNotifiedOfOutcome.equals(that.traineeNotifiedOfOutcome) : that.traineeNotifiedOfOutcome != null)
+      return false;
+    if (nextReviewDate != null ? !nextReviewDate.equals(that.nextReviewDate) : that.nextReviewDate != null)
+      return false;
+    if (comments != null ? !comments.equals(that.comments) : that.comments != null) return false;
+    if (intrepidId != null ? !intrepidId.equals(that.intrepidId) : that.intrepidId != null) return false;
+    if (academicCurriculumAssessed != null ? !academicCurriculumAssessed.equals(that.academicCurriculumAssessed) : that.academicCurriculumAssessed != null)
+      return false;
+    if (academicOutcome != null ? !academicOutcome.equals(that.academicOutcome) : that.academicOutcome != null)
+      return false;
+    if (detailedReasons != null ? !detailedReasons.equals(that.detailedReasons) : that.detailedReasons != null)
+      return false;
+    if (mitigatingCircumstances != null ? !mitigatingCircumstances.equals(that.mitigatingCircumstances) : that.mitigatingCircumstances != null)
+      return false;
+    if (competencesToBeDeveloped != null ? !competencesToBeDeveloped.equals(that.competencesToBeDeveloped) : that.competencesToBeDeveloped != null)
+      return false;
+    if (otherRecommendedActions != null ? !otherRecommendedActions.equals(that.otherRecommendedActions) : that.otherRecommendedActions != null)
+      return false;
+    if (recommendedAdditionalTrainingTime != null ? !recommendedAdditionalTrainingTime.equals(that.recommendedAdditionalTrainingTime) : that.recommendedAdditionalTrainingTime != null)
+      return false;
+    return additionalCommentsFromPanel != null ? additionalCommentsFromPanel.equals(that.additionalCommentsFromPanel) : that.additionalCommentsFromPanel == null;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(getId());
+    int result = originalOutcomeId != null ? originalOutcomeId.hashCode() : 0;
+    result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
+    result = 31 * result + (underAppeal != null ? underAppeal.hashCode() : 0);
+    result = 31 * result + (reason != null ? reason.hashCode() : 0);
+    result = 31 * result + (trainingCompletionDate != null ? trainingCompletionDate.hashCode() : 0);
+    result = 31 * result + (extendedTrainingCompletionDate != null ? extendedTrainingCompletionDate.hashCode() : 0);
+    result = 31 * result + (extendedTrainingTimeInMonths != null ? extendedTrainingTimeInMonths.hashCode() : 0);
+    result = 31 * result + (tenPercentAudit != null ? tenPercentAudit.hashCode() : 0);
+    result = 31 * result + (externalTrainer != null ? externalTrainer.hashCode() : 0);
+    result = 31 * result + (nextRotationGradeId != null ? nextRotationGradeId.hashCode() : 0);
+    result = 31 * result + (nextRotationGradeName != null ? nextRotationGradeName.hashCode() : 0);
+    result = 31 * result + (traineeNotifiedOfOutcome != null ? traineeNotifiedOfOutcome.hashCode() : 0);
+    result = 31 * result + (nextReviewDate != null ? nextReviewDate.hashCode() : 0);
+    result = 31 * result + (comments != null ? comments.hashCode() : 0);
+    result = 31 * result + (intrepidId != null ? intrepidId.hashCode() : 0);
+    result = 31 * result + (academicCurriculumAssessed != null ? academicCurriculumAssessed.hashCode() : 0);
+    result = 31 * result + (academicOutcome != null ? academicOutcome.hashCode() : 0);
+    result = 31 * result + (detailedReasons != null ? detailedReasons.hashCode() : 0);
+    result = 31 * result + (mitigatingCircumstances != null ? mitigatingCircumstances.hashCode() : 0);
+    result = 31 * result + (competencesToBeDeveloped != null ? competencesToBeDeveloped.hashCode() : 0);
+    result = 31 * result + (otherRecommendedActions != null ? otherRecommendedActions.hashCode() : 0);
+    result = 31 * result + (recommendedAdditionalTrainingTime != null ? recommendedAdditionalTrainingTime.hashCode() : 0);
+    result = 31 * result + (additionalCommentsFromPanel != null ? additionalCommentsFromPanel.hashCode() : 0);
+    return result;
   }
 
   @Override
   public String toString() {
     return "Outcome{" +
-        "id=" + getId() +
-        ", outcome='" + getOutcome() + "'" +
+        "outcome='" + getOutcome() + "'" +
         ", underAppeal='" + isUnderAppeal() + "'" +
         ", reason='" + getReason() + "'" +
         ", comments='" + getComments() + "'" +
