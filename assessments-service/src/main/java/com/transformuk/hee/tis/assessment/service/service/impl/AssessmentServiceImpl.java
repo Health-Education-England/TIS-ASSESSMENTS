@@ -116,6 +116,7 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable) {
     List<Specification<Assessment>> specs = new ArrayList<>();
     //add the text search criteria
@@ -143,12 +144,14 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId) {
     Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
     return Optional.ofNullable(assessmentMapper.toDto(traineeAssessment.orElse(null)));
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId) {
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
@@ -156,6 +159,7 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page) {
     Assessment example = new Assessment().traineeId(traineeId);
     return assessmentRepository.findAll(Example.of(example), page)
