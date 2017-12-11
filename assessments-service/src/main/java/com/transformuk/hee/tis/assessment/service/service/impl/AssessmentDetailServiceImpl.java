@@ -73,7 +73,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
    */
   @Override
   public AssessmentDetailDTO create(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
-    assessment.setId(assessment.getId());
+    assessmentDetailDTO.setId(assessment.getId());
     return save(assessment, assessmentDetailDTO);
   }
 
