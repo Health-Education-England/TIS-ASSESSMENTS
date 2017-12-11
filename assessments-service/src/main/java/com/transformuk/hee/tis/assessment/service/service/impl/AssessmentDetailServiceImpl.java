@@ -41,7 +41,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   public Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId) {
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    if(foundAssessment != null) {
+    if (foundAssessment != null) {
       AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
       return Optional.ofNullable(assessmentDetailDTO);
     }
@@ -62,6 +62,19 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     assessment.setDetail(assessmentDetail);
     assessmentRepository.save(assessment);
     return assessmentDetailMapper.toDto(assessmentDetail);
+  }
+
+  /**
+   * create an assessment detail.
+   *
+   * @param assessment          the assessment to link the details to
+   * @param assessmentDetailDTO the entity to create
+   * @return the persisted entity
+   */
+  @Override
+  public AssessmentDetailDTO create(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
+    assessment.setId(assessment.getId());
+    return save(assessment, assessmentDetailDTO);
   }
 
   @Override

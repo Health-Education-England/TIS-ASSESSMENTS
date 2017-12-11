@@ -24,6 +24,14 @@ public interface AssessmentDetailService {
    */
   AssessmentDetailDTO save(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO);
 
+  /**
+   * create an assessment detail.
+   *
+   * @param assessment          the assessment to link the details to
+   * @param assessmentDetailDTO the entity to create
+   * @return the persisted entity
+   */
+  AssessmentDetailDTO create(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO);
 
   /**
    * Get the AssessmentDetail by ID.

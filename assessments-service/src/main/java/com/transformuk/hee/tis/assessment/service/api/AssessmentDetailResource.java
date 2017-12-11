@@ -68,7 +68,7 @@ public class AssessmentDetailResource {
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     AssessmentDetailDTO savedAssessmentDetail = null;
     if (traineeAssessment.isPresent()) {
-      savedAssessmentDetail = assessmentDetailService.save(traineeAssessment.get(), assessmentDetailDTO);
+      savedAssessmentDetail = assessmentDetailService.create(traineeAssessment.get(), assessmentDetailDTO);
     }
     return ResponseUtil.wrapOrNotFound(Optional.of(savedAssessmentDetail));
 
