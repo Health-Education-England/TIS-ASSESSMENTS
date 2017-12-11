@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
-import com.transformuk.hee.tis.assessment.api.dto.OutcomeReason;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
@@ -18,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -35,7 +32,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,9 +50,6 @@ public class OutcomeResourceIntTest {
 
   private static final Boolean DEFAULT_UNDER_APPEAL = false;
   private static final Boolean UPDATED_UNDER_APPEAL = true;
-
-  private static final OutcomeReason DEFAULT_REASON = OutcomeReason.UNSATISFACTORY_OUTCOME_REASON;
-  private static final OutcomeReason UPDATED_REASON = OutcomeReason.UNSATISFACTORY_OUTCOME_REASON_OTHER;
 
   private static final String DEFAULT_COMMENTS = "AAAAAAAAAA";
   private static final String UPDATED_COMMENTS = "BBBBBBBBBB";
@@ -128,7 +121,6 @@ public class OutcomeResourceIntTest {
     Outcome outcome = new Outcome()
         .outcome(DEFAULT_OUTCOME)
         .underAppeal(DEFAULT_UNDER_APPEAL)
-        .reason(DEFAULT_REASON)
         .comments(DEFAULT_COMMENTS)
         .trainingCompletionDate(DEFAULT_TRAINING_COMPLETION_DATE)
         .extendedTrainingCompletionDate(DEFAULT_EXTENDED_TRAINING_COMPLETION_DATE)

@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
-import com.transformuk.hee.tis.assessment.api.dto.OutcomeReason;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 
 import javax.persistence.Column;
@@ -36,9 +35,8 @@ public class Outcome implements Serializable {
   @Column(name = "underAppeal")
   private Boolean underAppeal;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "reason")
-  private OutcomeReason reason;
+  private String reason;
 
   @Column(name = "trainingCompletionDate")
   private LocalDate trainingCompletionDate;
@@ -134,15 +132,15 @@ public class Outcome implements Serializable {
     this.underAppeal = underAppeal;
   }
 
-  public OutcomeReason getReason() {
+  public String getReason() {
     return reason;
   }
 
-  public void setReason(OutcomeReason reason) {
+  public void setReason(String reason) {
     this.reason = reason;
   }
 
-  public Outcome reason(OutcomeReason reason) {
+  public Outcome reason(String reason) {
     this.reason = reason;
     return this;
   }
