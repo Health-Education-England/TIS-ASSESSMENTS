@@ -29,6 +29,15 @@ public interface RevalidationService {
    */
   RevalidationDTO save(Assessment assessment, RevalidationDTO revalidationDTO);
 
+  /**
+   * Create a revalidation against an assessment.
+   *
+   * @param assessment      the assessment to link the revalidation against
+   * @param revalidationDTO the entity to create
+   * @return the persisted entity
+   */
+  RevalidationDTO create(Assessment assessment, RevalidationDTO revalidationDTO);
+
 
   RevalidationDTO findOne(Long revalidationId);
 }

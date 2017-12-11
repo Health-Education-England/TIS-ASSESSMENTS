@@ -69,6 +69,13 @@ public class RevalidationServiceImpl implements RevalidationService {
     return revalidationMapper.toDto(revalidation);
   }
 
+  @Override
+  public RevalidationDTO create(Assessment assessment, RevalidationDTO revalidationDTO) {
+    log.debug("Request to create revalidation : {}", revalidationDTO);
+    revalidationDTO.setId(assessment.getId());
+    return save(assessment, revalidationDTO);
+  }
+
   /**
    * Get one Revalidation by id.
    *

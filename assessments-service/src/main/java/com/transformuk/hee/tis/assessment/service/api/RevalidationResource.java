@@ -70,7 +70,7 @@ public class RevalidationResource {
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     RevalidationDTO savedRevalidation = null;
     if (traineeAssessment.isPresent()) {
-      savedRevalidation = revalidationService.save(traineeAssessment.get(), revalidationDTO);
+      savedRevalidation = revalidationService.create(traineeAssessment.get(), revalidationDTO);
     }
     return ResponseUtil.wrapOrNotFound(Optional.of(savedRevalidation));
 
