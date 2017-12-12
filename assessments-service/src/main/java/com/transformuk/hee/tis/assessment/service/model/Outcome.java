@@ -436,84 +436,24 @@ public class Outcome implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Outcome outcome1 = (Outcome) o;
-
-    if (id != null ? !id.equals(outcome1.id) : outcome1.id != null) return false;
-    if (outcome != outcome1.outcome) return false;
-    if (underAppeal != null ? !underAppeal.equals(outcome1.underAppeal) : outcome1.underAppeal != null) return false;
-    if (reason != null ? !reason.equals(outcome1.reason) : outcome1.reason != null) return false;
-    if (trainingCompletionDate != null ? !trainingCompletionDate.equals(outcome1.trainingCompletionDate) : outcome1.trainingCompletionDate != null)
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
-    if (extendedTrainingCompletionDate != null ? !extendedTrainingCompletionDate.equals(outcome1.extendedTrainingCompletionDate) : outcome1.extendedTrainingCompletionDate != null)
+    }
+    Outcome outcome = (Outcome) o;
+    if (outcome.getId() == null || getId() == null) {
       return false;
-    if (extendedTrainingTimeInMonths != null ? !extendedTrainingTimeInMonths.equals(outcome1.extendedTrainingTimeInMonths) : outcome1.extendedTrainingTimeInMonths != null)
-      return false;
-    if (tenPercentAudit != null ? !tenPercentAudit.equals(outcome1.tenPercentAudit) : outcome1.tenPercentAudit != null)
-      return false;
-    if (externalTrainer != null ? !externalTrainer.equals(outcome1.externalTrainer) : outcome1.externalTrainer != null)
-      return false;
-    if (nextRotationGradeId != null ? !nextRotationGradeId.equals(outcome1.nextRotationGradeId) : outcome1.nextRotationGradeId != null)
-      return false;
-    if (nextRotationGradeName != null ? !nextRotationGradeName.equals(outcome1.nextRotationGradeName) : outcome1.nextRotationGradeName != null)
-      return false;
-    if (traineeNotifiedOfOutcome != null ? !traineeNotifiedOfOutcome.equals(outcome1.traineeNotifiedOfOutcome) : outcome1.traineeNotifiedOfOutcome != null)
-      return false;
-    if (nextReviewDate != null ? !nextReviewDate.equals(outcome1.nextReviewDate) : outcome1.nextReviewDate != null)
-      return false;
-    if (comments != null ? !comments.equals(outcome1.comments) : outcome1.comments != null) return false;
-    if (intrepidId != null ? !intrepidId.equals(outcome1.intrepidId) : outcome1.intrepidId != null) return false;
-    if (academicCurriculumAssessed != null ? !academicCurriculumAssessed.equals(outcome1.academicCurriculumAssessed) : outcome1.academicCurriculumAssessed != null)
-      return false;
-    if (academicOutcome != null ? !academicOutcome.equals(outcome1.academicOutcome) : outcome1.academicOutcome != null)
-      return false;
-    if (detailedReasons != null ? !detailedReasons.equals(outcome1.detailedReasons) : outcome1.detailedReasons != null)
-      return false;
-    if (mitigatingCircumstances != null ? !mitigatingCircumstances.equals(outcome1.mitigatingCircumstances) : outcome1.mitigatingCircumstances != null)
-      return false;
-    if (competencesToBeDeveloped != null ? !competencesToBeDeveloped.equals(outcome1.competencesToBeDeveloped) : outcome1.competencesToBeDeveloped != null)
-      return false;
-    if (otherRecommendedActions != null ? !otherRecommendedActions.equals(outcome1.otherRecommendedActions) : outcome1.otherRecommendedActions != null)
-      return false;
-    if (recommendedAdditionalTrainingTime != null ? !recommendedAdditionalTrainingTime.equals(outcome1.recommendedAdditionalTrainingTime) : outcome1.recommendedAdditionalTrainingTime != null)
-      return false;
-    if (additionalCommentsFromPanel != null ? !additionalCommentsFromPanel.equals(outcome1.additionalCommentsFromPanel) : outcome1.additionalCommentsFromPanel != null)
-      return false;
-    if (amendedDate != null ? !amendedDate.equals(outcome1.amendedDate) : outcome1.amendedDate != null) return false;
-    return assessment != null ? assessment.equals(outcome1.assessment) : outcome1.assessment == null;
+    }
+    return Objects.equals(getId(), outcome.getId());
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
-    result = 31 * result + (underAppeal != null ? underAppeal.hashCode() : 0);
-    result = 31 * result + (reason != null ? reason.hashCode() : 0);
-    result = 31 * result + (trainingCompletionDate != null ? trainingCompletionDate.hashCode() : 0);
-    result = 31 * result + (extendedTrainingCompletionDate != null ? extendedTrainingCompletionDate.hashCode() : 0);
-    result = 31 * result + (extendedTrainingTimeInMonths != null ? extendedTrainingTimeInMonths.hashCode() : 0);
-    result = 31 * result + (tenPercentAudit != null ? tenPercentAudit.hashCode() : 0);
-    result = 31 * result + (externalTrainer != null ? externalTrainer.hashCode() : 0);
-    result = 31 * result + (nextRotationGradeId != null ? nextRotationGradeId.hashCode() : 0);
-    result = 31 * result + (nextRotationGradeName != null ? nextRotationGradeName.hashCode() : 0);
-    result = 31 * result + (traineeNotifiedOfOutcome != null ? traineeNotifiedOfOutcome.hashCode() : 0);
-    result = 31 * result + (nextReviewDate != null ? nextReviewDate.hashCode() : 0);
-    result = 31 * result + (comments != null ? comments.hashCode() : 0);
-    result = 31 * result + (intrepidId != null ? intrepidId.hashCode() : 0);
-    result = 31 * result + (academicCurriculumAssessed != null ? academicCurriculumAssessed.hashCode() : 0);
-    result = 31 * result + (academicOutcome != null ? academicOutcome.hashCode() : 0);
-    result = 31 * result + (detailedReasons != null ? detailedReasons.hashCode() : 0);
-    result = 31 * result + (mitigatingCircumstances != null ? mitigatingCircumstances.hashCode() : 0);
-    result = 31 * result + (competencesToBeDeveloped != null ? competencesToBeDeveloped.hashCode() : 0);
-    result = 31 * result + (otherRecommendedActions != null ? otherRecommendedActions.hashCode() : 0);
-    result = 31 * result + (recommendedAdditionalTrainingTime != null ? recommendedAdditionalTrainingTime.hashCode() : 0);
-    result = 31 * result + (additionalCommentsFromPanel != null ? additionalCommentsFromPanel.hashCode() : 0);
-    result = 31 * result + (amendedDate != null ? amendedDate.hashCode() : 0);
-    result = 31 * result + (assessment != null ? assessment.hashCode() : 0);
-    return result;
+    return Objects.hashCode(getId());
   }
+
 
   @Override
   public String toString() {
