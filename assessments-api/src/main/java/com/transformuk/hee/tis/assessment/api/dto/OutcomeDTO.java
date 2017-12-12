@@ -399,82 +399,25 @@ public class OutcomeDTO implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
-    OutcomeDTO that = (OutcomeDTO) o;
-
-    if (id != null ? !id.equals(that.id) : that.id != null) return false;
-    if (outcome != that.outcome) return false;
-    if (underAppeal != null ? !underAppeal.equals(that.underAppeal) : that.underAppeal != null) return false;
-    if (reason != null ? !reason.equals(that.reason) : that.reason != null) return false;
-    if (comments != null ? !comments.equals(that.comments) : that.comments != null) return false;
-    if (trainingCompletionDate != null ? !trainingCompletionDate.equals(that.trainingCompletionDate) : that.trainingCompletionDate != null)
+    OutcomeDTO outcomeDTO = (OutcomeDTO) o;
+    if (outcomeDTO.getId() == null || getId() == null) {
       return false;
-    if (extendedTrainingCompletionDate != null ? !extendedTrainingCompletionDate.equals(that.extendedTrainingCompletionDate) : that.extendedTrainingCompletionDate != null)
-      return false;
-    if (extendedTrainingTimeInMonths != null ? !extendedTrainingTimeInMonths.equals(that.extendedTrainingTimeInMonths) : that.extendedTrainingTimeInMonths != null)
-      return false;
-    if (tenPercentAudit != null ? !tenPercentAudit.equals(that.tenPercentAudit) : that.tenPercentAudit != null)
-      return false;
-    if (externalTrainer != null ? !externalTrainer.equals(that.externalTrainer) : that.externalTrainer != null)
-      return false;
-    if (nextRotationGradeId != null ? !nextRotationGradeId.equals(that.nextRotationGradeId) : that.nextRotationGradeId != null)
-      return false;
-    if (nextRotationGradeName != null ? !nextRotationGradeName.equals(that.nextRotationGradeName) : that.nextRotationGradeName != null)
-      return false;
-    if (traineeNotifiedOfOutcome != null ? !traineeNotifiedOfOutcome.equals(that.traineeNotifiedOfOutcome) : that.traineeNotifiedOfOutcome != null)
-      return false;
-    if (nextReviewDate != null ? !nextReviewDate.equals(that.nextReviewDate) : that.nextReviewDate != null)
-      return false;
-    if (intrepidId != null ? !intrepidId.equals(that.intrepidId) : that.intrepidId != null) return false;
-    if (academicCurriculumAssessed != null ? !academicCurriculumAssessed.equals(that.academicCurriculumAssessed) : that.academicCurriculumAssessed != null)
-      return false;
-    if (academicOutcome != null ? !academicOutcome.equals(that.academicOutcome) : that.academicOutcome != null)
-      return false;
-    if (detailedReasons != null ? !detailedReasons.equals(that.detailedReasons) : that.detailedReasons != null)
-      return false;
-    if (mitigatingCircumstances != null ? !mitigatingCircumstances.equals(that.mitigatingCircumstances) : that.mitigatingCircumstances != null)
-      return false;
-    if (competencesToBeDeveloped != null ? !competencesToBeDeveloped.equals(that.competencesToBeDeveloped) : that.competencesToBeDeveloped != null)
-      return false;
-    if (otherRecommendedActions != null ? !otherRecommendedActions.equals(that.otherRecommendedActions) : that.otherRecommendedActions != null)
-      return false;
-    if (recommendedAdditionalTrainingTime != null ? !recommendedAdditionalTrainingTime.equals(that.recommendedAdditionalTrainingTime) : that.recommendedAdditionalTrainingTime != null)
-      return false;
-    if (additionalCommentsFromPanel != null ? !additionalCommentsFromPanel.equals(that.additionalCommentsFromPanel) : that.additionalCommentsFromPanel != null)
-      return false;
-    return amendedDate != null ? amendedDate.equals(that.amendedDate) : that.amendedDate == null;
+    }
+    return Objects.equals(getId(), outcomeDTO.getId());
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
-    result = 31 * result + (underAppeal != null ? underAppeal.hashCode() : 0);
-    result = 31 * result + (reason != null ? reason.hashCode() : 0);
-    result = 31 * result + (comments != null ? comments.hashCode() : 0);
-    result = 31 * result + (trainingCompletionDate != null ? trainingCompletionDate.hashCode() : 0);
-    result = 31 * result + (extendedTrainingCompletionDate != null ? extendedTrainingCompletionDate.hashCode() : 0);
-    result = 31 * result + (extendedTrainingTimeInMonths != null ? extendedTrainingTimeInMonths.hashCode() : 0);
-    result = 31 * result + (tenPercentAudit != null ? tenPercentAudit.hashCode() : 0);
-    result = 31 * result + (externalTrainer != null ? externalTrainer.hashCode() : 0);
-    result = 31 * result + (nextRotationGradeId != null ? nextRotationGradeId.hashCode() : 0);
-    result = 31 * result + (nextRotationGradeName != null ? nextRotationGradeName.hashCode() : 0);
-    result = 31 * result + (traineeNotifiedOfOutcome != null ? traineeNotifiedOfOutcome.hashCode() : 0);
-    result = 31 * result + (nextReviewDate != null ? nextReviewDate.hashCode() : 0);
-    result = 31 * result + (intrepidId != null ? intrepidId.hashCode() : 0);
-    result = 31 * result + (academicCurriculumAssessed != null ? academicCurriculumAssessed.hashCode() : 0);
-    result = 31 * result + (academicOutcome != null ? academicOutcome.hashCode() : 0);
-    result = 31 * result + (detailedReasons != null ? detailedReasons.hashCode() : 0);
-    result = 31 * result + (mitigatingCircumstances != null ? mitigatingCircumstances.hashCode() : 0);
-    result = 31 * result + (competencesToBeDeveloped != null ? competencesToBeDeveloped.hashCode() : 0);
-    result = 31 * result + (otherRecommendedActions != null ? otherRecommendedActions.hashCode() : 0);
-    result = 31 * result + (recommendedAdditionalTrainingTime != null ? recommendedAdditionalTrainingTime.hashCode() : 0);
-    result = 31 * result + (additionalCommentsFromPanel != null ? additionalCommentsFromPanel.hashCode() : 0);
-    result = 31 * result + (amendedDate != null ? amendedDate.hashCode() : 0);
-    return result;
+    return Objects.hashCode(getId());
   }
+
 
   @Override
   public String toString() {
