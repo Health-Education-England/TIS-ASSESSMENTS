@@ -123,11 +123,10 @@ public class AssessmentServiceImpl implements AssessmentService {
     if (StringUtils.isNotEmpty(searchString)) {
       specs.add(Specifications.where(
           containsLike("detail.curriculumName", searchString)).
-          or(containsLike("detail.membershipType", searchString)).
-          or(containsLike("detail.curriculumSpecialty", searchString)).
-          or(containsLike("detail.curriculumSubType", searchString)).
-          or(containsLike("detail.gradeAbbreviation", searchString)).
-          or(containsLike("detail.gradeName", searchString)));
+          or(containsLike("traineeId", searchString)).
+          or(containsLike("firstName", searchString)).
+          or(containsLike("lastName", searchString)).
+          or(containsLike("type", searchString)));
     }
     //add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {

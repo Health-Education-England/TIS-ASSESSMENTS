@@ -3,6 +3,7 @@ package com.transformuk.hee.tis.assessment.api.dto;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMin;
@@ -20,42 +21,56 @@ public class AssessmentDTO implements Serializable {
 
   @Null(groups = Create.class, message = "id must be null when creating a new assessment")
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
+  @ApiModelProperty(value = "The id of the assessment. Must be null for POST and required for PUT")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "traineeId cannot be null")
+  @ApiModelProperty(required = true, value = "The id of the trainee")
   private String traineeId;
 
   @NotNull(groups = {Create.class, Update.class}, message = "first name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "first name should be at least 1 character long")
+  @ApiModelProperty(required = true, value = "The first name of the trainee")
   private String firstName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "last name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "last name should be at least 1 character long")
+  @ApiModelProperty(required = true, value = "The last name of the trainee")
   private String lastName;
 
   @NotNull(groups = {Create.class, Update.class}, message = "review date cannot be null")
+  @ApiModelProperty(required = true, value = "The review date of the assessment event")
   private LocalDate reviewDate;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme number cannot be null")
+  @ApiModelProperty(required = true, value = "The programme number of this trainee's assessment")
   private String programmeNumber;
 
   @NotNull(groups = {Create.class, Update.class}, message = "programme name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "programme name should be at least 1 character long")
+  @ApiModelProperty(required = true, value = "The programme name for this trainee's assessment")
   private String programmeName;
 
+  @ApiModelProperty(value = "The current status of the assessment event")
   private EventStatus status;
 
   @NotNull(groups = {Create.class, Update.class}, message = "type cannot be null")
+  @ApiModelProperty(value = "The type of assessment")
   private String type;
 
+  @ApiModelProperty(value = "The original id from Intrepid if it was migrated from Intrepid")
   private String intrepidId;
 
+  @ApiModelProperty(value = "Additional details related to this assessment")
   private AssessmentDetailDTO detail;
 
+  @ApiModelProperty(value = "The outcome of this assessment")
   private OutcomeDTO outcome;
 
+  @ApiModelProperty(value = "Revalidation information for this assessment")
   private RevalidationDTO revalidation;
 
+  @ApiModelProperty(value = "Version number used for optimistic locking")
   private LocalDateTime amendedDate;
 
   public Long getId() {

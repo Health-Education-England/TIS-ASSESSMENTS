@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.ColumnFilterUtil;
@@ -88,7 +89,7 @@ public class AssessmentResource {
       @RequestParam(value = "columnFilters", required = false) String columnFilterJson) throws IOException {
     log.debug("REST request to get a page of People");
     searchQuery = sanitize(searchQuery);
-    List<Class> filterEnumList = Lists.newArrayList(EventStatus.class);
+    List<Class> filterEnumList = Lists.newArrayList(EventStatus.class, OutcomeStatus.class);
     List<ColumnFilter> columnFilters = ColumnFilterUtil.getColumnFilters(columnFilterJson, filterEnumList);
     Page<AssessmentListDTO> page;
     if (StringUtils.isEmpty(searchQuery) && StringUtils.isEmpty(columnFilterJson)) {

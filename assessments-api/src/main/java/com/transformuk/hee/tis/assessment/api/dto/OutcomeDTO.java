@@ -3,6 +3,7 @@ package com.transformuk.hee.tis.assessment.api.dto;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -20,57 +21,81 @@ public class OutcomeDTO implements Serializable {
   @Null(groups = Create.class, message = "id must be null when creating a new Outcome")
   @NotNull(groups = Update.class, message = "id must be provided when updating an Outcome")
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
+  @ApiModelProperty(value = "The id of this outcome, must match the id of the assessment, optional for POST, required for PUT")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "outcome cannot be null")
+  @ApiModelProperty(required = true, value = "The outcome status of this assessment")
   private OutcomeStatus outcome;
 
+  @ApiModelProperty(value = "Whether the outcome is currently under appeal")
   private Boolean underAppeal;
 
   @NotNull(groups = {Create.class, Update.class}, message = "reason must not be null")
+  @ApiModelProperty(required = true, value = "The reasons behind this outcome")
   private String reason;
 
+  @ApiModelProperty(value = "Additional comments relating to the outcome")
   private String comments;
 
+  @ApiModelProperty(value = "Date when training was completed")
   private LocalDate trainingCompletionDate;
 
+  @ApiModelProperty(value = "Date when additional training was completed")
   private LocalDate extendedTrainingCompletionDate;
 
+  @ApiModelProperty(value = "Additional months in training")
   private Integer extendedTrainingTimeInMonths;
 
+  @ApiModelProperty(value = "The id of this outcome, must match the id of the assessment")
   private Boolean tenPercentAudit;
 
+  @ApiModelProperty(value = "true if external trainer")
   private Boolean externalTrainer;
 
   @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeId must not be null")
+  @ApiModelProperty(required = true, value = "The next rotation grade id")
   private String nextRotationGradeId;
 
   @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeName must not be null")
+  @ApiModelProperty(required = true, value = "The next rotation grade name")
   private String nextRotationGradeName;
 
+  @ApiModelProperty(value = "True if the trainee has been notified of the outcome")
   private Boolean traineeNotifiedOfOutcome;
 
+  @ApiModelProperty(value = "The date of the next review")
   private LocalDate nextReviewDate;
 
+  @ApiModelProperty(value = "The original Id if this outcome was migrated from Intrepid")
   private String intrepidId;
 
+  @ApiModelProperty(value = "Academic curriculum assessed")
   private String academicCurriculumAssessed;
 
+  @ApiModelProperty(value = "academic outcome")
   private String academicOutcome;
 
+  @ApiModelProperty(value = "Detailed reasons for this outcome")
   private String detailedReasons;
 
+  @ApiModelProperty(value = "Any mitigating circumstances that have been taken into account")
   private String mitigatingCircumstances;
 
+  @ApiModelProperty(value = "Any competencies that ned to be developed")
   private String competencesToBeDeveloped;
 
+  @ApiModelProperty(value = "Any other recommended actions that need to take place")
   private String otherRecommendedActions;
 
+  @ApiModelProperty(value = "The amount of additional training time")
   private String recommendedAdditionalTrainingTime;
 
+  @ApiModelProperty(value = "Addtional comments from the panel")
   private String additionalCommentsFromPanel;
 
   @NotNull(groups = Update.class, message = "amendedDate cannot be null when updating")
+  @ApiModelProperty(required = true, value = "version property, when updating the outcome, this much match the database value")
   private LocalDateTime amendedDate;
 
 
