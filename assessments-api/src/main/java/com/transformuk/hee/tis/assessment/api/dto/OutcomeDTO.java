@@ -21,7 +21,7 @@ public class OutcomeDTO implements Serializable {
   @Null(groups = Create.class, message = "id must be null when creating a new Outcome")
   @NotNull(groups = Update.class, message = "id must be provided when updating an Outcome")
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
-  @ApiModelProperty(value = "The id of this outcome, must match the id of the assessment, optional for POST, required for PUT")
+  @ApiModelProperty(value = "The id of this outcome, must match the id of the assessment, must be null for POST, required for PUT")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "outcome cannot be null")
@@ -95,9 +95,11 @@ public class OutcomeDTO implements Serializable {
   private String additionalCommentsFromPanel;
 
   @NotNull(groups = Update.class, message = "amendedDate cannot be null when updating")
-  @ApiModelProperty(required = true, value = "version property, when updating the outcome, this much match the database value")
+  @ApiModelProperty(value = "version property, when updating the outcome, this much match the database value")
   private LocalDateTime amendedDate;
 
+  @ApiModelProperty(value = "indicator on whether this record is migrated from an old dataset and should be readonly")
+  private Boolean legacy;
 
   public Long getId() {
     return id;
@@ -422,6 +424,19 @@ public class OutcomeDTO implements Serializable {
     this.amendedDate = amendedDate;
   }
 
+  public Boolean getLegacy() {
+    return legacy;
+  }
+
+  public void setLegacy(Boolean legacy) {
+    this.legacy = legacy;
+  }
+
+  public OutcomeDTO legacy(Boolean legacy) {
+    this.legacy = legacy;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -470,7 +485,8 @@ public class OutcomeDTO implements Serializable {
         ", otherRecommendedActions='" + otherRecommendedActions + '\'' +
         ", recommendedAdditionalTrainingTime='" + recommendedAdditionalTrainingTime + '\'' +
         ", additionalCommentsFromPanel='" + additionalCommentsFromPanel + '\'' +
-        ", amendedDate=" + amendedDate +
+        ", amendedDate=" + amendedDate + '\'' +
+        ", legacy=" + legacy +
         '}';
   }
 }

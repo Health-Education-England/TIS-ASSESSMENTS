@@ -31,6 +31,8 @@ public class Revalidation implements Serializable {
 
   private String responsibleOfficerComments;
 
+  private String intrepidId;
+
   @OneToOne
   @JoinColumn(name = "id")
   private Assessment assessment;
@@ -100,6 +102,19 @@ public class Revalidation implements Serializable {
 
   public Revalidation assessment(Assessment assessment) {
     this.assessment = assessment;
+    return this;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public Revalidation intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
     return this;
   }
 

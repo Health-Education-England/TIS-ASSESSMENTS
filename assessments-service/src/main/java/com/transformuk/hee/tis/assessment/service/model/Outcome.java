@@ -104,6 +104,9 @@ public class Outcome implements Serializable {
   @Column(name = "amendedDate")
   private LocalDateTime amendedDate;
 
+  @Column(name = "legacy")
+  private Boolean legacy;
+
   @OneToOne
   @JoinColumn(name = "id")
   private Assessment assessment;
@@ -426,6 +429,19 @@ public class Outcome implements Serializable {
     this.amendedDate = amendedDate;
   }
 
+  public Boolean getLegacy() {
+    return legacy;
+  }
+
+  public void setLegacy(Boolean legacy) {
+    this.legacy = legacy;
+  }
+
+  public Outcome legacy(Boolean legacy) {
+    this.legacy = legacy;
+    return this;
+  }
+
   public Assessment getAssessment() {
     return assessment;
   }
@@ -481,7 +497,8 @@ public class Outcome implements Serializable {
         ", otherRecommendedActions='" + otherRecommendedActions + '\'' +
         ", recommendedAdditionalTrainingTime='" + recommendedAdditionalTrainingTime + '\'' +
         ", additionalCommentsFromPanel='" + additionalCommentsFromPanel + '\'' +
-        ", amendedDate=" + amendedDate +
+        ", amendedDate=" + amendedDate + '\'' +
+        ", legacy=" + legacy + '\'' +
         ", assessment=" + assessment +
         '}';
   }
