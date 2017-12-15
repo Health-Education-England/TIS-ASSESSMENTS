@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
@@ -33,12 +34,16 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   /**
    * Get one assessment detail by assessment id.
    *
+   * @param traineeId the id of the trainee linked to the assessment
    * @param assessmentId the id of the assessment entity
    * @return the entity
    */
   @Override
   @Transactional(readOnly = true)
   public Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
     if (foundAssessment != null) {
@@ -57,10 +62,12 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
    */
   @Override
   public AssessmentDetailDTO save(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(assessmentDetailDTO);
+    Preconditions.checkState(assessment.getId().equals(assessmentDetailDTO.getId()));
+
     AssessmentDetail assessmentDetail = assessmentDetailMapper.toEntity(assessmentDetailDTO);
     assessmentDetail = assessmentDetailRepository.save(assessmentDetail);
-    assessment.setDetail(assessmentDetail);
-    assessmentRepository.save(assessment);
     return assessmentDetailMapper.toDto(assessmentDetail);
   }
 
@@ -73,15 +80,27 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
    */
   @Override
   public AssessmentDetailDTO create(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(assessmentDetailDTO);
+    Preconditions.checkState(assessmentDetailDTO.getId() == null);
+
     assessmentDetailDTO.setId(assessment.getId());
     return save(assessment, assessmentDetailDTO);
   }
 
+  /**
+   * Find an assessment detail by id
+   * @param assessmentDetailId the id of the entity
+   * @return the detail matching the ID
+   */
   @Override
   @Transactional(readOnly = true)
-  public AssessmentDetailDTO findOne(Long assessmentDetailId) {
-    log.debug("Request to get Assessment : {}", assessmentDetailId);
+  public Optional<AssessmentDetailDTO> findOne(Long assessmentDetailId) {
+    Preconditions.checkNotNull(assessmentDetailId);
+
+    log.debug("Request to get Assessment Detail : {}", assessmentDetailId);
     AssessmentDetail assessmentDetail = assessmentDetailRepository.findOne(assessmentDetailId);
-    return assessmentDetailMapper.toDto(assessmentDetail);
+    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(assessmentDetail);
+    return Optional.ofNullable(assessmentDetailDTO);
   }
 }

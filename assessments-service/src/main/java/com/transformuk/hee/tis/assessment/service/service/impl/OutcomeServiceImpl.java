@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Outcome;
@@ -11,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing Outcome.
@@ -34,59 +33,38 @@ public class OutcomeServiceImpl implements OutcomeService {
   }
 
   /**
-   * Save a outcome.
+   * create a outcome and link it to the assessment
    *
-   * @param outcomeDTO the entity to save
+   * @param assessment the assessment to link the outcome to
+   * @param outcomeDTO the entity to create
    * @return the persisted entity
    */
   @Override
-  public OutcomeDTO save(OutcomeDTO outcomeDTO) {
-    log.debug("Request to save Outcome : {}", outcomeDTO);
-    Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
-    outcome = outcomeRepository.save(outcome);
-    return outcomeMapper.toDto(outcome);
-  }
-
-  @Override
   public OutcomeDTO create(Assessment assessment, OutcomeDTO outcomeDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(outcomeDTO);
+    Preconditions.checkState(outcomeDTO.getId() == null);
+
     outcomeDTO.setId(assessment.getId());
     return save(assessment, outcomeDTO);
   }
 
-  @Override
-  public OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO) {
-    Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
-    outcome = outcomeRepository.save(outcome);
-    return outcomeMapper.toDto(outcome);
-  }
-
   /**
-   * Save a collection outcomes.
+   * Save a outcome and link it to the assessment
    *
-   * @param outcomeDTOs the collection of outcomes to save
+   * @param assessment the assessment to link the outcome to
+   * @param outcomeDTO the entity to save
    * @return the persisted entity
    */
   @Override
+  public OutcomeDTO save(Assessment assessment, OutcomeDTO outcomeDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(outcomeDTO);
+    Preconditions.checkState(assessment.getId().equals(outcomeDTO.getId()), "Outcome id must match the assessment id");
 
-  public List<OutcomeDTO> save(List<OutcomeDTO> outcomeDTOs) {
-    log.debug("Request to save a collection of Outcomes : {}", outcomeDTOs);
-    List<Outcome> outcome = outcomeMapper.toEntity(outcomeDTOs);
+    Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
     outcome = outcomeRepository.save(outcome);
     return outcomeMapper.toDto(outcome);
-  }
-
-  /**
-   * Get all the outcomes.
-   *
-   * @return the list of entities
-   */
-  @Override
-  @Transactional(readOnly = true)
-  public List<OutcomeDTO> findAll() {
-    log.debug("Request to get all Outcomes");
-    return outcomeRepository.findAll().stream()
-        .map(outcomeMapper::toDto)
-        .collect(Collectors.toCollection(LinkedList::new));
   }
 
   /**
@@ -97,20 +75,12 @@ public class OutcomeServiceImpl implements OutcomeService {
    */
   @Override
   @Transactional(readOnly = true)
-  public OutcomeDTO findOne(Long id) {
+  public Optional<OutcomeDTO> findOne(Long id) {
+    Preconditions.checkNotNull(id);
+
     log.debug("Request to get Outcome : {}", id);
     Outcome outcome = outcomeRepository.findOne(id);
-    return outcomeMapper.toDto(outcome);
-  }
-
-  /**
-   * Delete the  outcome by id.
-   *
-   * @param id the id of the entity
-   */
-  @Override
-  public void delete(Long id) {
-    log.debug("Request to delete Outcome : {}", id);
-    outcomeRepository.delete(id);
+    OutcomeDTO outcomeDTO = outcomeMapper.toDto(outcome);
+    return Optional.ofNullable(outcomeDTO);
   }
 }

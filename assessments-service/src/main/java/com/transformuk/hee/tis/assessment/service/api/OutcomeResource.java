@@ -109,7 +109,7 @@ public class OutcomeResource {
 
   //Kept to allow compatibility with audit service
   private ResponseEntity<OutcomeDTO> getOutcome(Long outcomeId) {
-    OutcomeDTO outcomeDTO = outcomeService.findOne(outcomeId);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(outcomeDTO));
+    Optional<OutcomeDTO> outcomeDTO = outcomeService.findOne(outcomeId);
+    return ResponseUtil.wrapOrNotFound(outcomeDTO);
   }
 }

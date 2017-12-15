@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Revalidation;
@@ -45,6 +46,9 @@ public class RevalidationServiceImpl implements RevalidationService {
   @Override
   @Transactional(readOnly = true)
   public Optional<RevalidationDTO> findAssessmentRevalidationBy(String traineeId, Long assessmentId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
     RevalidationDTO revalidationDTO = revalidationMapper.toDto(foundAssessment.getRevalidation());
@@ -61,16 +65,22 @@ public class RevalidationServiceImpl implements RevalidationService {
    */
   @Override
   public RevalidationDTO save(Assessment assessment, RevalidationDTO revalidationDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(revalidationDTO);
+    Preconditions.checkState(assessment.getId().equals(revalidationDTO.getId()));
+
     log.debug("Request to save revalidation : {}", revalidationDTO);
     Revalidation revalidation = revalidationMapper.toEntity(revalidationDTO);
     revalidation = revalidationRepository.save(revalidation);
-    assessment.setRevalidation(revalidation);
-    assessmentRepository.save(assessment);
     return revalidationMapper.toDto(revalidation);
   }
 
   @Override
   public RevalidationDTO create(Assessment assessment, RevalidationDTO revalidationDTO) {
+    Preconditions.checkNotNull(assessment);
+    Preconditions.checkNotNull(revalidationDTO);
+    Preconditions.checkState(revalidationDTO.getId() == null);
+
     log.debug("Request to create revalidation : {}", revalidationDTO);
     revalidationDTO.setId(assessment.getId());
     return save(assessment, revalidationDTO);
@@ -84,10 +94,13 @@ public class RevalidationServiceImpl implements RevalidationService {
    */
   @Override
   @Transactional(readOnly = true)
-  public RevalidationDTO findOne(Long id) {
+  public Optional<RevalidationDTO> findOne(Long id) {
+    Preconditions.checkNotNull(id);
+
     log.debug("Request to get revalidation : {}", id);
     Revalidation revalidation = revalidationRepository.findOne(id);
-    return revalidationMapper.toDto(revalidation);
+    RevalidationDTO revalidationDTO = revalidationMapper.toDto(revalidation);
+    return Optional.ofNullable(revalidationDTO);
   }
 
 }

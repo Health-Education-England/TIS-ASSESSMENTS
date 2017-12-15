@@ -100,8 +100,8 @@ public class RevalidationResource {
 
   //Kept to allow compatibility with audit service
   private ResponseEntity<RevalidationDTO> getRevalidation(Long revalidationId) {
-    RevalidationDTO revalidationDTO = revalidationService.findOne(revalidationId);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(revalidationDTO));
+    Optional<RevalidationDTO> revalidationDTO = revalidationService.findOne(revalidationId);
+    return ResponseUtil.wrapOrNotFound(revalidationDTO);
   }
 
 }

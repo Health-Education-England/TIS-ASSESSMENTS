@@ -98,8 +98,8 @@ public class AssessmentDetailResource {
 
   //Kept to allow compatibility with audit service
   private ResponseEntity<AssessmentDetailDTO> getAssessmentDetail(Long assessmentDetailId) {
-    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailService.findOne(assessmentDetailId);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(assessmentDetailDTO));
+    Optional<AssessmentDetailDTO> assessmentDetailDTO = assessmentDetailService.findOne(assessmentDetailId);
+    return ResponseUtil.wrapOrNotFound(assessmentDetailDTO);
   }
 
 }

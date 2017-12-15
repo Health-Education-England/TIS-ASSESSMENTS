@@ -39,5 +39,5 @@ public interface AssessmentDetailService {
    * @param assessmentDetailId the id of the entity
    * @return the entity
    */
-  AssessmentDetailDTO findOne(Long assessmentDetailId);
+  Optional<AssessmentDetailDTO> findOne(Long assessmentDetailId);
 }

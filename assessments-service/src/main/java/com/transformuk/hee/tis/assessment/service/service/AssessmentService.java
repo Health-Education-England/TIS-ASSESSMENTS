@@ -24,15 +24,6 @@ public interface AssessmentService {
   AssessmentDTO save(AssessmentDTO assessmentDTO);
 
   /**
-   * Save a collection of assessments
-   *
-   * @param assessmentDTOs
-   * @return
-   */
-  List<AssessmentDTO> save(List<AssessmentDTO> assessmentDTOs);
-
-
-  /**
    * Get all the assessments.
    *
    * @param pageable the pagination information
@@ -66,13 +57,6 @@ public interface AssessmentService {
    * @return the entity
    */
   Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId);
-
-  /**
-   * Delete the "id" assessment.
-   *
-   * @param id the id of the entity
-   */
-  void delete(Long id);
 
   Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
 

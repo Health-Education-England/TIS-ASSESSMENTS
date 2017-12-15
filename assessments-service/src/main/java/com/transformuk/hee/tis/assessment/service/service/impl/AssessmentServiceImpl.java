@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
@@ -55,25 +56,15 @@ public class AssessmentServiceImpl implements AssessmentService {
    */
   @Override
   public AssessmentDTO save(AssessmentDTO assessmentDTO) {
+    Preconditions.checkNotNull(assessmentDTO);
+
     log.debug("Request to save Assessment : {}", assessmentDTO);
     assessmentDTO.setDetail(null);
     assessmentDTO.setOutcome(null);
     assessmentDTO.setRevalidation(null);
-    log.info("AsssesmentDTO {} before convert", assessmentDTO);
     Assessment assessment = assessmentMapper.toEntity(assessmentDTO);
-    log.info("Asssesment {} before save", assessment);
     assessment = assessmentRepository.save(assessment);
-    log.info("Asssesment {} after save", assessment);
     return assessmentMapper.toDto(assessment);
-  }
-
-
-  @Override
-  public List<AssessmentDTO> save(List<AssessmentDTO> assessmentDTOs) {
-    log.debug("Request to save collcetion of Assessment : {}", assessmentDTOs);
-    List<Assessment> assessments = assessmentMapper.toEntity(assessmentDTOs);
-    assessments = assessmentRepository.save(assessments);
-    return assessmentMapper.toDto(assessments);
   }
 
   /**
@@ -85,7 +76,9 @@ public class AssessmentServiceImpl implements AssessmentService {
   @Override
   @Transactional(readOnly = true)
   public Page<AssessmentListDTO> findAll(Pageable pageable) {
-    log.debug("Request to get all Assessments");
+    Preconditions.checkNotNull(pageable);
+
+    log.debug("Request to get all Assessments Lists");
     return assessmentRepository.findAll(pageable)
         .map(assessmentListMapper::toDto);
   }
@@ -99,20 +92,11 @@ public class AssessmentServiceImpl implements AssessmentService {
   @Override
   @Transactional(readOnly = true)
   public AssessmentDTO findOne(Long id) {
+    Preconditions.checkNotNull(id);
+
     log.debug("Request to get Assessment : {}", id);
     Assessment assessment = assessmentRepository.findOne(id);
     return assessmentMapper.toDto(assessment);
-  }
-
-  /**
-   * Delete the  assessment by id.
-   *
-   * @param id the id of the entity
-   */
-  @Override
-  public void delete(Long id) {
-    log.debug("Request to delete Assessment : {}", id);
-    assessmentRepository.delete(id);
   }
 
   @Override
@@ -145,14 +129,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId) {
-    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
-    return Optional.ofNullable(assessmentMapper.toDto(traineeAssessment.orElse(null)));
-  }
-
-  @Override
-  @Transactional(readOnly = true)
   public Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
     Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
     return Optional.ofNullable(foundAssessment);
@@ -160,7 +140,20 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
+  public Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
+    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+    return Optional.ofNullable(assessmentMapper.toDto(traineeAssessment.orElse(null)));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(page);
+
     Assessment example = new Assessment().traineeId(traineeId);
     return assessmentRepository.findAll(Example.of(example), page)
         .map(assessmentMapper::toDto);

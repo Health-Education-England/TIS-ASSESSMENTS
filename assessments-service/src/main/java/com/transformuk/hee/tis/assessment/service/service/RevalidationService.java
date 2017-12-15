@@ -39,5 +39,5 @@ public interface RevalidationService {
   RevalidationDTO create(Assessment assessment, RevalidationDTO revalidationDTO);
 
 
-  RevalidationDTO findOne(Long revalidationId);
+  Optional<RevalidationDTO> findOne(Long revalidationId);
 }
