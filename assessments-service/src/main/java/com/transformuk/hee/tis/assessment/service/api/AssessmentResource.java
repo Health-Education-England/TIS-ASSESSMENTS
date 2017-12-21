@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -60,12 +61,9 @@ public class AssessmentResource {
   private static final String NOID_ERR_MSG = "Some DTOs you've provided have no Id, cannot update entities that don't exist";
 
   private final Logger log = LoggerFactory.getLogger(AssessmentResource.class);
-  private final AssessmentService assessmentService;
 
-  public AssessmentResource(AssessmentService assessmentService) {
-    this.assessmentService = assessmentService;
-  }
-
+  @Autowired
+  private AssessmentService assessmentService;
 
   /**
    * GET  /assessments : get all the assessments.
@@ -74,10 +72,9 @@ public class AssessmentResource {
    * @return the ResponseEntity with status 200 (OK) and the list of assessments in body
    */
   @ApiOperation(value = "Lists Assessment data",
-      notes = "Returns a list of assessments with support for pagination, sorting, smart search and column filters \n",
-      response = ResponseEntity.class, responseContainer = "Person list")
+      notes = "Returns a list of assessments with support for pagination, sorting, smart search and column filters")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Assessment list", response = ResponseEntity.class)})
+      @ApiResponse(code = 200, message = "Assessment list")})
   @GetMapping("/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
@@ -172,7 +169,7 @@ public class AssessmentResource {
    */
   @GetMapping("/{traineeId}/assessments/{assessmentId}")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+//  @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDTO> getTraineeAssessment(@PathVariable String traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Assessment : {}", assessmentId);
     Optional<AssessmentDTO> assessmentDTO = assessmentService.findTraineeAssessmentDTO(traineeId, assessmentId);

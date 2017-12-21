@@ -93,6 +93,9 @@ kc:
 #
 # Full reference is available at: http://www.jhipster.tech/common-application-properties/
 # ===================================================================
+security:
+  basic:
+    enabled: false
 
 jhipster:
     http:

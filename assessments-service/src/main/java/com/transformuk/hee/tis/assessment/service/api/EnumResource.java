@@ -22,10 +22,9 @@ public class EnumResource {
       notes = "Used by clients to retrieve all EventStatus types that are currently available by this service. \n" +
           "This allows clients to dynamically list out all options for particular fields so that we do not \n" +
           "need to maintain a list on both the backend and client",
-      response = ResponseEntity.class, responseContainer = "List",
       httpMethod = "GET", produces = "application/json", protocols = "http, https")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "All Assessment Types", response = ResponseEntity.class)})
+      @ApiResponse(code = 200, message = "All Assessment Types")})
   @RequestMapping(value = "/event-status", method = RequestMethod.GET)
   public ResponseEntity<EventStatus[]> getAllEventStatus() {
     return new ResponseEntity<>(EventStatus.values(), HttpStatus.OK);
@@ -35,10 +34,9 @@ public class EnumResource {
       notes = "Used by clients to retrieve all OutcomeStatus types that are currently available by this service. \n" +
           "This allows clients to dynamically list out all options for particular fields so that we do not \n" +
           "need to maintain a list on both the backend and client",
-      response = ResponseEntity.class, responseContainer = "List",
       httpMethod = "GET", produces = "application/json", protocols = "http, https")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "All Assessment Types", response = ResponseEntity.class)})
+      @ApiResponse(code = 200, message = "All Assessment Types")})
   @RequestMapping(value = "/outcome-status", method = RequestMethod.GET)
   public ResponseEntity<OutcomeStatus[]> getAllOutcomeStatus() {
     return new ResponseEntity<>(OutcomeStatus.values(), HttpStatus.OK);

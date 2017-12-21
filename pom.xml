@@ -12,6 +12,7 @@
 		<module>assessments-api</module>
 		<module>assessments-service</module>
 		<module>assessments-client</module>
-	</modules>
+    <module>assessments-cdc</module>
+  </modules>
 
 </project>

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
@@ -93,4 +94,8 @@ public class Application {
     return new TisAuditRepository();
   }
 
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
+  }
 }

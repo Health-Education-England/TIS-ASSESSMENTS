@@ -2,6 +2,7 @@ package com.transformuk.hee.tis.assessment.service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -38,6 +39,7 @@ public class SwaggerDocumentationConfig {
         .select()
         .apis(RequestHandlerSelectors.basePackage("com.transformuk.hee.tis.assessment.service.api"))
         .build()
-        .apiInfo(apiInfo());
+        .apiInfo(apiInfo())
+        .genericModelSubstitutes(ResponseEntity.class);
   }
 }
