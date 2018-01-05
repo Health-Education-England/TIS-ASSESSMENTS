@@ -16,6 +16,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +41,7 @@ public class OutcomeServiceImplTest {
   private OutcomeDTO outcomeDTOMock, resultOutcomeDTOMock;
 
   @Before
-  public void setup(){
+  public void setup() {
     when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(outcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(resultOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
@@ -59,18 +61,53 @@ public class OutcomeServiceImplTest {
 
   @Test(expected = NullPointerException.class)
   public void saveShouldThrowExceptionWhenAssessmentIsNull() {
-    testObj.save(null, outcomeDTOMock);
+    try {
+      testObj.save(null, outcomeDTOMock);
+    } catch (Exception e) {
+      verify(outcomeMapperMock, never()).toEntity(any(OutcomeDTO.class));
+      verify(outcomeRepositoryMock, never()).save(any(Outcome.class));
+      verify(outcomeMapperMock, never()).toDto(any(Outcome.class));
+      throw e;
+    }
   }
 
   @Test(expected = NullPointerException.class)
   public void saveShouldThrowExceptionWhenOutcomeIsNull() {
-    testObj.save(assessmentMock, null);
+    try {
+      testObj.save(assessmentMock, null);
+    } catch (Exception e) {
+      verify(outcomeMapperMock, never()).toEntity(any(OutcomeDTO.class));
+      verify(outcomeRepositoryMock, never()).save(any(Outcome.class));
+      verify(outcomeMapperMock, never()).toDto(any(Outcome.class));
+      throw e;
+    }
   }
 
   @Test(expected = IllegalStateException.class)
   public void saveShouldThrowExceptionOutcomeIdDoesNotMatchAssessment() {
     when(outcomeDTOMock.getId()).thenReturn(3L);
-    testObj.save(assessmentMock, outcomeDTOMock);
+    try {
+      testObj.save(assessmentMock, outcomeDTOMock);
+    } catch (Exception e) {
+      verify(outcomeMapperMock, never()).toEntity(any(OutcomeDTO.class));
+      verify(outcomeRepositoryMock, never()).save(any(Outcome.class));
+      verify(outcomeMapperMock, never()).toDto(any(Outcome.class));
+      throw e;
+    }
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void saveShouldThrowExceptionWhenOutcomeIsLegacy() {
+    Outcome outcome = new Outcome().legacy(true);
+    when(outcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(outcome);
+    try {
+      testObj.save(assessmentMock, outcomeDTOMock);
+    } catch (Exception e) {
+      verify(outcomeMapperMock, never()).toEntity(any(OutcomeDTO.class));
+      verify(outcomeRepositoryMock, never()).save(any(Outcome.class));
+      verify(outcomeMapperMock, never()).toDto(any(Outcome.class));
+      throw e;
+    }
   }
 
   @Test
@@ -127,7 +164,7 @@ public class OutcomeServiceImplTest {
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
     when(outcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
-    when(outcomeMapperMock.toDto((Outcome)null)).thenReturn(null);
+    when(outcomeMapperMock.toDto((Outcome) null)).thenReturn(null);
 
     Optional<OutcomeDTO> result = testObj.findOne(ASSESSMENT_ID);
 

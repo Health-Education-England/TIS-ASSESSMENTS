@@ -94,4 +94,13 @@ public class ExceptionTranslator implements ProblemHandling {
         .build();
     return create(ex, problem, request);
   }
+
+  @ExceptionHandler(IllegalStateException.class)
+  public ResponseEntity<Problem> handleIllegalStateError(IllegalStateException ex, NativeWebRequest request) {
+    Problem problem = Problem.builder()
+        .withStatus(Status.BAD_REQUEST)
+        .with("message", ex.getMessage())
+        .build();
+    return create(ex, problem, request);
+  }
 }

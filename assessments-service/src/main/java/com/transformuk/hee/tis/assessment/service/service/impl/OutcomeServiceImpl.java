@@ -7,6 +7,7 @@ import com.transformuk.hee.tis.assessment.service.model.Outcome;
 import com.transformuk.hee.tis.assessment.service.repository.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,12 @@ public class OutcomeServiceImpl implements OutcomeService {
     Preconditions.checkNotNull(assessment);
     Preconditions.checkNotNull(outcomeDTO);
     Preconditions.checkState(assessment.getId().equals(outcomeDTO.getId()), "Outcome id must match the assessment id");
+
+    //get the current version of the entity to see if its a legacy one
+    Outcome originalOutcome = outcomeRepository.findOne(outcomeDTO.getId());
+    if (originalOutcome != null && BooleanUtils.isTrue(originalOutcome.getLegacy())) { //method is used by create too so there doesn't need to be an outcome atm
+      throw new IllegalStateException("Cannot modify an outcome marked as legacy");
+    }
 
     Outcome outcome = outcomeMapper.toEntity(outcomeDTO);
     outcome = outcomeRepository.save(outcome);
