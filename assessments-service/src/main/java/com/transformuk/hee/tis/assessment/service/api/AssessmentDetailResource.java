@@ -45,7 +45,7 @@ public class AssessmentDetailResource {
   @GetMapping("/{traineeId}/assessments/{assessmentId}/details")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDetailDTO> getTraineeAssessmentDetails(@PathVariable String traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<AssessmentDetailDTO> getTraineeAssessmentDetails(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get AssessmentDetail");
     Optional<AssessmentDetailDTO> assessmentDetailDTO = assessmentDetailService.findAssessmentDetailBy(traineeId, assessmentId);
     return ResponseUtil.wrapOrNotFound(assessmentDetailDTO);
@@ -62,7 +62,7 @@ public class AssessmentDetailResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDetailDTO> createTraineeAssessmentDetails(@RequestBody @Validated(Create.class) AssessmentDetailDTO assessmentDetailDTO,
-                                                                            @PathVariable String traineeId,
+                                                                            @PathVariable Long traineeId,
                                                                             @PathVariable Long assessmentId) {
     log.debug("REST request to create AssessmentDetail : {}", assessmentDetailDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
@@ -85,7 +85,7 @@ public class AssessmentDetailResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDetailDTO> updateTraineeAssessmentDetails(@RequestBody @Validated(Update.class) AssessmentDetailDTO assessmentDetailDTO,
-                                                                            @PathVariable String traineeId, @PathVariable Long assessmentId) {
+                                                                            @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to update AssessmentDetail : {}", assessmentDetailDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     AssessmentDetailDTO savedAssessmentDetail = null;

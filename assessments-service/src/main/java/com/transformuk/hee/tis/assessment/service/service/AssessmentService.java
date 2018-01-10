@@ -47,7 +47,7 @@ public interface AssessmentService {
    * @param assessmentId the id of the assessment
    * @return the entity
    */
-  Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId);
+  Optional<AssessmentDTO> findTraineeAssessmentDTO(Long traineeId, Long assessmentId);
 
   /**
    * Get an assessment linked to a trainee.
@@ -56,9 +56,9 @@ public interface AssessmentService {
    * @param assessmentId the id of the assessment
    * @return the entity
    */
-  Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId);
+  Optional<Assessment> findTraineeAssessment(Long traineeId, Long assessmentId);
 
   Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
 
-  Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page);
+  Page<AssessmentDTO> findAllForTrainee(Long traineeId, Pageable page);
 }

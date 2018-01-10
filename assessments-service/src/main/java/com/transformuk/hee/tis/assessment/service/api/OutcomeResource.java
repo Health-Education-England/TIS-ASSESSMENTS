@@ -53,7 +53,7 @@ public class OutcomeResource {
   @GetMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<OutcomeDTO> getTraineeAssessmentOutcomes(@PathVariable String traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<OutcomeDTO> getTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Assessment Outcome");
     Optional<AssessmentDTO> traineeAssessment = assessmentService.findTraineeAssessmentDTO(traineeId, assessmentId);
     OutcomeDTO outcome = null;
@@ -75,7 +75,7 @@ public class OutcomeResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<OutcomeDTO> createTraineeAssessmentOutcomes(@RequestBody @Validated(Create.class) OutcomeDTO outcomeDTO,
-                                                                    @PathVariable String traineeId, @PathVariable Long assessmentId) {
+                                                                    @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to create Outcome : {}", outcomeDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     OutcomeDTO savedOutcome = null;
@@ -97,7 +97,7 @@ public class OutcomeResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<OutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDTO,
-                                                                    @PathVariable String traineeId, @PathVariable Long assessmentId) {
+                                                                    @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to create Outcome : {}", outcomeDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     OutcomeDTO savedOutcome = null;

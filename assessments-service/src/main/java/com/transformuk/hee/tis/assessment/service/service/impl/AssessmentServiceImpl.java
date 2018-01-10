@@ -129,7 +129,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<Assessment> findTraineeAssessment(String traineeId, Long assessmentId) {
+  public Optional<Assessment> findTraineeAssessment(Long traineeId, Long assessmentId) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(assessmentId);
 
@@ -140,7 +140,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<AssessmentDTO> findTraineeAssessmentDTO(String traineeId, Long assessmentId) {
+  public Optional<AssessmentDTO> findTraineeAssessmentDTO(Long traineeId, Long assessmentId) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(assessmentId);
 
@@ -150,7 +150,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentDTO> findAllForTrainee(String traineeId, Pageable page) {
+  public Page<AssessmentDTO> findAllForTrainee(Long traineeId, Pageable page) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(page);
 

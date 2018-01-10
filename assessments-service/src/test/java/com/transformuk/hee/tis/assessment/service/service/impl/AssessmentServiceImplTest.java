@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentServiceImplTest {
 
-  private static final String TRAINEE_ID = "TRAINEE_ID";
+  private static final Long TRAINEE_ID = 11111L;
   private static final Long ASSESSMENT_ID = 1L;
   @InjectMocks
   private AssessmentServiceImpl testObj;

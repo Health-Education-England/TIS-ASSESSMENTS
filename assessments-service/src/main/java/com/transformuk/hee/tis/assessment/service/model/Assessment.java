@@ -32,7 +32,7 @@ public class Assessment implements Serializable {
   private Long id;
 
   @Column(name = "traineeId")
-  private String traineeId;
+  private Long traineeId;
 
   @Column(name = "firstName")
   private String firstName;
@@ -85,15 +85,15 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public String getTraineeId() {
+  public Long getTraineeId() {
     return traineeId;
   }
 
-  public void setTraineeId(String traineeId) {
+  public void setTraineeId(Long traineeId) {
     this.traineeId = traineeId;
   }
 
-  public Assessment traineeId(String trainee) {
+  public Assessment traineeId(Long trainee) {
     this.traineeId = trainee;
     return this;
   }

@@ -10,7 +10,7 @@ public class AssessmentListDTO {
 
   private LocalDate reviewDate;
 
-  private String traineeId;
+  private Long traineeId;
 
   private String firstName;
 
@@ -51,11 +51,11 @@ public class AssessmentListDTO {
     this.reviewDate = reviewDate;
   }
 
-  public String getTraineeId() {
+  public Long getTraineeId() {
     return traineeId;
   }
 
-  public void setTraineeId(String traineeId) {
+  public void setTraineeId(Long traineeId) {
     this.traineeId = traineeId;
   }
 

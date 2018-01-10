@@ -110,7 +110,7 @@ public class AssessmentResource {
   @GetMapping("/{traineeId}/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable String traineeId, @ApiParam Pageable page) {
+  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable Long traineeId, @ApiParam Pageable page) {
     Page<AssessmentDTO> assessmentForTrainee = assessmentService.findAllForTrainee(traineeId, page);
     HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(assessmentForTrainee, "/api/assessments");
     return new ResponseEntity<>(assessmentForTrainee.getContent(), headers, HttpStatus.OK);
@@ -127,10 +127,14 @@ public class AssessmentResource {
   @PostMapping("/{traineeId}/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO, @PathVariable String traineeId) throws URISyntaxException {
+  public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO, @PathVariable Long traineeId) throws URISyntaxException {
     log.debug("REST request to save Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() != null) {
       throw new BadRequestAlertException("A new assessment cannot already have an ID", ENTITY_NAME, "idexists");
+    }
+
+    if(!traineeId.equals(assessmentDTO.getTraineeId())) {
+      throw new BadRequestAlertException("A new assessment does not have the same trainee id as uri path", ENTITY_NAME, "idconflict");
     }
     AssessmentDTO result = assessmentService.save(assessmentDTO);
     return ResponseEntity.created(new URI("/api/assessments/" + result.getId()))
@@ -152,7 +156,7 @@ public class AssessmentResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO,
-                                                               @PathVariable String traineeId) throws URISyntaxException {
+                                                               @PathVariable Long traineeId) throws URISyntaxException {
     log.debug("REST request to update Assessment : {}", assessmentDTO);
     if (assessmentDTO.getId() == null) {
       return createTraineeAssessment(assessmentDTO, traineeId);
@@ -173,7 +177,7 @@ public class AssessmentResource {
   @GetMapping("/{traineeId}/assessments/{assessmentId}")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDTO> getTraineeAssessment(@PathVariable String traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<AssessmentDTO> getTraineeAssessment(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Assessment : {}", assessmentId);
     Optional<AssessmentDTO> assessmentDTO = assessmentService.findTraineeAssessmentDTO(traineeId, assessmentId);
     return ResponseUtil.wrapOrNotFound(assessmentDTO);
@@ -191,8 +195,8 @@ public class AssessmentResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO,
-                                                               @PathVariable String traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
-    if (!StringUtils.equalsIgnoreCase(assessmentDTO.getTraineeId(), traineeId) || !assessmentId.equals(assessmentDTO.getId())) {
+                                                               @PathVariable Long traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
+    if (!traineeId.equals(assessmentDTO.getTraineeId()) || !assessmentId.equals(assessmentDTO.getId())) {
       throw new BadRequestAlertException("Trainee Id or assessment Id do not match the payload Ids", ENTITY_NAME, "idexists");
     }
 
@@ -211,8 +215,8 @@ public class AssessmentResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO,
-                                                               @PathVariable String traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
-    if (!StringUtils.equalsIgnoreCase(assessmentDTO.getTraineeId(), traineeId) || !assessmentId.equals(assessmentDTO.getId())) {
+                                                               @PathVariable Long traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
+    if (!traineeId.equals(assessmentDTO.getTraineeId()) || !assessmentId.equals(assessmentDTO.getId())) {
       throw new BadRequestAlertException("Trainee Id or assessment Id do not match the payload Ids", ENTITY_NAME, "idexists");
     }
     return updateTraineeAssessment(assessmentDTO, traineeId);

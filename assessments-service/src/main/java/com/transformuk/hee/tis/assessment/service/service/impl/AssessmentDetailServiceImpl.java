@@ -40,7 +40,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId) {
+  public Optional<AssessmentDetailDTO> findAssessmentDetailBy(Long traineeId, Long assessmentId) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(assessmentId);
 

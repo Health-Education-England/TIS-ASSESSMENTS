@@ -102,8 +102,8 @@ public class AssessmentResourceIntTest {
   private static final Boolean DEFAULT_PYA = true;
   private static final Boolean UPDATED_PYA = false;
 
-  private static final String DEFAULT_PERSON_ID = "12345";
-  private static final String UPDATED_PERSON_ID = "67890";
+  private static final Long DEFAULT_PERSON_ID = 12345L;
+  private static final Long UPDATED_PERSON_ID = 67890L;
 
   private static final String DEFAULT_FIRST_NAME = "firstName-AAAAAA";
   private static final String UPDATED_FIRST_NAME = "firstName-BBBBBB";
@@ -303,7 +303,7 @@ public class AssessmentResourceIntTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
-        .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId())))
+        .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId().intValue())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))

@@ -13,7 +13,7 @@ public interface AssessmentDetailService {
    * @param assessmentId the assessmentId of the entity
    * @return the entity
    */
-  Optional<AssessmentDetailDTO> findAssessmentDetailBy(String traineeId, Long assessmentId);
+  Optional<AssessmentDetailDTO> findAssessmentDetailBy(Long traineeId, Long assessmentId);
 
   /**
    * Save an assessment detail.

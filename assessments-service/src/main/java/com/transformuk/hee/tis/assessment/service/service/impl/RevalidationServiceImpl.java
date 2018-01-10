@@ -45,7 +45,7 @@ public class RevalidationServiceImpl implements RevalidationService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Optional<RevalidationDTO> findAssessmentRevalidationBy(String traineeId, Long assessmentId) {
+  public Optional<RevalidationDTO> findAssessmentRevalidationBy(Long traineeId, Long assessmentId) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(assessmentId);
 

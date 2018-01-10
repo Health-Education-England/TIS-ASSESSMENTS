@@ -18,7 +18,7 @@ public interface RevalidationService {
    * @param assessmentId the id of the assessment entity
    * @return the entity
    */
-  Optional<RevalidationDTO> findAssessmentRevalidationBy(String traineeId, Long assessmentId);
+  Optional<RevalidationDTO> findAssessmentRevalidationBy(Long traineeId, Long assessmentId);
 
   /**
    * Save a revalidation against an assessment.

@@ -26,7 +26,7 @@ public class AssessmentDTO implements Serializable {
 
   @NotNull(groups = {Create.class, Update.class}, message = "traineeId cannot be null")
   @ApiModelProperty(required = true, value = "The id of the trainee")
-  private String traineeId;
+  private Long traineeId;
 
   @NotNull(groups = {Create.class, Update.class}, message = "first name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "first name should be at least 1 character long")
@@ -86,15 +86,15 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public String getTraineeId() {
+  public Long getTraineeId() {
     return traineeId;
   }
 
-  public void setTraineeId(String traineeId) {
+  public void setTraineeId(Long traineeId) {
     this.traineeId = traineeId;
   }
 
-  public AssessmentDTO personId(String personId) {
+  public AssessmentDTO personId(Long personId) {
     this.traineeId = personId;
     return this;
   }

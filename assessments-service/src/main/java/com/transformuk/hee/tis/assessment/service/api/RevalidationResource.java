@@ -47,7 +47,7 @@ public class RevalidationResource {
   @GetMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<RevalidationDTO> getTraineeAssessmentRevalidation(@PathVariable String traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<RevalidationDTO> getTraineeAssessmentRevalidation(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Revalidation");
     Optional<RevalidationDTO> revalidationDTO = revalidationService.findAssessmentRevalidationBy(traineeId, assessmentId);
     return ResponseUtil.wrapOrNotFound(revalidationDTO);
@@ -64,7 +64,7 @@ public class RevalidationResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<RevalidationDTO> createTraineeAssessmentRevalidation(@RequestBody @Validated(Create.class) RevalidationDTO revalidationDTO,
-                                                                             @PathVariable String traineeId,
+                                                                             @PathVariable Long traineeId,
                                                                              @PathVariable Long assessmentId) {
     log.debug("REST request to create Revalidation : {}", revalidationDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
@@ -87,7 +87,7 @@ public class RevalidationResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<RevalidationDTO> updateTraineeAssessmentRevalidation(@RequestBody @Validated(Update.class) RevalidationDTO revalidationDTO,
-                                                                            @PathVariable String traineeId, @PathVariable Long assessmentId) {
+                                                                            @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to update Revalidation : {}", revalidationDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
     RevalidationDTO savedRevalidation = null;

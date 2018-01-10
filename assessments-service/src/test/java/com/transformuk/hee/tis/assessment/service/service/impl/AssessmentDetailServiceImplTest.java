@@ -30,7 +30,7 @@ public class AssessmentDetailServiceImplTest {
 
 
   private static final Long ASSESSMENT_ID = 1L;
-  private static final String TRAINEE_ID = "TRAINEE_ID";
+  private static final Long TRAINEE_ID = 11111L;
 
   @InjectMocks
   @Spy
