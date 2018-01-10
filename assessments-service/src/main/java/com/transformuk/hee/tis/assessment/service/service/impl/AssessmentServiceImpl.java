@@ -9,6 +9,7 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,13 +106,18 @@ public class AssessmentServiceImpl implements AssessmentService {
     List<Specification<Assessment>> specs = new ArrayList<>();
     //add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
-      specs.add(Specifications.where(
+      Specifications whereClause = Specifications.where(
           containsLike("detail.curriculumName", searchString)).
-          or(containsLike("traineeId", searchString)).
           or(containsLike("firstName", searchString)).
           or(containsLike("lastName", searchString)).
-          or(containsLike("type", searchString)));
+          or(containsLike("type", searchString));
+
+      if(NumberUtils.isNumber(searchString)) {
+        whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString));
+      }
+      specs.add(whereClause);
     }
+
     //add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> specs.add(in(cf.getName(), cf.getValues())));
