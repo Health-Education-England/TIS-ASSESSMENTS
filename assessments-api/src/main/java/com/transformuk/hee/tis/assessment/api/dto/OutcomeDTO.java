@@ -31,8 +31,7 @@ public class OutcomeDTO implements Serializable {
   @ApiModelProperty(value = "Whether the outcome is currently under appeal")
   private Boolean underAppeal;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "reason must not be null")
-  @ApiModelProperty(required = true, value = "The reasons behind this outcome")
+  @ApiModelProperty(value = "The reasons behind this outcome")
   private String reason;
 
   @ApiModelProperty(value = "Additional comments relating to the outcome")

@@ -12,7 +12,7 @@
 
   <groupId>com.transformuk.hee.tis</groupId>
   <artifactId>assessments-service</artifactId>
-  <version>1.0.17</version>
+  <version>1.0.18</version>
   <packaging>war</packaging>
 
   <properties>
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
       <artifactId>assessments-api</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <!-- TIS END -->
 
