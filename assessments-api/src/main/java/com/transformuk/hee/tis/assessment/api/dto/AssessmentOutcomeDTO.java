@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * A DTO for the Outcome entity.
  */
-public class OutcomeDTO implements Serializable {
+public class AssessmentOutcomeDTO implements Serializable {
 
   @Null(groups = Create.class, message = "id must be null when creating a new Outcome")
   @NotNull(groups = Update.class, message = "id must be provided when updating an Outcome")
@@ -108,7 +108,7 @@ public class OutcomeDTO implements Serializable {
     this.id = id;
   }
 
-  public OutcomeDTO id(Long id) {
+  public AssessmentOutcomeDTO id(Long id) {
     this.id = id;
     return this;
   }
@@ -121,7 +121,7 @@ public class OutcomeDTO implements Serializable {
     this.outcome = outcome;
   }
 
-  public OutcomeDTO outcome(OutcomeStatus outcome) {
+  public AssessmentOutcomeDTO outcome(OutcomeStatus outcome) {
     this.outcome = outcome;
     return this;
   }
@@ -130,7 +130,7 @@ public class OutcomeDTO implements Serializable {
     return underAppeal;
   }
 
-  public OutcomeDTO underAppeal(Boolean underAppeal) {
+  public AssessmentOutcomeDTO underAppeal(Boolean underAppeal) {
     this.underAppeal = underAppeal;
     return this;
   }
@@ -143,7 +143,7 @@ public class OutcomeDTO implements Serializable {
     this.reason = reason;
   }
 
-  public OutcomeDTO reason(String reason) {
+  public AssessmentOutcomeDTO reason(String reason) {
     this.reason = reason;
     return this;
   }
@@ -156,7 +156,7 @@ public class OutcomeDTO implements Serializable {
     this.comments = comments;
   }
 
-  public OutcomeDTO comments(String comments) {
+  public AssessmentOutcomeDTO comments(String comments) {
     this.comments = comments;
     return this;
   }
@@ -169,7 +169,7 @@ public class OutcomeDTO implements Serializable {
     this.trainingCompletionDate = trainingCompletionDate;
   }
 
-  public OutcomeDTO trainingCompletionDate(LocalDate trainingCompletionDate) {
+  public AssessmentOutcomeDTO trainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
     return this;
   }
@@ -182,7 +182,7 @@ public class OutcomeDTO implements Serializable {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
   }
 
-  public OutcomeDTO extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
+  public AssessmentOutcomeDTO extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
     return this;
   }
@@ -195,7 +195,7 @@ public class OutcomeDTO implements Serializable {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
   }
 
-  public OutcomeDTO extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
+  public AssessmentOutcomeDTO extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
     return this;
   }
@@ -204,7 +204,7 @@ public class OutcomeDTO implements Serializable {
     return tenPercentAudit;
   }
 
-  public OutcomeDTO tenPercentAudit(Boolean tenPercentAudit) {
+  public AssessmentOutcomeDTO tenPercentAudit(Boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
     return this;
   }
@@ -213,7 +213,7 @@ public class OutcomeDTO implements Serializable {
     return externalTrainer;
   }
 
-  public OutcomeDTO externalTrainer(Boolean externalTrainer) {
+  public AssessmentOutcomeDTO externalTrainer(Boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
     return this;
   }
@@ -226,7 +226,7 @@ public class OutcomeDTO implements Serializable {
     this.nextRotationGradeId = nextRotationGradeId;
   }
 
-  public OutcomeDTO nextRotationGradeId(String nextRotationGradeId) {
+  public AssessmentOutcomeDTO nextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
@@ -239,7 +239,7 @@ public class OutcomeDTO implements Serializable {
     this.nextRotationGradeName = nextRotationGradeName;
   }
 
-  public OutcomeDTO nextRotationGradeName(String nextRotationGradeName) {
+  public AssessmentOutcomeDTO nextRotationGradeName(String nextRotationGradeName) {
     this.nextRotationGradeName = nextRotationGradeName;
     return this;
   }
@@ -248,7 +248,7 @@ public class OutcomeDTO implements Serializable {
     return traineeNotifiedOfOutcome;
   }
 
-  public OutcomeDTO traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+  public AssessmentOutcomeDTO traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
   }
@@ -261,7 +261,7 @@ public class OutcomeDTO implements Serializable {
     this.nextReviewDate = nextReviewDate;
   }
 
-  public OutcomeDTO nextReviewDate(LocalDate nextReviewDate) {
+  public AssessmentOutcomeDTO nextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
     return this;
   }
@@ -274,7 +274,7 @@ public class OutcomeDTO implements Serializable {
     this.intrepidId = intrepidId;
   }
 
-  public OutcomeDTO intrepidId(String intrepidId) {
+  public AssessmentOutcomeDTO intrepidId(String intrepidId) {
     this.intrepidId = intrepidId;
     return this;
   }
@@ -319,7 +319,7 @@ public class OutcomeDTO implements Serializable {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
   }
 
-  public OutcomeDTO academicCurriculumAssessed(String academicCurriculumAssessed) {
+  public AssessmentOutcomeDTO academicCurriculumAssessed(String academicCurriculumAssessed) {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
     return this;
   }
@@ -332,7 +332,7 @@ public class OutcomeDTO implements Serializable {
     this.academicOutcome = academicOutcome;
   }
 
-  public OutcomeDTO academicOutcome(String academicOutcome) {
+  public AssessmentOutcomeDTO academicOutcome(String academicOutcome) {
     this.academicOutcome = academicOutcome;
     return this;
   }
@@ -345,7 +345,7 @@ public class OutcomeDTO implements Serializable {
     this.detailedReasons = detailedReasons;
   }
 
-  public OutcomeDTO detailedReasons(String detailedReasons) {
+  public AssessmentOutcomeDTO detailedReasons(String detailedReasons) {
     this.detailedReasons = detailedReasons;
     return this;
   }
@@ -358,7 +358,7 @@ public class OutcomeDTO implements Serializable {
     this.mitigatingCircumstances = mitigatingCircumstances;
   }
 
-  public OutcomeDTO mitigatingCircumstances(String mitigatingCircumstances) {
+  public AssessmentOutcomeDTO mitigatingCircumstances(String mitigatingCircumstances) {
     this.mitigatingCircumstances = mitigatingCircumstances;
     return this;
   }
@@ -371,7 +371,7 @@ public class OutcomeDTO implements Serializable {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
   }
 
-  public OutcomeDTO competencesToBeDeveloped(String competencesToBeDeveloped) {
+  public AssessmentOutcomeDTO competencesToBeDeveloped(String competencesToBeDeveloped) {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
     return this;
   }
@@ -384,7 +384,7 @@ public class OutcomeDTO implements Serializable {
     this.otherRecommendedActions = otherRecommendedActions;
   }
 
-  public OutcomeDTO otherRecommendedActions(String otherRecommendedActions) {
+  public AssessmentOutcomeDTO otherRecommendedActions(String otherRecommendedActions) {
     this.otherRecommendedActions = otherRecommendedActions;
     return this;
   }
@@ -397,7 +397,7 @@ public class OutcomeDTO implements Serializable {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
   }
 
-  public OutcomeDTO recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
+  public AssessmentOutcomeDTO recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
     return this;
   }
@@ -410,7 +410,7 @@ public class OutcomeDTO implements Serializable {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
   }
 
-  public OutcomeDTO additionalCommentsFromPanel(String additionalCommentsFromPanel) {
+  public AssessmentOutcomeDTO additionalCommentsFromPanel(String additionalCommentsFromPanel) {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
     return this;
   }
@@ -431,7 +431,7 @@ public class OutcomeDTO implements Serializable {
     this.legacy = legacy;
   }
 
-  public OutcomeDTO legacy(Boolean legacy) {
+  public AssessmentOutcomeDTO legacy(Boolean legacy) {
     this.legacy = legacy;
     return this;
   }
@@ -445,7 +445,7 @@ public class OutcomeDTO implements Serializable {
       return false;
     }
 
-    OutcomeDTO outcomeDTO = (OutcomeDTO) o;
+    AssessmentOutcomeDTO outcomeDTO = (AssessmentOutcomeDTO) o;
     if (outcomeDTO.getId() == null || getId() == null) {
       return false;
     }
@@ -460,7 +460,7 @@ public class OutcomeDTO implements Serializable {
 
   @Override
   public String toString() {
-    return "OutcomeDTO{" +
+    return "AssessmentOutcomeDTO{" +
         "id=" + id +
         ", outcome=" + outcome +
         ", underAppeal=" + underAppeal +

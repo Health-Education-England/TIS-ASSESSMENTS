@@ -65,7 +65,7 @@ public class AssessmentDTO implements Serializable {
   private AssessmentDetailDTO detail;
 
   @ApiModelProperty(value = "The outcome of this assessment")
-  private OutcomeDTO outcome;
+  private AssessmentOutcomeDTO outcome;
 
   @ApiModelProperty(value = "Revalidation information for this assessment")
   private RevalidationDTO revalidation;
@@ -216,15 +216,15 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public OutcomeDTO getOutcome() {
+  public AssessmentOutcomeDTO getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(OutcomeDTO outcome) {
+  public void setOutcome(AssessmentOutcomeDTO outcome) {
     this.outcome = outcome;
   }
 
-  public AssessmentDTO outcome(OutcomeDTO outcome) {
+  public AssessmentDTO outcome(AssessmentOutcomeDTO outcome) {
     this.outcome = outcome;
     return this;
   }
