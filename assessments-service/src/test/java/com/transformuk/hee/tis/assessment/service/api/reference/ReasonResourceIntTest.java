@@ -1,9 +1,12 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
+import com.google.common.collect.Sets;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
+import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
+import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
 import org.assertj.core.util.Lists;
@@ -27,6 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Matchers.any;
@@ -44,13 +48,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class)
 public class ReasonResourceIntTest {
 
+  private static final long OUTCOME_ID = 1L;
   private static final Long REASON_ID = 1L;
   private static final String REASON_CODE = "reasoncode1";
   private static final String REASON_LABEL = "Reason label";
   private static final Long REASON2_ID = 2L;
   private static final String REASON2_CODE = "reasoncode2";
   private static final String REASON2_LABEL = "Reason 2 label";
-
   @Autowired
   private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
@@ -67,7 +71,13 @@ public class ReasonResourceIntTest {
   private ReasonRepository reasonRepositoryMock;
 
   @MockBean
+  private OutcomeRepository outcomeRepositoryMock;
+
+  @MockBean
   private ReasonService reasonServiceMock;
+
+  @MockBean
+  private Outcome outcomeMock;
 
   private MockMvc restReasonMockMvc;
 
@@ -188,5 +198,34 @@ public class ReasonResourceIntTest {
         .andExpect(jsonPath("$.[*].label").value(hasItems(REASON2_LABEL)));
 
     verify(reasonRepositoryMock, never()).findAll(any(Pageable.class));
+  }
+
+  @Test
+  public void getReasonByByOutcomeIdShouldReturnAllReltedReasons() throws Exception {
+    Reason reason1 = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
+    Reason reason2 = new Reason().id(REASON2_ID).code(REASON2_CODE).label(REASON2_LABEL);
+    Set<Reason> reasons = Sets.newHashSet(reason1, reason2);
+
+    when(outcomeRepositoryMock.findOne(OUTCOME_ID)).thenReturn(outcomeMock);
+    when(reasonRepositoryMock.findByOutcome(outcomeMock)).thenReturn(reasons);
+
+    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}/reasons", 1))
+        .andExpect(jsonPath("$.[*].id").value(hasItems(REASON_ID.intValue(), REASON2_ID.intValue())))
+        .andExpect(jsonPath("$.[*].code").value(hasItems(REASON_CODE, REASON2_CODE)))
+        .andExpect(jsonPath("$.[*].label").value(hasItems(REASON_LABEL, REASON2_LABEL)));
+
+    verify(outcomeRepositoryMock).findOne(OUTCOME_ID);
+    verify(reasonRepositoryMock).findByOutcome(outcomeMock);
+  }
+
+  @Test
+  public void getReasonByByOutcomeIdShouldReturnNotFoundWhenOutcomeDoesntExist() throws Exception {
+    when(outcomeRepositoryMock.findOne(OUTCOME_ID)).thenReturn(null);
+
+    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}/reasons", 1))
+        .andExpect(status().isNotFound());
+
+    verify(outcomeRepositoryMock).findOne(OUTCOME_ID);
+    verify(reasonRepositoryMock, never()).findByOutcome(any());
   }
 }

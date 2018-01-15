@@ -66,7 +66,7 @@ public class Assessment implements Serializable {
   private AssessmentDetail detail;
 
   @OneToOne(mappedBy = "assessment")
-  private Outcome outcome;
+  private AssessmentOutcome outcome;
 
   @OneToOne(mappedBy = "assessment")
   private Revalidation revalidation;
@@ -216,16 +216,16 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public Outcome getOutcome() {
+  public AssessmentOutcome getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(Outcome outcome) {
+  public void setOutcome(AssessmentOutcome outcome) {
     this.outcome = outcome;
   }
 
-  public Assessment outcome(Outcome outcome) {
-    this.outcome = outcome;
+  public Assessment outcome(AssessmentOutcome assessmentOutcome) {
+    this.outcome = assessmentOutcome;
     return this;
   }
 

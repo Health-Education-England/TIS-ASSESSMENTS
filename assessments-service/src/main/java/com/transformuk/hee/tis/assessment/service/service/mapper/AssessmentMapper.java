@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Mapper(
     componentModel = "spring",
-    uses = {AssessmentDetailMapper.class, OutcomeMapper.class, RevalidationMapper.class
+    uses = {AssessmentDetailMapper.class, AssessmentOutcomeMapper.class, RevalidationMapper.class
     })
 public interface AssessmentMapper {
 

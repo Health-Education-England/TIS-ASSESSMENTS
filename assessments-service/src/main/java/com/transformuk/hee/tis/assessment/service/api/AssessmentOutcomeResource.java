@@ -2,13 +2,12 @@ package com.transformuk.hee.tis.assessment.service.api;
 
 import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
-import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
-import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,20 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 /**
- * REST controller for managing Outcome.
+ * REST controller for managing AssessmentOutcome.
  */
 @RestController
 @RequestMapping("/api/trainee")
-public class OutcomeResource {
+public class AssessmentOutcomeResource {
 
   private static final String ENTITY_NAME = "outcome";
 
-  private final Logger log = LoggerFactory.getLogger(OutcomeResource.class);
-  private final OutcomeService outcomeService;
+  private final Logger log = LoggerFactory.getLogger(AssessmentOutcomeResource.class);
+  private final AssessmentOutcomeService assessmentOutcomeService;
   private final AssessmentService assessmentService;
 
-  public OutcomeResource(OutcomeService outcomeService, AssessmentService assessmentService) {
-    this.outcomeService = outcomeService;
+  public AssessmentOutcomeResource(AssessmentOutcomeService assessmentOutcomeService, AssessmentService assessmentService) {
+    this.assessmentOutcomeService = assessmentOutcomeService;
     this.assessmentService = assessmentService;
   }
 
@@ -53,10 +52,10 @@ public class OutcomeResource {
   @GetMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<OutcomeDTO> getTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
-    log.debug("REST request to get Assessment Outcome");
+  public ResponseEntity<AssessmentOutcomeDTO> getTraineeAssessmentOutcomes(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    log.debug("REST request to get Assessment AssessmentOutcome");
     Optional<AssessmentDTO> traineeAssessment = assessmentService.findTraineeAssessmentDTO(traineeId, assessmentId);
-    OutcomeDTO outcome = null;
+    AssessmentOutcomeDTO outcome = null;
     if (traineeAssessment.isPresent()) {
       outcome = traineeAssessment.get().getOutcome();
     }
@@ -66,21 +65,21 @@ public class OutcomeResource {
   /**
    * POST  /:traineeId/assessments/:assessmentId/outcomes : create the an outcome that's linked to a trainee's assessment.
    *
-   * @param outcomeDTO   the outcome to create
-   * @param traineeId    the id of the trainee
-   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @param assessmentOutcomeDTO the outcome to create
+   * @param traineeId            the id of the trainee
+   * @param assessmentId         the id of the assessmentDTO to retrieve
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<OutcomeDTO> createTraineeAssessmentOutcomes(@RequestBody @Validated(Create.class) OutcomeDTO outcomeDTO,
-                                                                    @PathVariable Long traineeId, @PathVariable Long assessmentId) {
-    log.debug("REST request to create Outcome : {}", outcomeDTO);
+  public ResponseEntity<AssessmentOutcomeDTO> createTraineeAssessmentOutcomes(@RequestBody @Validated(Create.class) AssessmentOutcomeDTO assessmentOutcomeDTO,
+                                                                              @PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    log.debug("REST request to create AssessmentOutcome : {}", assessmentOutcomeDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
-    OutcomeDTO savedOutcome = null;
+    AssessmentOutcomeDTO savedOutcome = null;
     if (traineeAssessment.isPresent()) {
-      savedOutcome = outcomeService.create(traineeAssessment.get(), outcomeDTO);
+      savedOutcome = assessmentOutcomeService.create(traineeAssessment.get(), assessmentOutcomeDTO);
     }
     return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedOutcome));
   }
@@ -88,28 +87,28 @@ public class OutcomeResource {
   /**
    * PUT  /:traineeId/assessments/:assessmentId/outcomes : update the an outcome that's linked to a trainee's assessment.
    *
-   * @param outcomeDTO   the outcome to update
-   * @param traineeId    the id of the trainee
-   * @param assessmentId the id of the assessmentDTO to retrieve
+   * @param assessmentOutcomeDTO the outcome to update
+   * @param traineeId            the id of the trainee
+   * @param assessmentId         the id of the assessmentDTO to retrieve
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<OutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDTO,
-                                                                    @PathVariable Long traineeId, @PathVariable Long assessmentId) {
-    log.debug("REST request to create Outcome : {}", outcomeDTO);
+  public ResponseEntity<AssessmentOutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) AssessmentOutcomeDTO assessmentOutcomeDTO,
+                                                                              @PathVariable Long traineeId, @PathVariable Long assessmentId) {
+    log.debug("REST request to create AssessmentOutcome : {}", assessmentOutcomeDTO);
     Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
-    OutcomeDTO savedOutcome = null;
+    AssessmentOutcomeDTO savedOutcome = null;
     if (traineeAssessment.isPresent()) {
-      savedOutcome = outcomeService.save(traineeAssessment.get(), outcomeDTO);
+      savedOutcome = assessmentOutcomeService.save(traineeAssessment.get(), assessmentOutcomeDTO);
     }
     return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedOutcome));
   }
 
   //Kept to allow compatibility with audit service
-  private ResponseEntity<OutcomeDTO> getOutcome(Long outcomeId) {
-    Optional<OutcomeDTO> outcomeDTO = outcomeService.findOne(outcomeId);
+  private ResponseEntity<AssessmentOutcomeDTO> getAssessmentOutcome(Long outcomeId) {
+    Optional<AssessmentOutcomeDTO> outcomeDTO = assessmentOutcomeService.findOne(outcomeId);
     return ResponseUtil.wrapOrNotFound(outcomeDTO);
   }
 }

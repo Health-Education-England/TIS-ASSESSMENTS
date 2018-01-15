@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.repository;
 
-import com.transformuk.hee.tis.assessment.service.model.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

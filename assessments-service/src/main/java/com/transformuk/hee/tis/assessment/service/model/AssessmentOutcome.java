@@ -20,12 +20,12 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * A Outcome.
+ * A AssessmentOutcome.
  */
 @Entity
-@Table(name = "Outcome")
+@Table(name = "AssessmentOutcome")
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class Outcome implements Serializable {
+public class AssessmentOutcome implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -127,7 +127,7 @@ public class Outcome implements Serializable {
     this.outcome = outcome;
   }
 
-  public Outcome outcome(OutcomeStatus outcome) {
+  public AssessmentOutcome outcome(OutcomeStatus outcome) {
     this.outcome = outcome;
     return this;
   }
@@ -136,7 +136,7 @@ public class Outcome implements Serializable {
     return underAppeal;
   }
 
-  public Outcome underAppeal(Boolean underAppeal) {
+  public AssessmentOutcome underAppeal(Boolean underAppeal) {
     this.underAppeal = underAppeal;
     return this;
   }
@@ -149,7 +149,7 @@ public class Outcome implements Serializable {
     this.reason = reason;
   }
 
-  public Outcome reason(String reason) {
+  public AssessmentOutcome reason(String reason) {
     this.reason = reason;
     return this;
   }
@@ -162,7 +162,7 @@ public class Outcome implements Serializable {
     this.comments = comments;
   }
 
-  public Outcome comments(String comments) {
+  public AssessmentOutcome comments(String comments) {
     this.comments = comments;
     return this;
   }
@@ -175,7 +175,7 @@ public class Outcome implements Serializable {
     this.trainingCompletionDate = trainingCompletionDate;
   }
 
-  public Outcome trainingCompletionDate(LocalDate trainingCompletionDate) {
+  public AssessmentOutcome trainingCompletionDate(LocalDate trainingCompletionDate) {
     this.trainingCompletionDate = trainingCompletionDate;
     return this;
   }
@@ -188,7 +188,7 @@ public class Outcome implements Serializable {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
   }
 
-  public Outcome extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
+  public AssessmentOutcome extendedTrainingCompletionDate(LocalDate extendedTrainingCompletionDate) {
     this.extendedTrainingCompletionDate = extendedTrainingCompletionDate;
     return this;
   }
@@ -201,7 +201,7 @@ public class Outcome implements Serializable {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
   }
 
-  public Outcome extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
+  public AssessmentOutcome extendedTrainingTimeInMonths(Integer extendedTrainingTimeInMonths) {
     this.extendedTrainingTimeInMonths = extendedTrainingTimeInMonths;
     return this;
   }
@@ -210,7 +210,7 @@ public class Outcome implements Serializable {
     return tenPercentAudit;
   }
 
-  public Outcome tenPercentAudit(Boolean tenPercentAudit) {
+  public AssessmentOutcome tenPercentAudit(Boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
     return this;
   }
@@ -219,7 +219,7 @@ public class Outcome implements Serializable {
     return externalTrainer;
   }
 
-  public Outcome externalTrainer(Boolean externalTrainer) {
+  public AssessmentOutcome externalTrainer(Boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
     return this;
   }
@@ -232,7 +232,7 @@ public class Outcome implements Serializable {
     this.nextRotationGradeId = nextRotationGradeId;
   }
 
-  public Outcome nextRotationGradeId(String nextRotationGradeId) {
+  public AssessmentOutcome nextRotationGradeId(String nextRotationGradeId) {
     this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
@@ -245,7 +245,7 @@ public class Outcome implements Serializable {
     this.nextRotationGradeName = nextRotationGradeName;
   }
 
-  public Outcome nextRotationGradeName(String nextRotationGradeName) {
+  public AssessmentOutcome nextRotationGradeName(String nextRotationGradeName) {
     this.nextRotationGradeName = nextRotationGradeName;
     return this;
   }
@@ -254,7 +254,7 @@ public class Outcome implements Serializable {
     return traineeNotifiedOfOutcome;
   }
 
-  public Outcome traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+  public AssessmentOutcome traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
   }
@@ -267,7 +267,7 @@ public class Outcome implements Serializable {
     this.nextReviewDate = nextReviewDate;
   }
 
-  public Outcome nextReviewDate(LocalDate nextReviewDate) {
+  public AssessmentOutcome nextReviewDate(LocalDate nextReviewDate) {
     this.nextReviewDate = nextReviewDate;
     return this;
   }
@@ -280,7 +280,7 @@ public class Outcome implements Serializable {
     this.intrepidId = intrepidId;
   }
 
-  public Outcome intrepidId(String intrepidId) {
+  public AssessmentOutcome intrepidId(String intrepidId) {
     this.intrepidId = intrepidId;
     return this;
   }
@@ -325,7 +325,7 @@ public class Outcome implements Serializable {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
   }
 
-  public Outcome academicCurriculumAssessed(String academicCurriculumAssessed) {
+  public AssessmentOutcome academicCurriculumAssessed(String academicCurriculumAssessed) {
     this.academicCurriculumAssessed = academicCurriculumAssessed;
     return this;
   }
@@ -338,7 +338,7 @@ public class Outcome implements Serializable {
     this.academicOutcome = academicOutcome;
   }
 
-  public Outcome academicOutcome(String academicOutcome) {
+  public AssessmentOutcome academicOutcome(String academicOutcome) {
     this.academicOutcome = academicOutcome;
     return this;
   }
@@ -351,7 +351,7 @@ public class Outcome implements Serializable {
     this.detailedReasons = detailedReasons;
   }
 
-  public Outcome detailedReasons(String detailedReasons) {
+  public AssessmentOutcome detailedReasons(String detailedReasons) {
     this.detailedReasons = detailedReasons;
     return this;
   }
@@ -364,7 +364,7 @@ public class Outcome implements Serializable {
     this.mitigatingCircumstances = mitigatingCircumstances;
   }
 
-  public Outcome mitigatingCircumstances(String mitigatingCircumstances) {
+  public AssessmentOutcome mitigatingCircumstances(String mitigatingCircumstances) {
     this.mitigatingCircumstances = mitigatingCircumstances;
     return this;
   }
@@ -377,7 +377,7 @@ public class Outcome implements Serializable {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
   }
 
-  public Outcome competencesToBeDeveloped(String competencesToBeDeveloped) {
+  public AssessmentOutcome competencesToBeDeveloped(String competencesToBeDeveloped) {
     this.competencesToBeDeveloped = competencesToBeDeveloped;
     return this;
   }
@@ -390,7 +390,7 @@ public class Outcome implements Serializable {
     this.otherRecommendedActions = otherRecommendedActions;
   }
 
-  public Outcome otherRecommendedActions(String otherRecommendedActions) {
+  public AssessmentOutcome otherRecommendedActions(String otherRecommendedActions) {
     this.otherRecommendedActions = otherRecommendedActions;
     return this;
   }
@@ -403,7 +403,7 @@ public class Outcome implements Serializable {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
   }
 
-  public Outcome recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
+  public AssessmentOutcome recommendedAdditionalTrainingTime(String recommendedAdditionalTrainingTime) {
     this.recommendedAdditionalTrainingTime = recommendedAdditionalTrainingTime;
     return this;
   }
@@ -416,7 +416,7 @@ public class Outcome implements Serializable {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
   }
 
-  public Outcome additionalCommentsFromPanel(String additionalCommentsFromPanel) {
+  public AssessmentOutcome additionalCommentsFromPanel(String additionalCommentsFromPanel) {
     this.additionalCommentsFromPanel = additionalCommentsFromPanel;
     return this;
   }
@@ -437,7 +437,7 @@ public class Outcome implements Serializable {
     this.legacy = legacy;
   }
 
-  public Outcome legacy(Boolean legacy) {
+  public AssessmentOutcome legacy(Boolean legacy) {
     this.legacy = legacy;
     return this;
   }
@@ -458,11 +458,11 @@ public class Outcome implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Outcome outcome = (Outcome) o;
-    if (outcome.getId() == null || getId() == null) {
+    AssessmentOutcome assessmentOutcome = (AssessmentOutcome) o;
+    if (assessmentOutcome.getId() == null || getId() == null) {
       return false;
     }
-    return Objects.equals(getId(), outcome.getId());
+    return Objects.equals(getId(), assessmentOutcome.getId());
   }
 
   @Override
@@ -473,7 +473,7 @@ public class Outcome implements Serializable {
 
   @Override
   public String toString() {
-    return "Outcome{" +
+    return "AssessmentOutcome{" +
         "id=" + id +
         ", outcome=" + outcome +
         ", underAppeal=" + underAppeal +

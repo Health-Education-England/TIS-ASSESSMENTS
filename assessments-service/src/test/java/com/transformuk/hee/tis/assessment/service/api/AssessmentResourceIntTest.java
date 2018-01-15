@@ -2,7 +2,6 @@ package com.transformuk.hee.tis.assessment.service.api;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentType;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -28,13 +27,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;

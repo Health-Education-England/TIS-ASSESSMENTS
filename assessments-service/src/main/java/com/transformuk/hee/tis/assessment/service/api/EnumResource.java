@@ -31,7 +31,7 @@ public class EnumResource {
     return new ResponseEntity<>(EventStatus.values(), HttpStatus.OK);
   }
 
-  @ApiOperation(value = "Lists all OutcomeStatus types that can be associated with an Outcome",
+  @ApiOperation(value = "Lists all OutcomeStatus types that can be associated with an AssessmentOutcome",
       notes = "Used by clients to retrieve all OutcomeStatus types that are currently available by this service. \n" +
           "This allows clients to dynamically list out all options for particular fields so that we do not \n" +
           "need to maintain a list on both the backend and client",

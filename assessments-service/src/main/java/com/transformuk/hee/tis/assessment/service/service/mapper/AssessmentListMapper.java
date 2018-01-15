@@ -1,11 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.service.mapper;
 
-import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
-import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.Outcome;
-import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

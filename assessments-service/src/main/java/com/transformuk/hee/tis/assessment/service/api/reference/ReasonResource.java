@@ -5,7 +5,9 @@ import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
 import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
+import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
+import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -38,6 +40,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 
@@ -51,6 +54,8 @@ public class ReasonResource {
   private ReasonRepository reasonRepository;
   @Autowired
   private ReasonService reasonService;
+  @Autowired
+  private OutcomeRepository outcomeRepository;
 
   /**
    * GET  /:id : get a reason by id.
@@ -83,7 +88,7 @@ public class ReasonResource {
       notes = "Returns a list of Reasons with support for pagination, sorting and smart search")
   @GetMapping("/reasons")
   @Timed
-  @PreAuthorize("hasAuthority('curriculum:view')")
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<List<Reason>> reasonSmartSearch(
       @ApiParam Pageable pageable,
       @ApiParam(value = "any wildcard string to be searched")
@@ -137,4 +142,29 @@ public class ReasonResource {
   }
 
 
+  /**
+   * GET  /outcomes/:id/reasons : get a reasons by that are valid against an outcome.
+   *
+   * @param id the id of the outcome
+   * @return the ResponseEntity with status 200 (OK) and with body containing a list of reasons, or with status 404 (Not Found)
+   */
+  @GetMapping("/outcomes/{id}/reasons")
+  @Timed
+  @ApiOperation(value = "Get a list of Reason by for an Outcome", notes = "Returns a list of Reason when provided with the id of an Outcome", response = Reason.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "The reasons related to the Outcome id", response = Reason.class),
+      @ApiResponse(code = 404, message = "The reasons for this Outcome id could not be found", response = Reason.class),
+  })
+  public ResponseEntity<Set<Reason>> getOutcomeReasons(@PathVariable Long id) {
+    log.debug("REST request to get Reasons with for Outcome id: [{}]", id);
+
+    Outcome outcome = outcomeRepository.findOne(id);
+    Set<Reason> reasons;
+    if (outcome != null) {
+      reasons = reasonRepository.findByOutcome(outcome);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(reasons);
+  }
 }

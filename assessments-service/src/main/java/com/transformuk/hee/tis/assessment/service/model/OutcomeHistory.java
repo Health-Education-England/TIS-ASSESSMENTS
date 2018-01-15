@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * An Outcome History.
+ * An AssessmentOutcome History.
  *
  * All previous version of an outcome are stored here
  */
@@ -498,7 +498,7 @@ public class OutcomeHistory implements Serializable {
 
   @Override
   public String toString() {
-    return "Outcome{" +
+    return "AssessmentOutcome{" +
         "outcome='" + getOutcome() + "'" +
         ", underAppeal='" + isUnderAppeal() + "'" +
         ", reason='" + getReason() + "'" +
