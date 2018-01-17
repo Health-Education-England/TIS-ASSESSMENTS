@@ -92,12 +92,21 @@ public class OutcomeResource {
     searchQuery = sanitize(searchQuery);
     Page<Outcome> page;
     if (StringUtils.isEmpty(searchQuery)) {
-      page = outcomeRepository.findAll(pageable);
+      page = (outcomeRepository.findAll(pageable));
     } else {
       page = outcomeService.advancedSearch(searchQuery, pageable);
     }
     HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/outcomes");
     return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+  }
+
+  @ApiOperation(value = "Lists all Outcomes with linked reasons", notes = "Returns a list of all Outcomes with reasons")
+  @GetMapping("/outcomes/all")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<List<Outcome>> allOutcomes() {
+    List<Outcome> allOutcomesWithReasons = outcomeRepository.findAllWithReasons();
+    return new ResponseEntity<>(allOutcomesWithReasons, HttpStatus.OK);
   }
 
   /**
@@ -112,8 +121,8 @@ public class OutcomeResource {
   public ResponseEntity<Outcome> createOutcome(@RequestBody @Validated(Create.class) Outcome outcome) throws URISyntaxException {
     log.debug("REST request to create new Outcome with code [{}]", outcome.getCode());
     Outcome result = outcomeRepository.save(outcome);
-    return ResponseEntity.created(new URI("/api/outcomes/" + result.getCode()))
-        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getCode()))
+    return ResponseEntity.created(new URI("/api/outcomes/" + result.getId()))
+        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
         .body(result);
 
   }

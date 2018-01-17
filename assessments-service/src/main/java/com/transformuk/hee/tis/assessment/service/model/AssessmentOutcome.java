@@ -1,14 +1,11 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
-import com.transformuk.hee.tis.assessment.api.dto.OutcomeStatus;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -32,12 +29,17 @@ public class AssessmentOutcome implements Serializable {
   @Id
   private Long id;
 
-  @Enumerated(EnumType.STRING)
+  @Column(name = "outcomeId")
+  private Long outcomeId;
+
   @Column(name = "outcome")
-  private OutcomeStatus outcome;
+  private String outcome;
 
   @Column(name = "underAppeal")
   private Boolean underAppeal;
+
+  @Column(name = "reasonId")
+  private Long reasonId;
 
   @Column(name = "reason")
   private String reason;
@@ -119,15 +121,15 @@ public class AssessmentOutcome implements Serializable {
     this.id = id;
   }
 
-  public OutcomeStatus getOutcome() {
+  public String getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(OutcomeStatus outcome) {
+  public void setOutcome(String outcome) {
     this.outcome = outcome;
   }
 
-  public AssessmentOutcome outcome(OutcomeStatus outcome) {
+  public AssessmentOutcome outcome(String outcome) {
     this.outcome = outcome;
     return this;
   }
@@ -138,6 +140,32 @@ public class AssessmentOutcome implements Serializable {
 
   public AssessmentOutcome underAppeal(Boolean underAppeal) {
     this.underAppeal = underAppeal;
+    return this;
+  }
+
+  public Long getOutcomeId() {
+    return outcomeId;
+  }
+
+  public void setOutcomeId(Long outcomeId) {
+    this.outcomeId = outcomeId;
+  }
+
+  public AssessmentOutcome outcomeId(Long outcomeId) {
+    this.outcomeId = outcomeId;
+    return this;
+  }
+
+  public Long getReasonId() {
+    return reasonId;
+  }
+
+  public void setReasonId(Long reasonId) {
+    this.reasonId = reasonId;
+  }
+
+  public AssessmentOutcome reasonId(Long reasonId) {
+    this.reasonId = reasonId;
     return this;
   }
 
@@ -475,9 +503,11 @@ public class AssessmentOutcome implements Serializable {
   public String toString() {
     return "AssessmentOutcome{" +
         "id=" + id +
+        ", outcomeId=" + outcomeId +
         ", outcome=" + outcome +
         ", underAppeal=" + underAppeal +
-        ", reason='" + reason + '\'' +
+        ", reasonId='" + reasonId  +
+        ", reason='" + reason  +
         ", trainingCompletionDate=" + trainingCompletionDate +
         ", extendedTrainingCompletionDate=" + extendedTrainingCompletionDate +
         ", extendedTrainingTimeInMonths=" + extendedTrainingTimeInMonths +

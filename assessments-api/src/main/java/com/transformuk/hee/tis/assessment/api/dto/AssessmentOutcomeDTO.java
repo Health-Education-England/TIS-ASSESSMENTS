@@ -25,14 +25,21 @@ public class AssessmentOutcomeDTO implements Serializable {
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "outcome cannot be null")
-  @ApiModelProperty(required = true, value = "The outcome status of this assessment")
-  private OutcomeStatus outcome;
+  @ApiModelProperty(required = true, value = "The outcome label of this assessment")
+  private String outcome;
+
+  @NotNull(groups = {Create.class, Update.class}, message = "outcome id cannot be null")
+  @ApiModelProperty(required = true, value = "The outcome id of this assessment")
+  private Long outcomeId;
 
   @ApiModelProperty(value = "Whether the outcome is currently under appeal")
   private Boolean underAppeal;
 
   @ApiModelProperty(value = "The reasons behind this outcome")
   private String reason;
+
+  @ApiModelProperty(value = "The reason id behind this outcome")
+  private Long reasonId;
 
   @ApiModelProperty(value = "Additional comments relating to the outcome")
   private String comments;
@@ -113,16 +120,43 @@ public class AssessmentOutcomeDTO implements Serializable {
     return this;
   }
 
-  public OutcomeStatus getOutcome() {
+  public String getOutcome() {
     return outcome;
   }
 
-  public void setOutcome(OutcomeStatus outcome) {
+  public void setOutcome(String outcome) {
     this.outcome = outcome;
   }
 
-  public AssessmentOutcomeDTO outcome(OutcomeStatus outcome) {
+  public AssessmentOutcomeDTO outcome(String outcome) {
     this.outcome = outcome;
+    return this;
+  }
+
+
+  public Long getOutcomeId() {
+    return outcomeId;
+  }
+
+  public void setOutcomeId(Long outcomeId) {
+    this.outcomeId = outcomeId;
+  }
+
+  public AssessmentOutcomeDTO outcomeId(Long outcomeId) {
+    this.outcomeId = outcomeId;
+    return this;
+  }
+
+  public Long getReasonId() {
+    return reasonId;
+  }
+
+  public void setReasonId(Long reasonId) {
+    this.reasonId = reasonId;
+  }
+
+  public AssessmentOutcomeDTO reasonId(Long reasonId) {
+    this.reasonId = reasonId;
     return this;
   }
 
@@ -462,9 +496,11 @@ public class AssessmentOutcomeDTO implements Serializable {
   public String toString() {
     return "AssessmentOutcomeDTO{" +
         "id=" + id +
-        ", outcome=" + outcome +
+        ", outcome='" + outcome + '\'' +
+        ", outcomeId=" + outcomeId +
         ", underAppeal=" + underAppeal +
         ", reason='" + reason + '\'' +
+        ", reasonId=" + reasonId +
         ", comments='" + comments + '\'' +
         ", trainingCompletionDate=" + trainingCompletionDate +
         ", extendedTrainingCompletionDate=" + extendedTrainingCompletionDate +
@@ -484,7 +520,7 @@ public class AssessmentOutcomeDTO implements Serializable {
         ", otherRecommendedActions='" + otherRecommendedActions + '\'' +
         ", recommendedAdditionalTrainingTime='" + recommendedAdditionalTrainingTime + '\'' +
         ", additionalCommentsFromPanel='" + additionalCommentsFromPanel + '\'' +
-        ", amendedDate=" + amendedDate + '\'' +
+        ", amendedDate=" + amendedDate +
         ", legacy=" + legacy +
         '}';
   }
