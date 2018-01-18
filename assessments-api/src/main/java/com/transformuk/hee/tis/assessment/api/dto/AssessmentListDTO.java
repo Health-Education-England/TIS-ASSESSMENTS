@@ -22,7 +22,7 @@ public class AssessmentListDTO {
 
   private String curriculumName;
 
-  private EventStatus status;
+  private EventStatus eventStatus;
 
   private String outcome;
 
@@ -99,12 +99,12 @@ public class AssessmentListDTO {
     this.curriculumName = curriculumName;
   }
 
-  public EventStatus getStatus() {
-    return status;
+  public EventStatus getEventStatus() {
+    return eventStatus;
   }
 
-  public void setStatus(EventStatus status) {
-    this.status = status;
+  public void setEventStatus(EventStatus eventStatus) {
+    this.eventStatus = eventStatus;
   }
 
   public String getOutcome() {
@@ -135,7 +135,7 @@ public class AssessmentListDTO {
       return false;
     if (curriculumName != null ? !curriculumName.equals(that.curriculumName) : that.curriculumName != null)
       return false;
-    if (status != that.status) return false;
+    if (eventStatus != that.eventStatus) return false;
     return outcome != null ? outcome.equals(that.outcome) : that.outcome == null;
   }
 
@@ -150,7 +150,7 @@ public class AssessmentListDTO {
     result = 31 * result + (periodCoveredFrom != null ? periodCoveredFrom.hashCode() : 0);
     result = 31 * result + (periodCoveredTo != null ? periodCoveredTo.hashCode() : 0);
     result = 31 * result + (curriculumName != null ? curriculumName.hashCode() : 0);
-    result = 31 * result + (status != null ? status.hashCode() : 0);
+    result = 31 * result + (eventStatus != null ? eventStatus.hashCode() : 0);
     result = 31 * result + (outcome != null ? outcome.hashCode() : 0);
     return result;
   }
@@ -167,7 +167,7 @@ public class AssessmentListDTO {
         ", periodCoveredFrom=" + periodCoveredFrom +
         ", periodCoveredTo=" + periodCoveredTo +
         ", curriculumName='" + curriculumName + '\'' +
-        ", status=" + status +
+        ", eventStatus=" + eventStatus +
         ", outcome='" + outcome + '\'' +
         '}';
   }

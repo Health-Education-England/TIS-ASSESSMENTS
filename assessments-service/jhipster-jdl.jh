@@ -40,7 +40,7 @@ entity Event {
     endDate ZonedDateTime,
     programmeNumber Long,
     programmeName String,
-    status EventStatus,
+    eventStatus EventStatus,
 }
 
 entity Assessment {

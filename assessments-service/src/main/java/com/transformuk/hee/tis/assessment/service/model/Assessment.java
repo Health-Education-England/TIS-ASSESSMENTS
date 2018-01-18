@@ -51,7 +51,7 @@ public class Assessment implements Serializable {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private EventStatus status;
+  private EventStatus eventStatus;
 
   @Column(name = "type")
   private String type;
@@ -163,16 +163,16 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  public EventStatus getStatus() {
-    return status;
+  public EventStatus getEventStatus() {
+    return eventStatus;
   }
 
-  public void setStatus(EventStatus status) {
-    this.status = status;
+  public void setEventStatus(EventStatus eventStatus) {
+    this.eventStatus = eventStatus;
   }
 
   public Assessment status(EventStatus status) {
-    this.status = status;
+    this.eventStatus = status;
     return this;
   }
 
@@ -285,7 +285,7 @@ public class Assessment implements Serializable {
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
-        ", status='" + getStatus() + "'" +
+        ", eventStatus='" + getEventStatus() + "'" +
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
         ", amendedDate='" + getAmendedDate() + "'" +
