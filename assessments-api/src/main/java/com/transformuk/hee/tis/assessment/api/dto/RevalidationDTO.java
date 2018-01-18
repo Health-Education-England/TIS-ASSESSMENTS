@@ -31,6 +31,9 @@ public class RevalidationDTO implements Serializable {
   @ApiModelProperty(value = "Any comments made by the responsible officer")
   private String responsibleOfficerComments;
 
+  @ApiModelProperty(value = "The intrepid id of this detail if the assessment was initiated from Intrepid")
+  private String intrepidId;
+
   @ApiModelProperty(value = "Versioning property to allow for optimistic locking, must match the DB value for updates")
   private LocalDateTime amendedDate;
 
@@ -83,6 +86,19 @@ public class RevalidationDTO implements Serializable {
 
   public RevalidationDTO responsibleOfficerComments(String responsibleOfficerComments) {
     this.responsibleOfficerComments = responsibleOfficerComments;
+    return this;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public RevalidationDTO intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
     return this;
   }
 

@@ -88,6 +88,9 @@ public class AssessmentDetailDTO implements Serializable {
   @ApiModelProperty(value = "pya")
   private Boolean pya;
 
+  @ApiModelProperty(value = "The intrepid id of this detail if the assessment was initiated from Intrepid")
+  private String intrepidId;
+
   @ApiModelProperty(value = "Version property to allow optimistic locking")
   private LocalDateTime amendedDate;
 
@@ -335,6 +338,19 @@ public class AssessmentDetailDTO implements Serializable {
 
   public AssessmentDetailDTO pya(Boolean pya) {
     this.pya = pya;
+    return this;
+  }
+
+  public String getIntrepidId() {
+    return intrepidId;
+  }
+
+  public void setIntrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
+  }
+
+  public AssessmentDetailDTO intrepidId(String intrepidId) {
+    this.intrepidId = intrepidId;
     return this;
   }
 

@@ -71,6 +71,7 @@ public class RevalidationServiceImpl implements RevalidationService {
 
     log.debug("Request to save revalidation : {}", revalidationDTO);
     Revalidation revalidation = revalidationMapper.toEntity(revalidationDTO);
+    revalidation.setIntrepidId(assessment.getIntrepidId());
     revalidation = revalidationRepository.save(revalidation);
     return revalidationMapper.toDto(revalidation);
   }

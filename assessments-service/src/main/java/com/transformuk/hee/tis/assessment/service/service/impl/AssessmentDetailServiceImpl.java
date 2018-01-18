@@ -67,6 +67,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkState(assessment.getId().equals(assessmentDetailDTO.getId()));
 
     AssessmentDetail assessmentDetail = assessmentDetailMapper.toEntity(assessmentDetailDTO);
+    assessmentDetail.setIntrepidId(assessment.getIntrepidId());
     assessmentDetail = assessmentDetailRepository.save(assessmentDetail);
     return assessmentDetailMapper.toDto(assessmentDetail);
   }
