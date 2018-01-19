@@ -51,8 +51,8 @@ public class AssessmentDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The programme name for this trainee's assessment")
   private String programmeName;
 
-  @ApiModelProperty(value = "The current status of the assessment event")
-  private EventStatus status;
+  @ApiModelProperty(value = "The current eventStatus of the assessment event")
+  private EventStatus eventStatus;
 
   @NotNull(groups = {Create.class, Update.class}, message = "type cannot be null")
   @ApiModelProperty(value = "The type of assessment")
@@ -164,16 +164,16 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public EventStatus getStatus() {
-    return status;
+  public EventStatus getEventStatus() {
+    return eventStatus;
   }
 
-  public void setStatus(EventStatus status) {
-    this.status = status;
+  public void setEventStatus(EventStatus eventStatus) {
+    this.eventStatus = eventStatus;
   }
 
-  public AssessmentDTO status(EventStatus status) {
-    this.status = status;
+  public AssessmentDTO eventStatus(EventStatus eventStatus) {
+    this.eventStatus = eventStatus;
     return this;
   }
 
@@ -286,7 +286,7 @@ public class AssessmentDTO implements Serializable {
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
-        ", status='" + getStatus() + "'" +
+        ", eventStatus='" + getEventStatus() + "'" +
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
         ", detail='" + getDetail() + "'" +
