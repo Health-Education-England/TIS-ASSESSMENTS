@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -61,7 +62,7 @@ public class OutcomeRepositoryIntTest {
   @Test
   @Transactional
   public void findAllWithReasonsShouldReturnAllOutcomesWithAttachedReasons() {
-    List<Outcome> result = testObj.findAllWithReasons();
+    Set<Outcome> result = testObj.findAllWithReasons();
 
     Assert.assertEquals(2, result.size());
     //find outcome with code 1

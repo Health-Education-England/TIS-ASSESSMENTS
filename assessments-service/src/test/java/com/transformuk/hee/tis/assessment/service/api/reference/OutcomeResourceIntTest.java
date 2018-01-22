@@ -112,7 +112,7 @@ public class OutcomeResourceIntTest {
 
   @Test
   public void getAllOutcomesShouldReturnOutcomesWithReasons() throws Exception {
-    when(outcomeRepositoryMock.findAllWithReasons()).thenReturn(Lists.newArrayList(outcomeStub1, outcomeStub2));
+    when(outcomeRepositoryMock.findAllWithReasons()).thenReturn(Sets.newLinkedHashSet(outcomeStub1, outcomeStub2));
 
     outcomeResourceMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/all", OUTCOME_ID_1))
         .andExpect(status().isOk())
