@@ -38,6 +38,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 
@@ -104,8 +105,8 @@ public class OutcomeResource {
   @GetMapping("/outcomes/all")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<Outcome>> allOutcomes() {
-    List<Outcome> allOutcomesWithReasons = outcomeRepository.findAllWithReasons();
+  public ResponseEntity<Set<Outcome>> allOutcomes() {
+    Set<Outcome> allOutcomesWithReasons = outcomeRepository.findAllWithReasons();
     return new ResponseEntity<>(allOutcomesWithReasons, HttpStatus.OK);
   }
 

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -16,6 +16,6 @@ import java.util.List;
 @Repository
 public interface OutcomeRepository extends JpaRepository<Outcome, Long>, JpaSpecificationExecutor<Outcome> {
 
-  @Query("FROM Outcome o JOIN FETCH o.reasons")
-  List<Outcome> findAllWithReasons();
+  @Query("FROM Outcome o LEFT JOIN FETCH o.reasons")
+  Set<Outcome> findAllWithReasons();
 }
