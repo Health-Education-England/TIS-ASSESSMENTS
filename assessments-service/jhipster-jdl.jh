@@ -25,7 +25,7 @@ entity Outcome {
     extendedTrainingTimeInMonths Integer,
     tenPercentAudit Boolean,
     externalTrainer Boolean,
-    nextRotationGradeId Long,
+    nextRotationGradeAbbr Long,
     nextRotationGradeName String,
     traineeNotifiedOfOutcome Boolean,
     nextReviewDate ZonedDateTime

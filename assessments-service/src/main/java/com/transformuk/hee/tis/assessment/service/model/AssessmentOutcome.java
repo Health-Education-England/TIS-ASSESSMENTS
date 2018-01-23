@@ -59,8 +59,8 @@ public class AssessmentOutcome implements Serializable {
   @Column(name = "externalTrainer")
   private Boolean externalTrainer;
 
-  @Column(name = "nextRotationGradeId")
-  private String nextRotationGradeId;
+  @Column(name = "nextRotationGradeAbbr")
+  private String nextRotationGradeAbbr;
 
   @Column(name = "nextRotationGradeName")
   private String nextRotationGradeName;
@@ -252,16 +252,16 @@ public class AssessmentOutcome implements Serializable {
     return this;
   }
 
-  public String getNextRotationGradeId() {
-    return nextRotationGradeId;
+  public String getNextRotationGradeAbbr() {
+    return nextRotationGradeAbbr;
   }
 
-  public void setNextRotationGradeId(String nextRotationGradeId) {
-    this.nextRotationGradeId = nextRotationGradeId;
+  public void setNextRotationGradeAbbr(String nextRotationGradeAbbr) {
+    this.nextRotationGradeAbbr = nextRotationGradeAbbr;
   }
 
-  public AssessmentOutcome nextRotationGradeId(String nextRotationGradeId) {
-    this.nextRotationGradeId = nextRotationGradeId;
+  public AssessmentOutcome nextRotationGradeAbbr(String nextRotationGradeAbbr) {
+    this.nextRotationGradeAbbr = nextRotationGradeAbbr;
     return this;
   }
 
@@ -513,7 +513,7 @@ public class AssessmentOutcome implements Serializable {
         ", extendedTrainingTimeInMonths=" + extendedTrainingTimeInMonths +
         ", tenPercentAudit=" + tenPercentAudit +
         ", externalTrainer=" + externalTrainer +
-        ", nextRotationGradeId='" + nextRotationGradeId + '\'' +
+        ", nextRotationGradeAbbr='" + nextRotationGradeAbbr + '\'' +
         ", nextRotationGradeName='" + nextRotationGradeName + '\'' +
         ", traineeNotifiedOfOutcome=" + traineeNotifiedOfOutcome +
         ", nextReviewDate=" + nextReviewDate +

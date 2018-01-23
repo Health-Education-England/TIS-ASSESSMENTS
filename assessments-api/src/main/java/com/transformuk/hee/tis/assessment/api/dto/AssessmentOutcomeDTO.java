@@ -59,9 +59,9 @@ public class AssessmentOutcomeDTO implements Serializable {
   @ApiModelProperty(value = "true if external trainer")
   private Boolean externalTrainer;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeId must not be null")
-  @ApiModelProperty(required = true, value = "The next rotation grade id")
-  private String nextRotationGradeId;
+  @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeAbbr must not be null")
+  @ApiModelProperty(required = true, value = "The next rotation grade abbreviation")
+  private String nextRotationGradeAbbr;
 
   @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeName must not be null")
   @ApiModelProperty(required = true, value = "The next rotation grade name")
@@ -252,16 +252,16 @@ public class AssessmentOutcomeDTO implements Serializable {
     return this;
   }
 
-  public String getNextRotationGradeId() {
-    return nextRotationGradeId;
+  public String getNextRotationGradeAbbr() {
+    return nextRotationGradeAbbr;
   }
 
-  public void setNextRotationGradeId(String nextRotationGradeId) {
-    this.nextRotationGradeId = nextRotationGradeId;
+  public void setNextRotationGradeAbbr(String nextRotationGradeAbbr) {
+    this.nextRotationGradeAbbr = nextRotationGradeAbbr;
   }
 
-  public AssessmentOutcomeDTO nextRotationGradeId(String nextRotationGradeId) {
-    this.nextRotationGradeId = nextRotationGradeId;
+  public AssessmentOutcomeDTO nextRotationGradeAbbr(String nextRotationGradeAbbr) {
+    this.nextRotationGradeAbbr = nextRotationGradeAbbr;
     return this;
   }
 
@@ -507,7 +507,7 @@ public class AssessmentOutcomeDTO implements Serializable {
         ", extendedTrainingTimeInMonths=" + extendedTrainingTimeInMonths +
         ", tenPercentAudit=" + tenPercentAudit +
         ", externalTrainer=" + externalTrainer +
-        ", nextRotationGradeId='" + nextRotationGradeId + '\'' +
+        ", nextRotationGradeAbbr='" + nextRotationGradeAbbr + '\'' +
         ", nextRotationGradeName='" + nextRotationGradeName + '\'' +
         ", traineeNotifiedOfOutcome=" + traineeNotifiedOfOutcome +
         ", nextReviewDate=" + nextReviewDate +
