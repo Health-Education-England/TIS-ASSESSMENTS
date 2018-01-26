@@ -59,6 +59,9 @@ public class AssessmentOutcome implements Serializable {
   @Column(name = "externalTrainer")
   private Boolean externalTrainer;
 
+  @Column(name = "nextRotationGradeId")
+  private String nextRotationGradeId;
+
   @Column(name = "nextRotationGradeAbbr")
   private String nextRotationGradeAbbr;
 
@@ -262,6 +265,19 @@ public class AssessmentOutcome implements Serializable {
 
   public AssessmentOutcome nextRotationGradeAbbr(String nextRotationGradeAbbr) {
     this.nextRotationGradeAbbr = nextRotationGradeAbbr;
+    return this;
+  }
+
+  public String getNextRotationGradeId() {
+    return nextRotationGradeId;
+  }
+
+  public void setNextRotationGradeId(String nextRotationGradeId) {
+    this.nextRotationGradeId = nextRotationGradeId;
+  }
+
+  public AssessmentOutcome nextRotationGradeId(String nextRotationGradeId) {
+    this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
 
@@ -504,15 +520,16 @@ public class AssessmentOutcome implements Serializable {
     return "AssessmentOutcome{" +
         "id=" + id +
         ", outcomeId=" + outcomeId +
-        ", outcome=" + outcome +
+        ", outcome='" + outcome + '\'' +
         ", underAppeal=" + underAppeal +
-        ", reasonId='" + reasonId  +
-        ", reason='" + reason  +
+        ", reasonId=" + reasonId +
+        ", reason='" + reason + '\'' +
         ", trainingCompletionDate=" + trainingCompletionDate +
         ", extendedTrainingCompletionDate=" + extendedTrainingCompletionDate +
         ", extendedTrainingTimeInMonths=" + extendedTrainingTimeInMonths +
         ", tenPercentAudit=" + tenPercentAudit +
         ", externalTrainer=" + externalTrainer +
+        ", nextRotationGradeId='" + nextRotationGradeId + '\'' +
         ", nextRotationGradeAbbr='" + nextRotationGradeAbbr + '\'' +
         ", nextRotationGradeName='" + nextRotationGradeName + '\'' +
         ", traineeNotifiedOfOutcome=" + traineeNotifiedOfOutcome +
@@ -527,8 +544,8 @@ public class AssessmentOutcome implements Serializable {
         ", otherRecommendedActions='" + otherRecommendedActions + '\'' +
         ", recommendedAdditionalTrainingTime='" + recommendedAdditionalTrainingTime + '\'' +
         ", additionalCommentsFromPanel='" + additionalCommentsFromPanel + '\'' +
-        ", amendedDate=" + amendedDate + '\'' +
-        ", legacy=" + legacy + '\'' +
+        ", amendedDate=" + amendedDate +
+        ", legacy=" + legacy +
         ", assessment=" + assessment +
         '}';
   }

@@ -59,6 +59,11 @@ public class AssessmentOutcomeDTO implements Serializable {
   @ApiModelProperty(value = "true if external trainer")
   private Boolean externalTrainer;
 
+  //TODO: uncomment this annotation when we make the switch to use IDs
+//  @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeId must not be null")
+//  @ApiModelProperty(required = true, value = "The next rotation grade Id")
+  private Long nextRotationGradeId;
+
   @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeAbbr must not be null")
   @ApiModelProperty(required = true, value = "The next rotation grade abbreviation")
   private String nextRotationGradeAbbr;
@@ -249,6 +254,19 @@ public class AssessmentOutcomeDTO implements Serializable {
 
   public AssessmentOutcomeDTO externalTrainer(Boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
+    return this;
+  }
+
+  public Long getNextRotationGradeId() {
+    return nextRotationGradeId;
+  }
+
+  public void setNextRotationGradeId(Long nextRotationGradeId) {
+    this.nextRotationGradeId = nextRotationGradeId;
+  }
+
+  public AssessmentOutcomeDTO nextRotationGradeId(Long nextRotationGradeId) {
+    this.nextRotationGradeId = nextRotationGradeId;
     return this;
   }
 
@@ -507,6 +525,7 @@ public class AssessmentOutcomeDTO implements Serializable {
         ", extendedTrainingTimeInMonths=" + extendedTrainingTimeInMonths +
         ", tenPercentAudit=" + tenPercentAudit +
         ", externalTrainer=" + externalTrainer +
+        ", nextRotationGradeId=" + nextRotationGradeId +
         ", nextRotationGradeAbbr='" + nextRotationGradeAbbr + '\'' +
         ", nextRotationGradeName='" + nextRotationGradeName + '\'' +
         ", traineeNotifiedOfOutcome=" + traineeNotifiedOfOutcome +
