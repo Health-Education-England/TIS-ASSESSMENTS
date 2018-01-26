@@ -44,6 +44,9 @@ public class AssessmentDetail {
   @Column(name = "membershipType")
   private String membershipType;
 
+  @Column(name = "gradeId")
+  private Long gradeId;
+
   @Column(name = "gradeAbbreviation")
   private String gradeAbbreviation;
 
@@ -200,6 +203,19 @@ public class AssessmentDetail {
 
   public AssessmentDetail membershipType(String membershipType) {
     this.membershipType = membershipType;
+    return this;
+  }
+
+  public Long getGradeId() {
+    return gradeId;
+  }
+
+  public void setGradeId(Long gradeId) {
+    this.gradeId = gradeId;
+  }
+
+  public AssessmentDetail gradeId(Long gradeId) {
+    this.gradeId = gradeId;
     return this;
   }
 
@@ -405,6 +421,7 @@ public class AssessmentDetail {
         ", curriculumSpecialty='" + curriculumSpecialty + '\'' +
         ", curriculumSubType='" + curriculumSubType + '\'' +
         ", membershipType='" + membershipType + '\'' +
+        ", gradeId=" + gradeId +
         ", gradeAbbreviation='" + gradeAbbreviation + '\'' +
         ", gradeName='" + gradeName + '\'' +
         ", periodCoveredFrom=" + periodCoveredFrom +
@@ -414,9 +431,10 @@ public class AssessmentDetail {
         ", monthsCountedToTraining=" + monthsCountedToTraining +
         ", daysOutOfTraining=" + daysOutOfTraining +
         ", traineeNTN='" + traineeNTN + '\'' +
-        ", pya='" + pya + '\'' +
+        ", pya=" + pya +
         ", amendedDate=" + amendedDate +
         ", intrepidId='" + intrepidId + '\'' +
+        ", assessment=" + assessment +
         '}';
   }
 }

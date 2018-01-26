@@ -52,6 +52,11 @@ public class AssessmentDetailDTO implements Serializable {
   @ApiModelProperty(value = "The membership type for this trainee's assessment")
   private String membershipType;
 
+  //TODO: uncomment the validation to grade id when ready to migrate
+//  @NotNull(groups = {Create.class, Update.class}, message = "gradeId cannot be null")
+//  @ApiModelProperty(required = true, value = "The grade id of the assessments grade")
+  private Long gradeId;
+
   @NotNull(groups = {Create.class, Update.class}, message = "gradeAbbreviation cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "gradeAbbreviation should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The grade abbreviation of the assessments grade")
@@ -208,6 +213,19 @@ public class AssessmentDetailDTO implements Serializable {
 
   public AssessmentDetailDTO membershipType(String membershipType) {
     this.membershipType = membershipType;
+    return this;
+  }
+
+  public Long getGradeId() {
+    return gradeId;
+  }
+
+  public void setGradeId(Long gradeId) {
+    this.gradeId = gradeId;
+  }
+
+  public AssessmentDetailDTO gradeId(Long gradeId) {
+    this.gradeId = gradeId;
     return this;
   }
 
@@ -390,27 +408,29 @@ public class AssessmentDetailDTO implements Serializable {
 
   @Override
   public String toString() {
-    return "AssessmentDTO{" +
-        "id=" + getId() +
-        ", curriculumId='" + getCurriculumId() + "'" +
-        ", curriculumName='" + getCurriculumName() + "'" +
-        ", curriculumStartDate='" + getCurriculumStartDate() + "'" +
-        ", curriculumEndDate='" + getCurriculumEndDate() + "'" +
-        ", curriculumSpecialtyId='" + getCurriculumSpecialtyId() + "'" +
-        ", curriculumSpecialty='" + getCurriculumSpecialty() + "'" +
-        ", curriculumSubType='" + getCurriculumSubType() + "'" +
-        ", membershipType='" + getMembershipType() + "'" +
-        ", gradeAbbreviation='" + getGradeAbbreviation() + "'" +
-        ", gradeName='" + getGradeName() + "'" +
-        ", periodCoveredFrom='" + getPeriodCoveredFrom() + "'" +
-        ", periodCoveredTo='" + getPeriodCoveredTo() + "'" +
-        ", portfolioReviewDate='" + getPortfolioReviewDate() + "'" +
-        ", monthsWTEDuringPeriod='" + getMonthsWTEDuringPeriod() + "'" +
-        ", monthsCountedToTraining='" + getMonthsCountedToTraining() + "'" +
-        ", daysOutOfTraining='" + getDaysOutOfTraining() + "'" +
-        ", traineeNTN='" + getTraineeNTN() + "'" +
-        ", pya='" + getPya() + "'" +
-        ", amendDate='" + getAmendedDate() + "'" +
-        "}";
+    return "AssessmentDetailDTO{" +
+        "id=" + id +
+        ", curriculumId=" + curriculumId +
+        ", curriculumName='" + curriculumName + '\'' +
+        ", curriculumStartDate=" + curriculumStartDate +
+        ", curriculumEndDate=" + curriculumEndDate +
+        ", curriculumSpecialtyId='" + curriculumSpecialtyId + '\'' +
+        ", curriculumSpecialty='" + curriculumSpecialty + '\'' +
+        ", curriculumSubType='" + curriculumSubType + '\'' +
+        ", membershipType='" + membershipType + '\'' +
+        ", gradeId=" + gradeId +
+        ", gradeAbbreviation='" + gradeAbbreviation + '\'' +
+        ", gradeName='" + gradeName + '\'' +
+        ", periodCoveredFrom=" + periodCoveredFrom +
+        ", periodCoveredTo=" + periodCoveredTo +
+        ", portfolioReviewDate=" + portfolioReviewDate +
+        ", monthsWTEDuringPeriod=" + monthsWTEDuringPeriod +
+        ", monthsCountedToTraining=" + monthsCountedToTraining +
+        ", daysOutOfTraining=" + daysOutOfTraining +
+        ", traineeNTN='" + traineeNTN + '\'' +
+        ", pya=" + pya +
+        ", intrepidId='" + intrepidId + '\'' +
+        ", amendedDate=" + amendedDate +
+        '}';
   }
 }
