@@ -102,7 +102,7 @@ public class AssessmentResource {
   }
 
   /**
-   * GET  /:traineeId/assessments : get all assessments for a trainee
+   * GET  /:traineeId/assessments : get assessments for a trainee in a paginated format
    *
    * @param traineeId the id of the trainee
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
@@ -110,10 +110,24 @@ public class AssessmentResource {
   @GetMapping("/{traineeId}/assessments")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable Long traineeId, @ApiParam Pageable page) {
-    Page<AssessmentDTO> assessmentForTrainee = assessmentService.findAllForTrainee(traineeId, page);
-    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(assessmentForTrainee, "/api/assessments");
+  public ResponseEntity<List<AssessmentDTO>> getTraineeAssessments(@PathVariable Long traineeId, @ApiParam Pageable page) {
+    Page<AssessmentDTO> assessmentForTrainee = assessmentService.findForTrainee(traineeId, page);
+    HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(assessmentForTrainee, "/api/" + traineeId + "/assessments");
     return new ResponseEntity<>(assessmentForTrainee.getContent(), headers, HttpStatus.OK);
+  }
+
+  /**
+   * GET  /:traineeId/assessments/all : get all assessments for a trainee
+   *
+   * @param traineeId the id of the trainee
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   */
+  @GetMapping("/{traineeId}/assessments/all")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable Long traineeId) {
+    List<AssessmentDTO> assessmentForTrainee = assessmentService.findAllForTrainee(traineeId);
+    return new ResponseEntity<>(assessmentForTrainee, HttpStatus.OK);
   }
 
   /**

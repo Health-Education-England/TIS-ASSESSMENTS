@@ -254,7 +254,7 @@ public class AssessmentServiceImplTest {
     when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
     when(assessmentMapperMock.toDto(assessmentMock3)).thenReturn(assessmentDTOMock3);
 
-    Page<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, pageableMock);
+    Page<AssessmentDTO> result = testObj.findForTrainee(TRAINEE_ID, pageableMock);
 
     List<AssessmentDTO> content = result.getContent();
     Assert.assertEquals(assessmentDTOMock1, content.get(0));
@@ -267,7 +267,7 @@ public class AssessmentServiceImplTest {
   public void findAllForTraineeShouldThrowExceptionWhenTraineeIdIsNull() {
     try {
       Pageable pageableMock = mock(Pageable.class);
-      testObj.findAllForTrainee(null, pageableMock);
+      testObj.findForTrainee(null, pageableMock);
     }catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findAll(any(Example.class));
       throw e;
@@ -277,7 +277,7 @@ public class AssessmentServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void findAllForTraineeShouldThrowExceptionWhenPageableIsNull() {
     try {
-      testObj.findAllForTrainee(TRAINEE_ID, null);
+      testObj.findForTrainee(TRAINEE_ID, null);
     }catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       throw e;

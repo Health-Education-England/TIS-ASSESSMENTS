@@ -156,12 +156,22 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentDTO> findAllForTrainee(Long traineeId, Pageable page) {
+  public Page<AssessmentDTO> findForTrainee(Long traineeId, Pageable page) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(page);
 
     Assessment example = new Assessment().traineeId(traineeId);
     return assessmentRepository.findAll(Example.of(example), page)
         .map(assessmentMapper::toDto);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<AssessmentDTO> findAllForTrainee(Long traineeId) {
+    Preconditions.checkNotNull(traineeId);
+
+    Assessment example = new Assessment().traineeId(traineeId);
+    List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example));
+    return assessmentMapper.toDto(allAssessments);
   }
 }

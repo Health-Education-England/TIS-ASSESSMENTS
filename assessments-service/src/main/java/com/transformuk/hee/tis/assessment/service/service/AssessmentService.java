@@ -60,5 +60,7 @@ public interface AssessmentService {
 
   Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable);
 
-  Page<AssessmentDTO> findAllForTrainee(Long traineeId, Pageable page);
+  Page<AssessmentDTO> findForTrainee(Long traineeId, Pageable page);
+
+  List<AssessmentDTO> findAllForTrainee(Long traineeId);
 }
