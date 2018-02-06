@@ -16,7 +16,6 @@ public interface AssessmentListMapper extends EntityMapper<AssessmentListDTO, As
   Assessment toEntity(AssessmentListDTO dto);
 
   @Mappings({
-      @Mapping(source = "type", target = "assessmentType"),
       @Mapping(source = "detail.periodCoveredFrom", target = "periodCoveredFrom"),
       @Mapping(source = "detail.periodCoveredTo", target = "periodCoveredTo"),
       @Mapping(source = "detail.curriculumName", target = "curriculumName"),

@@ -304,7 +304,7 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
-        .andExpect(jsonPath("$.[*].assessmentType").value(hasItem(assessment.getType().toString())))
+        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
         .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
         .andExpect(jsonPath("$.[*].periodCoveredTo").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
         .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(assessment.getDetail().getCurriculumName())));

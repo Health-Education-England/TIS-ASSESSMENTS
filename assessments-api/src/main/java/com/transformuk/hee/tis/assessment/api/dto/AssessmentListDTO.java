@@ -6,7 +6,7 @@ public class AssessmentListDTO {
 
   private Long id;
 
-  private String assessmentType;
+  private String type;
 
   private LocalDate reviewDate;
 
@@ -35,12 +35,12 @@ public class AssessmentListDTO {
     this.id = id;
   }
 
-  public String getAssessmentType() {
-    return assessmentType;
+  public String getType() {
+    return type;
   }
 
-  public void setAssessmentType(String assessmentType) {
-    this.assessmentType = assessmentType;
+  public void setType(String type) {
+    this.type = type;
   }
 
   public LocalDate getReviewDate() {
@@ -123,7 +123,7 @@ public class AssessmentListDTO {
     AssessmentListDTO that = (AssessmentListDTO) o;
 
     if (id != null ? !id.equals(that.id) : that.id != null) return false;
-    if (assessmentType != null ? !assessmentType.equals(that.assessmentType) : that.assessmentType != null)
+    if (type != null ? !type.equals(that.type) : that.type != null)
       return false;
     if (reviewDate != null ? !reviewDate.equals(that.reviewDate) : that.reviewDate != null) return false;
     if (traineeId != null ? !traineeId.equals(that.traineeId) : that.traineeId != null) return false;
@@ -142,7 +142,7 @@ public class AssessmentListDTO {
   @Override
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (assessmentType != null ? assessmentType.hashCode() : 0);
+    result = 31 * result + (type != null ? type.hashCode() : 0);
     result = 31 * result + (reviewDate != null ? reviewDate.hashCode() : 0);
     result = 31 * result + (traineeId != null ? traineeId.hashCode() : 0);
     result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
@@ -159,7 +159,7 @@ public class AssessmentListDTO {
   public String toString() {
     return "AssessmentListDTO{" +
         "id=" + id +
-        ", assessmentType='" + assessmentType + '\'' +
+        ", type='" + type + '\'' +
         ", reviewDate=" + reviewDate +
         ", traineeId='" + traineeId + '\'' +
         ", firstName='" + firstName + '\'' +
