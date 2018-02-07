@@ -61,7 +61,7 @@ public class AssessmentServiceImplTest {
   @Test
   public void saveShouldSaveAssessment() {
     when(assessmentMapperMock.toEntity(assessmentDTOMock)).thenReturn(assessmentMock);
-    when(assessmentRepositoryMock.save(assessmentMock)).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.saveAndFlush(assessmentMock)).thenReturn(assessmentMock);
     when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(savedAssessmentDTOMock);
 
     AssessmentDTO result = testObj.save(assessmentDTOMock);
@@ -73,7 +73,7 @@ public class AssessmentServiceImplTest {
     verify(assessmentDTOMock).setRevalidation(null);
 
     verify(assessmentMapperMock).toEntity(assessmentDTOMock);
-    verify(assessmentRepositoryMock).save(assessmentMock);
+    verify(assessmentRepositoryMock).saveAndFlush(assessmentMock);
     verify(assessmentMapperMock).toDto(assessmentMock);
   }
 

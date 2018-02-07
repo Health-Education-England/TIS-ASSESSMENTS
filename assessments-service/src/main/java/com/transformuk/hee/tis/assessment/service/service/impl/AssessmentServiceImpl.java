@@ -64,8 +64,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     assessmentDTO.setOutcome(null);
     assessmentDTO.setRevalidation(null);
     Assessment assessment = assessmentMapper.toEntity(assessmentDTO);
-    assessment = assessmentRepository.save(assessment);
-    return assessmentMapper.toDto(assessment);
+    Assessment savedAssessment = assessmentRepository.saveAndFlush(assessment);
+    return assessmentMapper.toDto(savedAssessment);
   }
 
   /**
