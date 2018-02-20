@@ -67,17 +67,16 @@ public class AssessmentDetailDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The grade name of the assessments grade")
   private String gradeName;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "period covered from cannot be null")
   @ApiModelProperty(required = true, value = "The period in which this covers from")
   private LocalDate periodCoveredFrom;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "period covered to cannot be null")
   @ApiModelProperty(required = true, value = "The period in which this covers to")
   private LocalDate periodCoveredTo;
 
   @ApiModelProperty(value = "The date in which the portfolio was reviewed")
   private LocalDate portfolioReviewDate;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "monthsWTEDuringPeriod cannot be null")
   @ApiModelProperty(value = "Months work time equivalent during the period")
   private Integer monthsWTEDuringPeriod;
 

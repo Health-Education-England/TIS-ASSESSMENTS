@@ -38,7 +38,6 @@ public class AssessmentDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The last name of the trainee")
   private String lastName;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "review date cannot be null")
   @ApiModelProperty(required = true, value = "The review date of the assessment event")
   private LocalDate reviewDate;
 
