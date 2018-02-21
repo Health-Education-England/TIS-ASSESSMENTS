@@ -57,13 +57,9 @@ public class AssessmentDetailDTO implements Serializable {
 //  @ApiModelProperty(required = true, value = "The grade id of the assessments grade")
   private Long gradeId;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "gradeAbbreviation cannot be null")
-  @Length(min = 1, groups = {Create.class, Update.class}, message = "gradeAbbreviation should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The grade abbreviation of the assessments grade")
   private String gradeAbbreviation;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "grade name cannot be null")
-  @Length(min = 1, groups = {Create.class, Update.class}, message = "grade name should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The grade name of the assessments grade")
   private String gradeName;
 
@@ -76,7 +72,6 @@ public class AssessmentDetailDTO implements Serializable {
   @ApiModelProperty(value = "The date in which the portfolio was reviewed")
   private LocalDate portfolioReviewDate;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "monthsWTEDuringPeriod cannot be null")
   @ApiModelProperty(value = "Months work time equivalent during the period")
   private Integer monthsWTEDuringPeriod;
 
