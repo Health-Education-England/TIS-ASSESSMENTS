@@ -36,7 +36,7 @@ public class AssessmentOutcome implements Serializable {
   private String outcome;
 
   @Column(name = "underAppeal")
-  private Boolean underAppeal;
+  private boolean underAppeal;
 
   @Column(name = "reasonId")
   private Long reasonId;
@@ -54,10 +54,10 @@ public class AssessmentOutcome implements Serializable {
   private Integer extendedTrainingTimeInMonths;
 
   @Column(name = "tenPercentAudit")
-  private Boolean tenPercentAudit;
+  private boolean tenPercentAudit;
 
   @Column(name = "externalTrainer")
-  private Boolean externalTrainer;
+  private boolean externalTrainer;
 
   @Column(name = "nextRotationGradeId")
   private String nextRotationGradeId;
@@ -69,7 +69,7 @@ public class AssessmentOutcome implements Serializable {
   private String nextRotationGradeName;
 
   @Column(name = "traineeNotifiedOfOutcome")
-  private Boolean traineeNotifiedOfOutcome;
+  private boolean traineeNotifiedOfOutcome;
 
   @Column(name = "nextReviewDate")
   private LocalDate nextReviewDate;
@@ -137,11 +137,11 @@ public class AssessmentOutcome implements Serializable {
     return this;
   }
 
-  public Boolean isUnderAppeal() {
+  public boolean isUnderAppeal() {
     return underAppeal;
   }
 
-  public AssessmentOutcome underAppeal(Boolean underAppeal) {
+  public AssessmentOutcome underAppeal(boolean underAppeal) {
     this.underAppeal = underAppeal;
     return this;
   }
@@ -237,20 +237,20 @@ public class AssessmentOutcome implements Serializable {
     return this;
   }
 
-  public Boolean isTenPercentAudit() {
+  public boolean isTenPercentAudit() {
     return tenPercentAudit;
   }
 
-  public AssessmentOutcome tenPercentAudit(Boolean tenPercentAudit) {
+  public AssessmentOutcome tenPercentAudit(boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
     return this;
   }
 
-  public Boolean isExternalTrainer() {
+  public boolean isExternalTrainer() {
     return externalTrainer;
   }
 
-  public AssessmentOutcome externalTrainer(Boolean externalTrainer) {
+  public AssessmentOutcome externalTrainer(boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
     return this;
   }
@@ -294,11 +294,11 @@ public class AssessmentOutcome implements Serializable {
     return this;
   }
 
-  public Boolean isTraineeNotifiedOfOutcome() {
+  public boolean isTraineeNotifiedOfOutcome() {
     return traineeNotifiedOfOutcome;
   }
 
-  public AssessmentOutcome traineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+  public AssessmentOutcome traineeNotifiedOfOutcome(boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
     return this;
   }
@@ -329,35 +329,35 @@ public class AssessmentOutcome implements Serializable {
     return this;
   }
 
-  public Boolean getUnderAppeal() {
+  public boolean getUnderAppeal() {
     return underAppeal;
   }
 
-  public void setUnderAppeal(Boolean underAppeal) {
+  public void setUnderAppeal(boolean underAppeal) {
     this.underAppeal = underAppeal;
   }
 
-  public Boolean getTenPercentAudit() {
+  public boolean getTenPercentAudit() {
     return tenPercentAudit;
   }
 
-  public void setTenPercentAudit(Boolean tenPercentAudit) {
+  public void setTenPercentAudit(boolean tenPercentAudit) {
     this.tenPercentAudit = tenPercentAudit;
   }
 
-  public Boolean getExternalTrainer() {
+  public boolean getExternalTrainer() {
     return externalTrainer;
   }
 
-  public void setExternalTrainer(Boolean externalTrainer) {
+  public void setExternalTrainer(boolean externalTrainer) {
     this.externalTrainer = externalTrainer;
   }
 
-  public Boolean getTraineeNotifiedOfOutcome() {
+  public boolean getTraineeNotifiedOfOutcome() {
     return traineeNotifiedOfOutcome;
   }
 
-  public void setTraineeNotifiedOfOutcome(Boolean traineeNotifiedOfOutcome) {
+  public void setTraineeNotifiedOfOutcome(boolean traineeNotifiedOfOutcome) {
     this.traineeNotifiedOfOutcome = traineeNotifiedOfOutcome;
   }
 

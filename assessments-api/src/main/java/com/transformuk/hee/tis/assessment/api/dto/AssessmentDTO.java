@@ -45,6 +45,8 @@ public class AssessmentDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The programme number of this trainee's assessment")
   private String programmeNumber;
 
+  private Long programmeId;
+
   @NotNull(groups = {Create.class, Update.class}, message = "programme name cannot be null")
   @Length(min = 1, groups = {Create.class, Update.class}, message = "programme name should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The programme name for this trainee's assessment")
@@ -202,6 +204,14 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
+  public Long getProgrammeId() {
+    return programmeId;
+  }
+
+  public void setProgrammeId(Long programmeId) {
+    this.programmeId = programmeId;
+  }
+
   public AssessmentDetailDTO getDetail() {
     return detail;
   }
@@ -285,6 +295,7 @@ public class AssessmentDTO implements Serializable {
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
+        ", programmeId='" + getProgrammeId() + "'" +
         ", eventStatus='" + getEventStatus() + "'" +
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +

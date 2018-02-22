@@ -46,6 +46,9 @@ public class Assessment implements Serializable {
   @Column(name = "programmeNumber")
   private String programmeNumber;
 
+  @Column(name = "programmeId")
+  private Long programmeId;
+
   @Column(name = "programmeName")
   private String programmeName;
 
@@ -135,6 +138,14 @@ public class Assessment implements Serializable {
   public Assessment reviewDate(LocalDate reviewDate) {
     this.reviewDate = reviewDate;
     return this;
+  }
+
+  public Long getProgrammeId() {
+    return programmeId;
+  }
+
+  public void setProgrammeId(Long programmeId) {
+    this.programmeId = programmeId;
   }
 
   public String getProgrammeNumber() {
@@ -285,6 +296,7 @@ public class Assessment implements Serializable {
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
+        ", programmeId='" + getProgrammeId() + "'" +
         ", eventStatus='" + getEventStatus() + "'" +
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
