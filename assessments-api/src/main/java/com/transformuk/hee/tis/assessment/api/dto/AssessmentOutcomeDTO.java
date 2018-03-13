@@ -64,11 +64,9 @@ public class AssessmentOutcomeDTO implements Serializable {
 //  @ApiModelProperty(required = true, value = "The next rotation grade Id")
   private Long nextRotationGradeId;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeAbbr must not be null")
   @ApiModelProperty(required = true, value = "The next rotation grade abbreviation")
   private String nextRotationGradeAbbr;
 
-  @NotNull(groups = {Create.class, Update.class}, message = "nextRotationGradeName must not be null")
   @ApiModelProperty(required = true, value = "The next rotation grade name")
   private String nextRotationGradeName;
 
