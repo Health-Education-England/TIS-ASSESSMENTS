@@ -97,7 +97,7 @@ public class RevalidationServiceImplTest {
   @Test
   public void saveShouldSaveRevalidation() {
     when(revalidationMapperMock.toEntity(revalidationDTOMock)).thenReturn(revalidationMock);
-    when(revalidationRepositoryMock.save(revalidationMock)).thenReturn(revalidationMock);
+    when(revalidationRepositoryMock.saveAndFlush(revalidationMock)).thenReturn(revalidationMock);
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
 
     RevalidationDTO result = testObj.save(assessmentMock, revalidationDTOMock);
@@ -105,7 +105,7 @@ public class RevalidationServiceImplTest {
     assertEquals(revalidationDTOMock, result);
 
     verify(revalidationMapperMock).toEntity(revalidationDTOMock);
-    verify(revalidationRepositoryMock).save(revalidationMock);
+    verify(revalidationRepositoryMock).saveAndFlush(revalidationMock);
     verify(revalidationMapperMock).toDto(revalidationMock);
   }
 
@@ -167,7 +167,7 @@ public class RevalidationServiceImplTest {
     when(revalidationMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationMapperMock.toEntity(revalidationDTO)).thenReturn(revalidationMock);
-    when(revalidationRepositoryMock.save(revalidationMock)).thenReturn(revalidationMock);
+    when(revalidationRepositoryMock.saveAndFlush(revalidationMock)).thenReturn(revalidationMock);
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
 
     RevalidationDTO result = testObj.create(assessment, revalidationDTO);
@@ -176,7 +176,7 @@ public class RevalidationServiceImplTest {
     assertEquals(ASSESSMENT_ID, result.getId());
 
     verify(revalidationMapperMock).toEntity(revalidationDTO);
-    verify(revalidationRepositoryMock).save(revalidationMock);
+    verify(revalidationRepositoryMock).saveAndFlush(revalidationMock);
     verify(revalidationMapperMock).toDto(revalidationMock);
   }
 

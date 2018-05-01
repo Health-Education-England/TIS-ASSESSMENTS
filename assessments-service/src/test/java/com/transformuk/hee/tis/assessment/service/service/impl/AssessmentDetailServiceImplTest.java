@@ -104,7 +104,7 @@ public class AssessmentDetailServiceImplTest {
   @Test
   public void saveShouldSaveDetailAgainstAnAssessment() {
     when(assessmentDetailMapperMock.toEntity(assessmentDetailDTOMock)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailRepositoryMock.save(assessmentDetailMock)).thenReturn(assessmentDetailMock);
+    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock)).thenReturn(assessmentDetailMock);
     when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
 
     AssessmentDetailDTO result = testObj.save(assessmentMock, assessmentDetailDTOMock);
@@ -138,7 +138,7 @@ public class AssessmentDetailServiceImplTest {
     Assessment assessment = new Assessment().id(ASSESSMENT_ID);
     AssessmentDetailDTO assessmentDetailDTO = new AssessmentDetailDTO();
     when(assessmentDetailMapperMock.toEntity(assessmentDetailDTO)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailRepositoryMock.save(assessmentDetailMock)).thenReturn(assessmentDetailMock);
+    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock)).thenReturn(assessmentDetailMock);
     when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTO);
 
     AssessmentDetailDTO result = testObj.create(assessment, assessmentDetailDTO);

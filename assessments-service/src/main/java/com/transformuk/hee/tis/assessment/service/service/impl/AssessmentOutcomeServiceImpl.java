@@ -71,7 +71,7 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
 
     AssessmentOutcome assessmentOutcome = assessmentOutcomeMapper.toEntity(assessmentOutcomeDTO);
     assessmentOutcome.setIntrepidId(assessment.getIntrepidId());
-    assessmentOutcome = assessmentOutcomeRepository.save(assessmentOutcome);
+    assessmentOutcome = assessmentOutcomeRepository.saveAndFlush(assessmentOutcome);
     return assessmentOutcomeMapper.toDto(assessmentOutcome);
   }
 

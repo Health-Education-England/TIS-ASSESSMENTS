@@ -68,7 +68,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
 
     AssessmentDetail assessmentDetail = assessmentDetailMapper.toEntity(assessmentDetailDTO);
     assessmentDetail.setIntrepidId(assessment.getIntrepidId());
-    assessmentDetail = assessmentDetailRepository.save(assessmentDetail);
+    assessmentDetail = assessmentDetailRepository.saveAndFlush(assessmentDetail);
     return assessmentDetailMapper.toDto(assessmentDetail);
   }
 

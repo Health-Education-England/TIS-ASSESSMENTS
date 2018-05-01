@@ -51,7 +51,7 @@ public class AssessmentOutcomeServiceImplTest {
   @Test
   public void saveShouldSaveOutcome() {
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
-    when(assessmentOutcomeRepositoryMock.save(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
+    when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
 
     AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
@@ -117,7 +117,7 @@ public class AssessmentOutcomeServiceImplTest {
     AssessmentOutcomeDTO assessmentOutcomeDTO = new AssessmentOutcomeDTO();
 
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTO)).thenReturn(assessmentOutcomeMock);
-    when(assessmentOutcomeRepositoryMock.save(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
+    when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(assessmentOutcomeDTOMock);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
