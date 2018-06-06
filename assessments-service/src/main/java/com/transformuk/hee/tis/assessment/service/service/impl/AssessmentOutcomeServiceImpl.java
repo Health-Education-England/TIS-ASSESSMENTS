@@ -4,16 +4,21 @@ import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcomeReason;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeReasonRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing AssessmentOutcome.
@@ -26,11 +31,15 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
 
   private final AssessmentOutcomeRepository assessmentOutcomeRepository;
   private final AssessmentOutcomeMapper assessmentOutcomeMapper;
+  private final AssessmentOutcomeReasonRepository assessmentOutcomeReasonRepository;
 
 
-  public AssessmentOutcomeServiceImpl(AssessmentOutcomeRepository assessmentOutcomeRepository, AssessmentOutcomeMapper assessmentOutcomeMapper) {
+  public AssessmentOutcomeServiceImpl(AssessmentOutcomeRepository assessmentOutcomeRepository,
+                                      AssessmentOutcomeMapper assessmentOutcomeMapper,
+                                      AssessmentOutcomeReasonRepository assessmentOutcomeReasonRepository) {
     this.assessmentOutcomeRepository = assessmentOutcomeRepository;
     this.assessmentOutcomeMapper = assessmentOutcomeMapper;
+    this.assessmentOutcomeReasonRepository = assessmentOutcomeReasonRepository;
   }
 
   /**
@@ -69,10 +78,33 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
       throw new IllegalStateException("Cannot modify an assessmentOutcome marked as legacy");
     }
 
-    AssessmentOutcome assessmentOutcome = assessmentOutcomeMapper.toEntity(assessmentOutcomeDTO);
+    final AssessmentOutcome assessmentOutcome = assessmentOutcomeMapper.toEntity(assessmentOutcomeDTO);
     assessmentOutcome.setIntrepidId(assessment.getIntrepidId());
-    assessmentOutcome = assessmentOutcomeRepository.saveAndFlush(assessmentOutcome);
-    return assessmentOutcomeMapper.toDto(assessmentOutcome);
+
+    updateReasons(assessmentOutcome, originalAssessmentOutcome);
+
+    AssessmentOutcome savedAssessmentOutcome = assessmentOutcomeRepository.saveAndFlush(assessmentOutcome);
+    return assessmentOutcomeMapper.toDto(savedAssessmentOutcome);
+  }
+
+  private void updateReasons(AssessmentOutcome assessmentOutcome, AssessmentOutcome originalAssessmentOutcome) {
+    //delete any reasons that have been removed from the list
+    List<AssessmentOutcomeReason> originalReasons = originalAssessmentOutcome.getReasons();
+    List<AssessmentOutcomeReason> reasonsToSave = assessmentOutcome.getReasons();
+    List<Long> reasonsIdsToSave = reasonsToSave.stream().map(AssessmentOutcomeReason::getId).collect(Collectors.toList());
+
+    List<AssessmentOutcomeReason> reasonsToRemove = originalReasons.stream()
+        .filter(assessmentOutcomeReason -> !reasonsIdsToSave.contains(assessmentOutcomeReason.getId()))
+        .collect(Collectors.toList());
+
+    assessmentOutcomeReasonRepository.delete(reasonsToRemove);
+
+    //update the outcome reason
+    if(CollectionUtils.isNotEmpty(reasonsToSave)) {
+      reasonsToSave.stream().forEach(
+          assessmentOutcomeReason -> assessmentOutcomeReason.setAssessmentOutcome(assessmentOutcome)
+      );
+    }
   }
 
   /**
