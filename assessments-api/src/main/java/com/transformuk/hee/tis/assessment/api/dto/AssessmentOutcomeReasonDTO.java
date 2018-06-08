@@ -26,8 +26,11 @@ public class AssessmentOutcomeReasonDTO implements Serializable {
   @ApiModelProperty(value = "The reason id of this AssessmentOutcomeReason")
   private Long reasonId;
 
-  @ApiModelProperty(value = "The reason related to the linked reason id")
-  private String reason;
+  @ApiModelProperty(value = "The reason label related to the linked reason id")
+  private String reasonLabel;
+
+  @ApiModelProperty(value = "The reason code related to the linked reason id")
+  private String reasonCode;
 
   @NotNull(groups = {Create.class, Update.class}, message = "other cannot be null")
   @ApiModelProperty(value = "Additional information stored in an 'other' field")
@@ -53,12 +56,20 @@ public class AssessmentOutcomeReasonDTO implements Serializable {
     this.reasonId = reasonId;
   }
 
-  public String getReason() {
-    return reason;
+  public String getReasonLabel() {
+    return reasonLabel;
   }
 
-  public void setReason(String reason) {
-    this.reason = reason;
+  public void setReasonLabel(String reasonLabel) {
+    this.reasonLabel = reasonLabel;
+  }
+
+  public String getReasonCode() {
+    return reasonCode;
+  }
+
+  public void setReasonCode(String reasonCode) {
+    this.reasonCode = reasonCode;
   }
 
   public String getOther() {
@@ -110,7 +121,8 @@ public class AssessmentOutcomeReasonDTO implements Serializable {
     return "AssessmentOutcomeReasonDTO{" +
         "id=" + id +
         ", reasonId=" + reasonId +
-        ", reason='" + reason + '\'' +
+        ", reasonLabel='" + reasonLabel + '\'' +
+        ", reasonCode='" + reasonCode + '\'' +
         ", other='" + other + '\'' +
         ", requireOther=" + requireOther +
         '}';

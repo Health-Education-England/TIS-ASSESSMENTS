@@ -17,7 +17,8 @@ public interface AssessmentOutcomeReasonMapper extends EntityMapper<AssessmentOu
 
   @Mappings({
       @Mapping(source = "reason.id", target = "reasonId"),
-      @Mapping(source = "reason.label", target = "reason"),
+      @Mapping(source = "reason.label", target = "reasonLabel"),
+      @Mapping(source = "reason.code", target = "reasonCode"),
       @Mapping(source = "reason.requireOther", target = "requireOther")
   })
   AssessmentOutcomeReasonDTO toDto(AssessmentOutcomeReason assessmentOutcomeReason);
@@ -29,13 +30,4 @@ public interface AssessmentOutcomeReasonMapper extends EntityMapper<AssessmentOu
 
   List<AssessmentOutcomeReason> toEntity(List<AssessmentOutcomeReasonDTO> assessmentOutcomeReasonDTOs);
 
-
-//  default AssessmentOutcome fromId(Long id) {
-////    if (id == null) {
-////      return null;
-////    }
-////    AssessmentOutcome assessmentOutcome = new AssessmentOutcome();
-////    assessmentOutcome.setId(id);
-////    return assessmentOutcome;
-////  }
 }
