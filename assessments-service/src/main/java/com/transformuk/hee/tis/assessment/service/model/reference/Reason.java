@@ -51,6 +51,9 @@ public class Reason implements Serializable {
   @ApiModelProperty(value = "indicator to state that if this reason is selected, that the 'other' field needs to be filled", required = true)
   private boolean requireOther;
 
+  @ApiModelProperty(value = "Whether this reason was from intrepid and therefore is legacy")
+  private boolean isLegacy;
+
   public Long getId() {
     return id;
   }
@@ -106,6 +109,14 @@ public class Reason implements Serializable {
     this.requireOther = requireOther;
   }
 
+  public boolean isLegacy() {
+    return isLegacy;
+  }
+
+  public void setLegacy(boolean legacy) {
+    isLegacy = legacy;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -132,7 +143,9 @@ public class Reason implements Serializable {
         "id=" + id +
         ", code='" + code + '\'' +
         ", label='" + label + '\'' +
+        ", outcomes=" + outcomes +
         ", requireOther=" + requireOther +
+        ", isLegacy=" + isLegacy +
         '}';
   }
 }
