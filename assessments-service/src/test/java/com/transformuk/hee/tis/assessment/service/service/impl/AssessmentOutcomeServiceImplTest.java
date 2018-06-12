@@ -1,8 +1,10 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeReasonRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapper;
 import org.junit.Assert;
@@ -32,6 +34,8 @@ public class AssessmentOutcomeServiceImplTest {
   @Mock
   private AssessmentOutcomeRepository assessmentOutcomeRepositoryMock;
   @Mock
+  private AssessmentOutcomeReasonRepository assessmentOutcomeReasonRepositoryMock;
+  @Mock
   private AssessmentOutcomeMapper assessmentOutcomeMapperMock;
   @Mock
   private Assessment assessmentMock;
@@ -50,9 +54,14 @@ public class AssessmentOutcomeServiceImplTest {
 
   @Test
   public void saveShouldSaveOutcome() {
+    AssessmentOutcome originalAssessmentOutcome = new AssessmentOutcome();
+    originalAssessmentOutcome.setId(ASSESSMENT_ID);
+    originalAssessmentOutcome.setReasons(Lists.newArrayList());
+
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
+    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
 
     AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
 
@@ -112,6 +121,11 @@ public class AssessmentOutcomeServiceImplTest {
 
   @Test
   public void createShouldCreateNewOutcome() {
+
+    AssessmentOutcome originalAssessmentOutcome = new AssessmentOutcome();
+    originalAssessmentOutcome.setId(ASSESSMENT_ID);
+    originalAssessmentOutcome.setReasons(Lists.newArrayList());
+
     Assessment assessment = new Assessment();
     assessment.setId(ASSESSMENT_ID);
     AssessmentOutcomeDTO assessmentOutcomeDTO = new AssessmentOutcomeDTO();
@@ -120,6 +134,7 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(assessmentOutcomeDTOMock);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
+    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
 
     AssessmentOutcomeDTO result = testObj.create(assessment, assessmentOutcomeDTO);
 
