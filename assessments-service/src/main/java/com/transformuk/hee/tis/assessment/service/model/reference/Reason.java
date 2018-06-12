@@ -47,6 +47,13 @@ public class Reason implements Serializable {
   @ManyToMany(mappedBy = "reasons")
   private Set<Outcome> outcomes;
 
+  @NotNull(groups = {Create.class, Update.class}, message = "requireOther cannot be null")
+  @ApiModelProperty(value = "indicator to state that if this reason is selected, that the 'other' field needs to be filled", required = true)
+  private boolean requireOther;
+
+  @ApiModelProperty(value = "Whether this reason was from intrepid and therefore is legacy")
+  private boolean isLegacy;
+
   public Long getId() {
     return id;
   }
@@ -94,6 +101,22 @@ public class Reason implements Serializable {
     this.outcomes = outcomes;
   }
 
+  public boolean isRequireOther() {
+    return requireOther;
+  }
+
+  public void setRequireOther(boolean requireOther) {
+    this.requireOther = requireOther;
+  }
+
+  public boolean isLegacy() {
+    return isLegacy;
+  }
+
+  public void setLegacy(boolean legacy) {
+    isLegacy = legacy;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -120,6 +143,9 @@ public class Reason implements Serializable {
         "id=" + id +
         ", code='" + code + '\'' +
         ", label='" + label + '\'' +
+        ", outcomes=" + outcomes +
+        ", requireOther=" + requireOther +
+        ", isLegacy=" + isLegacy +
         '}';
   }
 }

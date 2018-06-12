@@ -11,6 +11,7 @@ import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,9 +36,14 @@ public class AssessmentOutcomeDTO implements Serializable {
   @ApiModelProperty(value = "Whether the outcome is currently under appeal")
   private Boolean underAppeal;
 
+  @ApiModelProperty(value = "The list reasons behind this outcome")
+  private List<AssessmentOutcomeReasonDTO> reasons;
+
+  @Deprecated
   @ApiModelProperty(value = "The reasons behind this outcome")
   private String reason;
 
+  @Deprecated
   @ApiModelProperty(value = "The reason id behind this outcome")
   private Long reasonId;
 
@@ -148,6 +154,14 @@ public class AssessmentOutcomeDTO implements Serializable {
   public AssessmentOutcomeDTO outcomeId(Long outcomeId) {
     this.outcomeId = outcomeId;
     return this;
+  }
+
+  public List<AssessmentOutcomeReasonDTO> getReasons() {
+    return reasons;
+  }
+
+  public void setReasons(List<AssessmentOutcomeReasonDTO> reasons) {
+    this.reasons = reasons;
   }
 
   public Long getReasonId() {

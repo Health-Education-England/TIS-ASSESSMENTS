@@ -2,18 +2,22 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,20 +33,25 @@ public class AssessmentOutcome implements Serializable {
   @Id
   private Long id;
 
+  //This superceeds the outcome id and reason fields on this entity
+  @NotAudited
+  @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "assessmentOutcome")
+  private List<AssessmentOutcomeReason> reasons;
+
   @Column(name = "outcomeId")
   private Long outcomeId;
 
   @Column(name = "outcome")
   private String outcome;
 
-  @Column(name = "underAppeal")
-  private boolean underAppeal;
-
   @Column(name = "reasonId")
   private Long reasonId;
 
   @Column(name = "reason")
   private String reason;
+
+  @Column(name = "underAppeal")
+  private boolean underAppeal;
 
   @Column(name = "trainingCompletionDate")
   private LocalDate trainingCompletionDate;
@@ -122,6 +131,14 @@ public class AssessmentOutcome implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public List<AssessmentOutcomeReason> getReasons() {
+    return reasons;
+  }
+
+  public void setReasons(List<AssessmentOutcomeReason> reasons) {
+    this.reasons = reasons;
   }
 
   public String getOutcome() {
