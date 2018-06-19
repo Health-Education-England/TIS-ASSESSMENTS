@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
@@ -89,9 +90,13 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
 
   private void updateReasons(AssessmentOutcome assessmentOutcome, AssessmentOutcome originalAssessmentOutcome) {
     //delete any reasons that have been removed from the list
-    List<AssessmentOutcomeReason> originalReasons = originalAssessmentOutcome.getReasons();
     List<AssessmentOutcomeReason> reasonsToSave = assessmentOutcome.getReasons();
     List<Long> reasonsIdsToSave = reasonsToSave.stream().map(AssessmentOutcomeReason::getId).collect(Collectors.toList());
+
+    List<AssessmentOutcomeReason> originalReasons = Lists.newArrayList();
+    if(originalAssessmentOutcome != null) {
+      originalReasons = originalAssessmentOutcome.getReasons();
+    }
 
     List<AssessmentOutcomeReason> reasonsToRemove = originalReasons.stream()
         .filter(assessmentOutcomeReason -> !reasonsIdsToSave.contains(assessmentOutcomeReason.getId()))
