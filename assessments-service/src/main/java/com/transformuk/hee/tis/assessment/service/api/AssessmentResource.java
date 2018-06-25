@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -147,7 +148,7 @@ public class AssessmentResource {
       throw new BadRequestAlertException("A new assessment cannot already have an ID", ENTITY_NAME, "idexists");
     }
 
-    if(!traineeId.equals(assessmentDTO.getTraineeId())) {
+    if (!traineeId.equals(assessmentDTO.getTraineeId())) {
       throw new BadRequestAlertException("A new assessment does not have the same trainee id as uri path", ENTITY_NAME, "idconflict");
     }
     AssessmentDTO result = assessmentService.save(assessmentDTO);
@@ -234,6 +235,22 @@ public class AssessmentResource {
       throw new BadRequestAlertException("Trainee Id or assessment Id do not match the payload Ids", ENTITY_NAME, "idexists");
     }
     return updateTraineeAssessment(assessmentDTO, traineeId);
+  }
+
+
+  /**
+   * DELETE  /:traineeId/assessments/:assessmentId : delete the a specific trainee assessment.
+   *
+   * @param traineeId    the assessmentId of the trainee
+   * @param assessmentId the assessmentId of the assessmentDTO to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   */
+  @DeleteMapping("/{traineeId}/assessments/{assessmentId}")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<AssessmentDTO> deleteTraineeAssessment(@PathVariable Long traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
+    boolean success = assessmentService.deleteTraineeAssessment(assessmentId, traineeId);
+    return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
   }
 
   //Kept to allow compatibility with audit service

@@ -174,7 +174,7 @@ public class AssessmentServiceImplTest {
   public void findTraineeAssessmentShouldThrowExceptionWhenTraineeIdNull() {
     try {
       testObj.findTraineeAssessment(null, ASSESSMENT_ID);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       throw e;
     }
@@ -184,7 +184,7 @@ public class AssessmentServiceImplTest {
   public void findTraineeAssessmentShouldThrowExceptionWhenAssessmentIdNull() {
     try {
       testObj.findTraineeAssessment(TRAINEE_ID, null);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       throw e;
     }
@@ -225,7 +225,7 @@ public class AssessmentServiceImplTest {
   public void findTraineeAssessmentDTOShouldThrowExceptionWhenTraineeIdNull() {
     try {
       testObj.findTraineeAssessmentDTO(null, ASSESSMENT_ID);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       verify(assessmentMapperMock, never()).toDto(any(Assessment.class));
       throw e;
@@ -236,7 +236,7 @@ public class AssessmentServiceImplTest {
   public void findTraineeAssessmentDTOShouldThrowExceptionWhenAssessmentIdNull() {
     try {
       testObj.findTraineeAssessmentDTO(TRAINEE_ID, null);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       verify(assessmentMapperMock, never()).toDto(any(Assessment.class));
       throw e;
@@ -268,7 +268,7 @@ public class AssessmentServiceImplTest {
     try {
       Pageable pageableMock = mock(Pageable.class);
       testObj.findForTrainee(null, pageableMock);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findAll(any(Example.class));
       throw e;
     }
@@ -278,10 +278,51 @@ public class AssessmentServiceImplTest {
   public void findAllForTraineeShouldThrowExceptionWhenPageableIsNull() {
     try {
       testObj.findForTrainee(TRAINEE_ID, null);
-    }catch (Exception e) {
+    } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
       throw e;
     }
   }
 
+  @Test(expected = NullPointerException.class)
+  public void deleteTraineeAssessementShouldThrowExceptionWhenTraineeIdIsNull() {
+    testObj.deleteTraineeAssessment(ASSESSMENT_ID, null);
+    verify(assessmentRepositoryMock, never()).delete(anyLong());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void deleteTraineeAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
+    testObj.deleteTraineeAssessment(null, TRAINEE_ID);
+    verify(assessmentRepositoryMock, never()).delete(anyLong());
+  }
+
+  @Test
+  public void deleteTraineeAssessementShouldReturnFalseWhenAssessmentCannotBeFound() {
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+
+    boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
+
+    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    Assert.assertFalse(result);
+
+    Example<Assessment> capturedExample = assessmentCaptor.getValue();
+    Assessment probe = capturedExample.getProbe();
+    Assert.assertEquals(ASSESSMENT_ID, probe.getId());
+    Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
+  }
+
+  @Test
+  public void deleteTraineeAssessementShouldReturnTrueWhenAssessmentIsDeleted() {
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+
+    boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
+
+    verify(assessmentRepositoryMock).delete(assessmentMock);
+    Assert.assertTrue(result);
+
+    Example<Assessment> capturedExample = assessmentCaptor.getValue();
+    Assessment probe = capturedExample.getProbe();
+    Assert.assertEquals(ASSESSMENT_ID, probe.getId());
+    Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
+  }
 }

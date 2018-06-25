@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
-import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -78,11 +78,13 @@ public class OutcomeRepositoryIntTest {
     Assert.assertEquals(OUTCOME_LABEL_1, withReasons.getLabel());
 
     Assert.assertEquals(2, withReasons.getReasons().size());
-    List<Reason> reasons = Lists.newArrayList(withReasons.getReasons());
-    Assert.assertEquals(REASON_CODE_1, reasons.get(0).getCode());
-    Assert.assertEquals(REASON_LABEL_1, reasons.get(0).getLabel());
-    Assert.assertEquals(REASON_CODE_2, reasons.get(1).getCode());
-    Assert.assertEquals(REASON_LABEL_2, reasons.get(1).getLabel());
+    List<String> reasonCodes = withReasons.getReasons().stream().map(Reason::getCode).collect(Collectors.toList());
+    List<String> reasonLabels = withReasons.getReasons().stream().map(Reason::getLabel).collect(Collectors.toList());
+
+    Assert.assertTrue(reasonCodes.contains(REASON_CODE_1));
+    Assert.assertTrue(reasonCodes.contains(REASON_CODE_2));
+    Assert.assertTrue(reasonLabels.contains(REASON_LABEL_1));
+    Assert.assertTrue(reasonLabels.contains(REASON_LABEL_2));
   }
 
 }

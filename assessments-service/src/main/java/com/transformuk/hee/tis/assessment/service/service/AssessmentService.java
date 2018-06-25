@@ -63,4 +63,13 @@ public interface AssessmentService {
   Page<AssessmentDTO> findForTrainee(Long traineeId, Pageable page);
 
   List<AssessmentDTO> findAllForTrainee(Long traineeId);
+
+  /**
+   * delete an assessment with all associated links
+   *
+   * @param assessmentId the TIS id of the assessment
+   * @param traineeId the TIS id of the trainee
+   * @return true if the deletion was successful, otherwise false
+   */
+  boolean deleteTraineeAssessment(Long assessmentId, Long traineeId);
 }

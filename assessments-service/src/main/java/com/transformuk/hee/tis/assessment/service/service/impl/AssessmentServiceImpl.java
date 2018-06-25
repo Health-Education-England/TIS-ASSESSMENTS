@@ -112,7 +112,7 @@ public class AssessmentServiceImpl implements AssessmentService {
           or(containsLike("lastName", searchString)).
           or(containsLike("type", searchString));
 
-      if(NumberUtils.isNumber(searchString)) {
+      if (NumberUtils.isNumber(searchString)) {
         whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString));
       }
       specs.add(whereClause);
@@ -173,5 +173,21 @@ public class AssessmentServiceImpl implements AssessmentService {
     Assessment example = new Assessment().traineeId(traineeId);
     List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example));
     return assessmentMapper.toDto(allAssessments);
+  }
+
+  @Override
+  @Transactional
+  public boolean deleteTraineeAssessment(Long assessmentId, Long traineeId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
+    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+    if (traineeAssessment.isPresent()) {
+      Assessment assessment = traineeAssessment.get();
+      //cascade delete is enabled on the relating entities so dont need to delete those manually
+      assessmentRepository.delete(assessment);
+      return true;
+    }
+    return false;
   }
 }

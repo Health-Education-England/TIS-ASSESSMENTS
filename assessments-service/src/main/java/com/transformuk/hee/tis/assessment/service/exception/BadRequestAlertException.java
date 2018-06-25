@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.exception;
 
-import com.transformuk.hee.tis.assessment.service.exception.ErrorConstants;
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Status;
 

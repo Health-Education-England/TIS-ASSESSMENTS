@@ -3,6 +3,7 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -65,13 +66,13 @@ public class Assessment implements Serializable {
   @Version
   private LocalDateTime amendedDate;
 
-  @OneToOne(mappedBy = "assessment")
+  @OneToOne(mappedBy = "assessment", cascade = CascadeType.REMOVE)
   private AssessmentDetail detail;
 
-  @OneToOne(mappedBy = "assessment")
+  @OneToOne(mappedBy = "assessment", cascade = CascadeType.REMOVE)
   private AssessmentOutcome outcome;
 
-  @OneToOne(mappedBy = "assessment")
+  @OneToOne(mappedBy = "assessment", cascade = CascadeType.REMOVE)
   private Revalidation revalidation;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

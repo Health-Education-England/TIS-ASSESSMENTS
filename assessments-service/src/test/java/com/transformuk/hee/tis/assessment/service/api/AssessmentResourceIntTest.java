@@ -153,10 +153,10 @@ public class AssessmentResourceIntTest {
   private Assessment assessment;
 
   /**
-   * Create an entity for this test.
+   * Create an entity for this scripts.
    * <p>
    * This is a static method, as tests for other entities might also need it,
-   * if they test an entity which requires the current entity.
+   * if they scripts an entity which requires the current entity.
    */
   public static Assessment createEntity(EntityManager em) {
     AssessmentDetail assessmentDetail = new AssessmentDetail()
