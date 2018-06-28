@@ -45,7 +45,7 @@ public class RevalidationDTO implements Serializable {
     this.id = id;
   }
 
-  public RevalidationDTO idd(Long id) {
+  public RevalidationDTO id(Long id) {
     this.id = id;
     return this;
   }

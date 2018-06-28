@@ -1,6 +1,10 @@
 package com.transformuk.hee.tis.assessment.api.dto;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import io.swagger.annotations.ApiModelProperty;
@@ -109,6 +113,8 @@ public class AssessmentOutcomeDTO implements Serializable {
   @ApiModelProperty(value = "Addtional comments from the panel")
   private String additionalCommentsFromPanel;
 
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @NotNull(groups = Update.class, message = "amendedDate cannot be null when updating")
   @ApiModelProperty(value = "version property, when updating the outcome, this much match the database value")
   private LocalDateTime amendedDate;

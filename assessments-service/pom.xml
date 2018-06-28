@@ -131,7 +131,7 @@
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
       <artifactId>assessments-api</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.1</version>
     </dependency>
     <!-- TIS END -->
 
@@ -403,6 +403,10 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-data</artifactId>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.fasterxml.jackson.datatype</groupId>-->
+      <!--<artifactId>jackson-datatype-jsr310</artifactId>-->
+    <!--</dependency>-->
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
   <build>
