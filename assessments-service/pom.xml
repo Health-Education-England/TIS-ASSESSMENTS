@@ -403,10 +403,6 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-data</artifactId>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>com.fasterxml.jackson.datatype</groupId>-->
-      <!--<artifactId>jackson-datatype-jsr310</artifactId>-->
-    <!--</dependency>-->
     <!-- jhipster-needle-maven-add-dependency -->
   </dependencies>
   <build>
