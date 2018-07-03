@@ -70,7 +70,7 @@ public class AssessmentDetailResource {
     if (traineeAssessment.isPresent()) {
       savedAssessmentDetail = assessmentDetailService.create(traineeAssessment.get(), assessmentDetailDTO);
     }
-    return ResponseUtil.wrapOrNotFound(Optional.of(savedAssessmentDetail));
+    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedAssessmentDetail));
 
   }
 
@@ -92,7 +92,7 @@ public class AssessmentDetailResource {
     if (traineeAssessment.isPresent()) {
       savedAssessmentDetail = assessmentDetailService.save(traineeAssessment.get(), assessmentDetailDTO);
     }
-    return ResponseUtil.wrapOrNotFound(Optional.of(savedAssessmentDetail));
+    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(savedAssessmentDetail));
 
   }
 
