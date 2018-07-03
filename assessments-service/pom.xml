@@ -12,7 +12,7 @@
 
   <groupId>com.transformuk.hee.tis</groupId>
   <artifactId>assessments-service</artifactId>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
   <packaging>war</packaging>
 
   <properties>
@@ -153,10 +153,23 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-
-
     <!-- Custom end -->
 
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+      <version>${prometheus-simpleclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_servlet</artifactId>
+      <version>${prometheus-simpleclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_dropwizard</artifactId>
+      <version>${prometheus-simpleclient.version}</version>
+    </dependency>
     <dependency>
       <groupId>io.github.jhipster</groupId>
       <artifactId>jhipster</artifactId>
