@@ -6,6 +6,7 @@ import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import gherkin.deps.com.google.gson.Gson;
@@ -213,4 +214,5 @@ public class AssessmentOutcomeResourceTest {
     Assert.assertEquals(OUTCOME, captorValue.getOutcome());
     Assert.assertEquals(OUTCOME_ID, captorValue.getOutcomeId());
   }
+
 }
