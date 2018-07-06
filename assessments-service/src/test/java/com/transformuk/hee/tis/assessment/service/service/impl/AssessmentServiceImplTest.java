@@ -25,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specifications;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -389,13 +388,4 @@ public class AssessmentServiceImplTest {
     Assert.assertTrue(result.getContent().contains(assessmentListDTOMock1));
     Assert.assertTrue(result.getContent().contains(assessmentListDTOMock2));
   }
-
-//  @Test
-//  public void advancedSearchShouldSearchUsingSpecifications() {
-//    ColumnFilter columnFilter = new ColumnFilter("outcome", Lists.newArrayList("outcome1"));
-//    List<ColumnFilter> columnFilters = Lists.newArrayList(columnFilter);
-//    Pageable pageable = new PageRequest(0, 20);
-//
-//    Page<AssessmentListDTO> result = testObj.advancedSearch(StringUtils.EMPTY, columnFilters, pageable);
-//  }
 }
