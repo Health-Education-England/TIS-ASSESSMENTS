@@ -3,9 +3,11 @@ package com.transformuk.hee.tis.assessment.service.service.impl;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import org.apache.commons.lang.StringUtils;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +21,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specifications;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +33,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -57,6 +62,8 @@ public class AssessmentServiceImplTest {
 
   @Captor
   private ArgumentCaptor<Example<Assessment>> assessmentCaptor;
+  @Captor
+  private ArgumentCaptor<Specifications<Assessment>> specificationsArgumentCaptor;
 
   @Test
   public void saveShouldSaveAssessment() {
@@ -324,5 +331,61 @@ public class AssessmentServiceImplTest {
     Assessment probe = capturedExample.getProbe();
     Assert.assertEquals(ASSESSMENT_ID, probe.getId());
     Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
+  }
+
+  @Test
+  public void findAllForTraineeShouldReturnAllAssessmentsForATrainee() {
+
+    List<Assessment> traineeAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
+    List<AssessmentDTO> traineeAssessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
+
+    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture())).thenReturn(traineeAssessments);
+    when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
+
+    List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID);
+
+    Assert.assertEquals(2, result.size());
+    Assert.assertTrue(result.contains(assessmentDTOMock1));
+    Assert.assertTrue(result.contains(assessmentDTOMock2));
+
+    Example<Assessment> captorValue = assessmentCaptor.getValue();
+    Assessment assessment = captorValue.getProbe();
+    Assert.assertEquals(TRAINEE_ID, assessment.getTraineeId());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void advancedSearchShouldThrowExceptionIfBothSearchStringAndFiltersIsEmpty() {
+    List<ColumnFilter> columnFilters = Lists.newArrayList();
+    Pageable pageable = new PageRequest(0, 20);
+    String searchQuery = StringUtils.EMPTY;
+
+    try {
+      testObj.advancedSearch(searchQuery, columnFilters, pageable);
+    } catch (Exception e) {
+      verify(assessmentRepositoryMock, never()).findAll(any(Specifications.class), any(Pageable.class));
+      verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
+      throw e;
+    }
+
+  }
+
+  @Test
+  public void advancedSearchShouldSearchUsingSpecifications() {
+    List<ColumnFilter> columnFilters = Lists.newArrayList();
+    Pageable pageable = new PageRequest(0, 20);
+    String searchQuery = "search query";
+
+    List<Assessment> foundAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
+    Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
+
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable))).thenReturn(pagedFoundAssessments);
+    when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
+    when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
+
+    Page<AssessmentListDTO> result = testObj.advancedSearch(searchQuery, columnFilters, pageable);
+
+    Assert.assertEquals(2, result.getTotalElements());
+    Assert.assertTrue(result.getContent().contains(assessmentListDTOMock1));
+    Assert.assertTrue(result.getContent().contains(assessmentListDTOMock2));
   }
 }

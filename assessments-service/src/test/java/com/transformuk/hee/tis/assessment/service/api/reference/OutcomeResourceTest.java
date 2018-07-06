@@ -20,6 +20,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,13 +33,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-public class OutcomeResourceIntTest {
+public class OutcomeResourceTest {
 
   private static final Long OUTCOME_ID_1 = 1L;
   private static final Long OUTCOME_ID_2 = 2L;
@@ -69,15 +73,19 @@ public class OutcomeResourceIntTest {
   private OutcomeService outcomeServiceMock;
   @Captor
   private ArgumentCaptor<Outcome> outcomeArgumentCaptor;
+  @Captor
+  private ArgumentCaptor<Pageable> pageableArgumentCaptor;
+  @Captor
+  private ArgumentCaptor<String> stringArgumentCaptor;
 
-  private MockMvc outcomeResourceMockMvc;
+  private MockMvc mockMvc;
   private Outcome outcomeStub1, outcomeStub2, unsavedOutcomeStub1;
   private Reason reason1, reason2;
 
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    this.outcomeResourceMockMvc = MockMvcBuilders.standaloneSetup(testObj)
+    this.mockMvc = MockMvcBuilders.standaloneSetup(testObj)
         .setCustomArgumentResolvers(pageableArgumentResolver)
         .setControllerAdvice(exceptionTranslator)
         .setConversionService(TestUtil.createFormattingConversionService())
@@ -95,7 +103,7 @@ public class OutcomeResourceIntTest {
   public void getOutcomeShouldReturnSingleOutcomeWhenFound() throws Exception {
     when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(outcomeStub1);
 
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(OUTCOME_ID_1.intValue()))
         .andExpect(jsonPath("$.code").value(OUTCOME_CODE_1))
@@ -106,7 +114,7 @@ public class OutcomeResourceIntTest {
   @Test
   public void getOutcomeShouldReturnNotFoundWhenNoOutcomeWithId() throws Exception {
     when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(null);
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isNotFound());
   }
 
@@ -114,7 +122,7 @@ public class OutcomeResourceIntTest {
   public void getAllOutcomesShouldReturnOutcomesWithReasons() throws Exception {
     when(outcomeRepositoryMock.findAllWithReasons()).thenReturn(Sets.newLinkedHashSet(outcomeStub1, outcomeStub2));
 
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/all", OUTCOME_ID_1))
+    mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/all", OUTCOME_ID_1))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.[*].id").value(hasItems(OUTCOME_ID_1.intValue(), OUTCOME_ID_2.intValue())))
         .andExpect(jsonPath("$.[*].code").value(hasItems(OUTCOME_CODE_1, OUTCOME_CODE_2)))
@@ -128,7 +136,7 @@ public class OutcomeResourceIntTest {
   public void createOutcomeShouldSaveAndReturnNewOutcome() throws Exception {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
+    mockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(unsavedOutcomeStub1)))
         .andExpect(status().isCreated())
@@ -147,7 +155,7 @@ public class OutcomeResourceIntTest {
   public void updateOutcomeShouldUpdateAndReturnUpdatedOutcome() throws Exception {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(outcomeStub1)))
         .andExpect(status().isOk())
@@ -165,7 +173,7 @@ public class OutcomeResourceIntTest {
   public void updateOutcomeShouldCreateNewOutcomeWhenOutcomeDoesntExist() throws Exception {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
-    outcomeResourceMockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(unsavedOutcomeStub1)))
         .andExpect(status().isCreated())
@@ -179,4 +187,54 @@ public class OutcomeResourceIntTest {
     Assert.assertEquals(OUTCOME_LABEL_1, capturedOutcome.getLabel());
   }
 
+  @Test
+  public void outcomeSmartSearchShouldFindAllOutcomesPaginated() throws Exception {
+    Outcome outcome1 = new Outcome(), outcome2 = new Outcome();
+    outcome1.id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
+    outcome2.id(OUTCOME_ID_2).code(OUTCOME_CODE_2).label(OUTCOME_LABEL_2);
+
+    Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1, outcome2));
+
+    when(outcomeRepositoryMock.findAll(pageableArgumentCaptor.capture())).thenReturn(pageOfOutcomes);
+
+    mockMvc.perform(get("/api/outcomes"))
+        .andExpect(status().isOk())
+        .andExpect(header().string("X-Total-Count", "2"))
+        .andExpect(jsonPath("$.*.id", hasItems(OUTCOME_ID_1.intValue(), OUTCOME_ID_2.intValue())))
+        .andExpect(jsonPath("$.*.code", hasItems(OUTCOME_CODE_1, OUTCOME_CODE_2)))
+        .andExpect(jsonPath("$.*.label", hasItems(OUTCOME_LABEL_1, OUTCOME_LABEL_2)))
+    ;
+
+    Pageable captorValue = pageableArgumentCaptor.getValue();
+    Assert.assertEquals(20, captorValue.getPageSize());
+    Assert.assertEquals(0, captorValue.getPageNumber());
+  }
+
+  @Test
+  public void outcomeSmartSearchShouldFindOutcomesMatchingQueryPaginated() throws Exception {
+    Outcome outcome1 = new Outcome(), outcome2 = new Outcome();
+    outcome1.id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
+    outcome2.id(OUTCOME_ID_2).code(OUTCOME_CODE_2).label(OUTCOME_LABEL_2);
+
+    Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1, outcome2));
+
+    when(outcomeServiceMock.advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
+        .thenReturn(pageOfOutcomes);
+
+    String searchParam = "outcome";
+    mockMvc.perform(get("/api/outcomes?searchQuery=" + searchParam))
+        .andExpect(status().isOk())
+        .andExpect(header().string("X-Total-Count", "2"))
+        .andExpect(jsonPath("$.*.id", hasItems(OUTCOME_ID_1.intValue(), OUTCOME_ID_2.intValue())))
+        .andExpect(jsonPath("$.*.code", hasItems(OUTCOME_CODE_1, OUTCOME_CODE_2)))
+        .andExpect(jsonPath("$.*.label", hasItems(OUTCOME_LABEL_1, OUTCOME_LABEL_2)))
+    ;
+
+    Pageable captorValue = pageableArgumentCaptor.getValue();
+    Assert.assertEquals(20, captorValue.getPageSize());
+    Assert.assertEquals(0, captorValue.getPageNumber());
+
+    String capturedSearchString = stringArgumentCaptor.getValue();
+    Assert.assertEquals(searchParam, capturedSearchString);
+  }
 }
