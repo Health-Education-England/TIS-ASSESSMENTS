@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
@@ -171,11 +172,11 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<AssessmentDTO> findAllForTrainee(Long traineeId) {
+  public List<AssessmentDTO> findAllForTrainee(Long traineeId, Sort sort) {
     Preconditions.checkNotNull(traineeId);
 
     Assessment example = new Assessment().traineeId(traineeId);
-    List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example));
+    List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example), sort);
     return assessmentMapper.toDto(allAssessments);
   }
 

@@ -18,11 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specifications;
 
 import java.util.List;
@@ -339,10 +335,11 @@ public class AssessmentServiceImplTest {
     List<Assessment> traineeAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
     List<AssessmentDTO> traineeAssessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
 
-    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture())).thenReturn(traineeAssessments);
+    Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
+    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
     when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
 
-    List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID);
+    List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, sort);
 
     Assert.assertEquals(2, result.size());
     Assert.assertTrue(result.contains(assessmentDTOMock1));
