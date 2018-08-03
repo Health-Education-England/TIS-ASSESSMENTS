@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -121,13 +123,17 @@ public class AssessmentResource {
    * GET  /:traineeId/assessments/all : get all assessments for a trainee
    *
    * @param traineeId the id of the trainee
+   * @param sort the sort order of the assessments. Defaults to reviewDate desc if none is provided
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
   @GetMapping("/{traineeId}/assessments/all")
   @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable Long traineeId) {
-    List<AssessmentDTO> assessmentForTrainee = assessmentService.findAllForTrainee(traineeId);
+  public ResponseEntity<List<AssessmentDTO>> getAllTraineeAssessments(@PathVariable Long traineeId,
+                                                                      @SortDefault.SortDefaults({
+                                                                          @SortDefault(sort = "reviewDate", direction = Sort.Direction.DESC),
+                                                                      }) Sort sort) {
+    List<AssessmentDTO> assessmentForTrainee = assessmentService.findAllForTrainee(traineeId, sort);
     return new ResponseEntity<>(assessmentForTrainee, HttpStatus.OK);
   }
 

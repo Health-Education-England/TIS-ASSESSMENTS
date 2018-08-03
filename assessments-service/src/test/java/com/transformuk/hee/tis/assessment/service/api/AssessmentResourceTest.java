@@ -21,7 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.SortHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -71,19 +73,23 @@ public class AssessmentResourceTest {
   @Autowired
   private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
   @Autowired
+  private SortHandlerMethodArgumentResolver sortHandlerMethodArgumentResolver;
+  @Autowired
   private ExceptionTranslator exceptionTranslator;
 
   @Captor
   private ArgumentCaptor<Pageable> pageableArgumentCaptor;
   @Captor
   private ArgumentCaptor<AssessmentDTO> assessmentDTOArgumentCaptor;
+  @Captor
+  private ArgumentCaptor<Sort> sortArgumentCaptor;
 
   private MockMvc mockMvc;
 
   @Before
   public void setup() {
     this.mockMvc = MockMvcBuilders.standaloneSetup(testObj)
-        .setCustomArgumentResolvers(pageableArgumentResolver)
+        .setCustomArgumentResolvers(pageableArgumentResolver, sortHandlerMethodArgumentResolver)
         .setControllerAdvice(exceptionTranslator)
         .setConversionService(TestUtil.createFormattingConversionService())
         .setMessageConverters(jacksonMessageConverter).build();
@@ -133,7 +139,7 @@ public class AssessmentResourceTest {
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
-    when(assessmentServiceMock.findAllForTrainee(TRAINEE_ID)).thenReturn(assessments);
+    when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture())).thenReturn(assessments);
 
     mockMvc.perform(get("/api/trainee/{traineeId}/assessments/all", TRAINEE_ID))
         .andExpect(status().isOk())
@@ -144,7 +150,36 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
         .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
     ;
+      Sort capturedValue = sortArgumentCaptor.getValue();
+      Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
+      Assert.assertEquals(Sort.Direction.DESC, reviewDateOrder.getDirection());
+
   }
+
+    @Test
+    public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATraineeInTheDefinedSortOrder() throws Exception {
+        AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
+        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME);
+        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME);
+
+        List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
+
+        when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture())).thenReturn(assessments);
+
+        mockMvc.perform(get("/api/trainee/{traineeId}/assessments/all?sort=reviewDate,asc", TRAINEE_ID))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].id").value(ASSESSMENT_ID_1))
+            .andExpect(jsonPath("$.[1].id").value(ASSESSMENT_ID_2))
+            .andExpect(jsonPath("$.[0].firstName").value(FIRST_NAME))
+            .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
+            .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
+            .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
+        ;
+
+        Sort capturedValue = sortArgumentCaptor.getValue();
+        Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
+        Assert.assertEquals(Sort.Direction.ASC, reviewDateOrder.getDirection());
+    }
 
   @Test
   public void createTraineeAssessmentShouldReturnBadRequestWhenPayloadHasId() throws Exception {

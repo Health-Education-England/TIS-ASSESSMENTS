@@ -6,6 +6,7 @@ import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public interface AssessmentService {
 
   Page<AssessmentDTO> findForTrainee(Long traineeId, Pageable page);
 
-  List<AssessmentDTO> findAllForTrainee(Long traineeId);
+  List<AssessmentDTO> findAllForTrainee(Long traineeId, Sort sort);
 
   /**
    * delete an assessment with all associated links
