@@ -8,6 +8,7 @@ import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import org.assertj.core.util.Lists;
+import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,7 @@ public class AssessmentResourceTest {
   private static final Long TRAINEE_ID = 2222L;
   private static final String FIRST_NAME = "first name";
   private static final String LAST_NAME = "last name";
+  private static final long PROGRAMME_MEMBERSHIP_ID = 888L;
   @InjectMocks
   private AssessmentResource testObj;
   @Mock
@@ -112,8 +114,8 @@ public class AssessmentResourceTest {
   @Test
   public void getTraineeAssessmentsShouldReturnAssessmentForATraineePaginated() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
     Page<AssessmentDTO> page = new PageImpl<>(assessments);
@@ -128,14 +130,16 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
         .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
         .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
+        .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
     ;
   }
 
   @Test
   public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATrainee() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
@@ -149,6 +153,8 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
         .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
         .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
+        .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
     ;
       Sort capturedValue = sortArgumentCaptor.getValue();
       Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
@@ -159,8 +165,8 @@ public class AssessmentResourceTest {
     @Test
     public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATraineeInTheDefinedSortOrder() throws Exception {
         AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME);
-        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME);
+        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
 
         List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
@@ -174,6 +180,8 @@ public class AssessmentResourceTest {
             .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
             .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
             .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
+            .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+            .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
         ;
 
         Sort capturedValue = sortArgumentCaptor.getValue();
@@ -228,6 +236,7 @@ public class AssessmentResourceTest {
     createdAssessment.setProgrammeName(PROGRAMME_NAME);
     createdAssessment.setType(TYPE);
     createdAssessment.setTraineeId(TRAINEE_ID);
+    createdAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
     when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(createdAssessment);
 
@@ -238,12 +247,15 @@ public class AssessmentResourceTest {
     assessmentToCreate.setProgrammeName(PROGRAMME_NAME);
     assessmentToCreate.setType(TYPE);
     assessmentToCreate.setTraineeId(TRAINEE_ID);
+    assessmentToCreate.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID));
+        .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID))
+        .andExpect(jsonPath("$.programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+    ;
 
 
     AssessmentDTO captorValue = assessmentDTOArgumentCaptor.getValue();
@@ -336,6 +348,7 @@ public class AssessmentResourceTest {
     foundAssessment.setProgrammeNumber(PROGRAMME_NUMBER);
     foundAssessment.setProgrammeName(PROGRAMME_NAME);
     foundAssessment.setType(TYPE);
+    foundAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
     when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.of(foundAssessment));
 
@@ -347,6 +360,7 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.programmeNumber").value(PROGRAMME_NUMBER))
         .andExpect(jsonPath("$.programmeName").value(PROGRAMME_NAME))
         .andExpect(jsonPath("$.type").value(TYPE))
+        .andExpect(jsonPath("$.programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
     ;
 
   }

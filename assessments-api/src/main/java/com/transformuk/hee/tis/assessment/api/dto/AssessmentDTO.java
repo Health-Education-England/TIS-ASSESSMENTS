@@ -52,6 +52,9 @@ public class AssessmentDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The programme name for this trainee's assessment")
   private String programmeName;
 
+  @ApiModelProperty(required = true, value = "The programme membership id")
+  private Long programmeMembershipId;
+
   @ApiModelProperty(value = "The current eventStatus of the assessment event")
   private EventStatus eventStatus;
 
@@ -162,6 +165,19 @@ public class AssessmentDTO implements Serializable {
 
   public AssessmentDTO programmeName(String programmeName) {
     this.programmeName = programmeName;
+    return this;
+  }
+
+  public Long getProgrammeMembershipId() {
+    return programmeMembershipId;
+  }
+
+  public void setProgrammeMembershipId(Long programmeMembershipId) {
+    this.programmeMembershipId = programmeMembershipId;
+  }
+
+  public AssessmentDTO programmeMembershipId(Long programmeMembershipId) {
+    this.programmeMembershipId = programmeMembershipId;
     return this;
   }
 
@@ -293,6 +309,7 @@ public class AssessmentDTO implements Serializable {
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
+        ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
         ", programmeId='" + getProgrammeId() + "'" +

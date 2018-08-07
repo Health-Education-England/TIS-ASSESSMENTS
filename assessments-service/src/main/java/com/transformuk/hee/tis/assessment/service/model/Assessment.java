@@ -53,6 +53,9 @@ public class Assessment implements Serializable {
   @Column(name = "programmeName")
   private String programmeName;
 
+  @Column(name = "programmeMembershipId")
+  private Long programmeMembershipId;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private EventStatus eventStatus;
@@ -172,6 +175,19 @@ public class Assessment implements Serializable {
 
   public Assessment programmeName(String programmeName) {
     this.programmeName = programmeName;
+    return this;
+  }
+
+  public Long getProgrammeMembershipId() {
+    return programmeMembershipId;
+  }
+
+  public void setProgrammeMembershipId(Long programmeMembershipId) {
+    this.programmeMembershipId = programmeMembershipId;
+  }
+
+  public Assessment programmeMembershipId(Long programmeMembershipId) {
+    this.programmeMembershipId = programmeMembershipId;
     return this;
   }
 
@@ -295,6 +311,7 @@ public class Assessment implements Serializable {
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
+        ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
         ", programmeId='" + getProgrammeId() + "'" +
