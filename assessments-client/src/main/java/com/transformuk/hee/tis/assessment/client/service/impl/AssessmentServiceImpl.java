@@ -86,6 +86,24 @@ public class AssessmentServiceImpl extends AbstractClientService {
             .getBody();
   }
 
+  public AssessmentOutcomeDTO createTraineeAssessmentOutcome(AssessmentOutcomeDTO assessmentOutcomeDTO, Long traineeId, Long assessmentId){
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<AssessmentOutcomeDTO> httpEntity = new HttpEntity<>(assessmentOutcomeDTO, headers);
+    return assessmentRestTemplate
+            .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments/" + assessmentId + "/outcomes",
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentOutcomeDTO>() {})
+            .getBody();
+  }
+
+  public RevalidationDTO createTraineeAssessmentRevalidation(RevalidationDTO revalidationDTO, Long traineeId, Long assessmentId){
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<RevalidationDTO> httpEntity = new HttpEntity<>(revalidationDTO, headers);
+    return assessmentRestTemplate
+            .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments/" + assessmentId + "/revalidations",
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<RevalidationDTO>() {})
+            .getBody();
+  }
+
   private String getIdsAsUrlEncodedCSVs(List<String> ids) {
     Set<String> urlEncodedIds = ids.stream()
             .map(this::urlEncode)
