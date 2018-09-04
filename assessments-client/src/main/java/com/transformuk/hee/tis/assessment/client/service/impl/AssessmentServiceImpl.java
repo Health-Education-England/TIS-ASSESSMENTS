@@ -28,6 +28,7 @@ public class AssessmentServiceImpl extends AbstractClientService {
   private static final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
 	private static final String API_TRAINEE_CREATE_ASSESSMENTS = "/api/trainee/"; //{traineeId}/assessments
+  private static final String API_ASSESSMENTS_OUTCOME_ALL = "/api/outcomes/all";
 	private static final String BASIC = "/basic";
 
 
