@@ -1,5 +1,7 @@
 package com.transformuk.hee.tis.assessment.client.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.transformuk.hee.tis.assessment.api.dto.*;
 import com.transformuk.hee.tis.client.impl.AbstractClientService;
@@ -27,10 +29,10 @@ import java.util.stream.Collectors;
 public class AssessmentServiceImpl extends AbstractClientService {
   private static final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
-	private static final String API_TRAINEE_CREATE_ASSESSMENTS = "/api/trainee/"; //{traineeId}/assessments
+  private static final String API_TRAINEE_CREATE_ASSESSMENTS = "/api/trainee/"; //{traineeId}/assessments
   private static final String API_ASSESSMENTS_OUTCOME_ALL = "/api/outcomes/all";
-	private static final String BASIC = "/basic";
-
+  private static final String BASIC = "/basic";
+  private ObjectMapper objectMapper = new ObjectMapper();
 
 
   private static final Map<Class, ParameterizedTypeReference> classToParamTypeRefMap;
@@ -69,12 +71,13 @@ public class AssessmentServiceImpl extends AbstractClientService {
     };
   }
 
-  public AssessmentDTO createTraineeAssessment(AssessmentDTO assessmentDTO,Long traineeId) {
+  public AssessmentDTO createTraineeAssessment(AssessmentDTO assessmentDTO, Long traineeId) {
     HttpHeaders headers = new HttpHeaders();
     HttpEntity<AssessmentDTO> httpEntity = new HttpEntity<>(assessmentDTO, headers);
     return assessmentRestTemplate
             .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments",
-                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentDTO>() {})
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentDTO>() {
+                    })
             .getBody();
   }
 
@@ -83,31 +86,47 @@ public class AssessmentServiceImpl extends AbstractClientService {
     HttpEntity<AssessmentDetailDTO> httpEntity = new HttpEntity<>(assessmentDetailDTO, headers);
     return assessmentRestTemplate
             .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments/" + assessmentId + "/details",
-                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentDetailDTO>() {})
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentDetailDTO>() {
+                    })
             .getBody();
   }
 
-  public AssessmentOutcomeDTO createTraineeAssessmentOutcome(AssessmentOutcomeDTO assessmentOutcomeDTO, Long traineeId, Long assessmentId){
+  public AssessmentOutcomeDTO createTraineeAssessmentOutcome(AssessmentOutcomeDTO assessmentOutcomeDTO, Long traineeId, Long assessmentId) {
     HttpHeaders headers = new HttpHeaders();
     HttpEntity<AssessmentOutcomeDTO> httpEntity = new HttpEntity<>(assessmentOutcomeDTO, headers);
     return assessmentRestTemplate
             .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments/" + assessmentId + "/outcomes",
-                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentOutcomeDTO>() {})
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<AssessmentOutcomeDTO>() {
+                    })
             .getBody();
   }
 
-  public RevalidationDTO createTraineeAssessmentRevalidation(RevalidationDTO revalidationDTO, Long traineeId, Long assessmentId){
+  public RevalidationDTO createTraineeAssessmentRevalidation(RevalidationDTO revalidationDTO, Long traineeId, Long assessmentId) {
     HttpHeaders headers = new HttpHeaders();
     HttpEntity<RevalidationDTO> httpEntity = new HttpEntity<>(revalidationDTO, headers);
     return assessmentRestTemplate
             .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + traineeId + "/assessments/" + assessmentId + "/revalidations",
-                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<RevalidationDTO>() {})
+                    HttpMethod.POST, httpEntity, new ParameterizedTypeReference<RevalidationDTO>() {
+                    })
             .getBody();
   }
 
-  public Set<Object> getAllOutcomes() {
-    return assessmentRestTemplate.exchange(serviceUrl + API_ASSESSMENTS_OUTCOME_ALL,
-            HttpMethod.GET, null, new ParameterizedTypeReference<Set<Object>>() {}).getBody();
+  /**
+   * Fetches all outcome objects with reasons and then converting into Json string
+   *
+   * @return
+   */
+  public String getAllOutcomes() {
+    Set<Object> allOutcomes = assessmentRestTemplate.exchange(serviceUrl + API_ASSESSMENTS_OUTCOME_ALL,
+            HttpMethod.GET, null, new ParameterizedTypeReference<Set<Object>>() {
+            }).getBody();
+    String jsonAllOutcomes = null;
+    try {
+      jsonAllOutcomes = objectMapper.writeValueAsString(allOutcomes);
+    } catch (JsonProcessingException e) {
+      // do nothing
+    }
+    return jsonAllOutcomes;
   }
 
   private String getIdsAsUrlEncodedCSVs(List<String> ids) {
