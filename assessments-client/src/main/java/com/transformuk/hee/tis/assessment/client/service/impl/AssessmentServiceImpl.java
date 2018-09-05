@@ -47,7 +47,8 @@ public class AssessmentServiceImpl extends AbstractClientService {
     });
     classToParamTypeRefMap.put(RevalidationDTO.class, new ParameterizedTypeReference<List<RevalidationDTO>>() {
     });
-
+    classToParamTypeRefMap.put(Object.class, new ParameterizedTypeReference<Set<Object>>() {
+    });
   }
 
   @Autowired
@@ -124,7 +125,7 @@ public class AssessmentServiceImpl extends AbstractClientService {
     try {
       jsonAllOutcomes = objectMapper.writeValueAsString(allOutcomes);
     } catch (JsonProcessingException e) {
-      // do nothing
+      log.error("Unable to convert outcomes to json string");
     }
     return jsonAllOutcomes;
   }
