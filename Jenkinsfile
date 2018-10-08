@@ -67,7 +67,7 @@ node {
   try {
    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/dev $env.DEVOPS_BASE/ansible/tasks/spring-boot-build.yml"
   } catch (err) {
-   catch err
+   throw err
   } finally {
    println "[Jenkinsfile INFO] Stage Dockerize completed..."
   }
@@ -83,7 +83,7 @@ node {
     try {
      sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/dev $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
     } catch (err) {
-     catch err
+     throw err
     } finally {
      println "[Jenkinsfile INFO] Stage Dockerize completed..."
     }
@@ -97,7 +97,7 @@ node {
      try {
       sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/stage $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
      } catch (err) {
-      catch err
+      throw err
      } finally {
       println "[Jenkinsfile INFO] Stage Dockerize completed..."
      }
@@ -119,7 +119,7 @@ node {
      try {
       sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
      } catch (err) {
-      catch err
+      throw err
      } finally {
       println "[Jenkinsfile INFO] Stage Dockerize completed..."
      }
