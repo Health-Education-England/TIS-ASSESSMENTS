@@ -60,6 +60,9 @@ public class Assessment implements Serializable {
   @Column(name = "status")
   private EventStatus eventStatus;
 
+  @Column(name = "softDeletedDate")
+  private LocalDate softDeletedDate;
+
   @Column(name = "type")
   private String type;
 
@@ -171,6 +174,14 @@ public class Assessment implements Serializable {
 
   public void setProgrammeName(String programmeName) {
     this.programmeName = programmeName;
+  }
+
+  public LocalDate getSoftDeletedDate() {
+    return softDeletedDate;
+  }
+
+  public void setSoftDeletedDate(LocalDate softDeletedDate) {
+    this.softDeletedDate = softDeletedDate;
   }
 
   public Assessment programmeName(String programmeName) {

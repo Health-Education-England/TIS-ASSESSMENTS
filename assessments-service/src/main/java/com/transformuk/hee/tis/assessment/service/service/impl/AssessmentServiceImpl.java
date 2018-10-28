@@ -12,6 +12,7 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMappe
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -195,4 +196,23 @@ public class AssessmentServiceImpl implements AssessmentService {
     }
     return false;
   }
+
+  @Override
+    @Transactional
+    public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
+      Preconditions.checkNotNull(traineeId);
+      Preconditions.checkNotNull(assessmentId);
+
+      Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+      if (traineeAssessment.isPresent()) {
+        Assessment assessment = traineeAssessment.get();
+
+        // set softDeletedDate timestamp
+        assessment.setSoftDeletedDate(LocalDate.now());
+        assessmentRepository.save(assessment);
+
+        return true;
+      }
+      return false;
+    }
 }
