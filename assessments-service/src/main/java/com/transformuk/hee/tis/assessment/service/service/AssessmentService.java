@@ -73,4 +73,13 @@ public interface AssessmentService {
    * @return true if the deletion was successful, otherwise false
    */
   boolean deleteTraineeAssessment(Long assessmentId, Long traineeId);
+
+  /**
+   * soft delete an assessment by adding a timestamp
+   *
+   * @param assessmentId the TIS id of the assessment
+   * @param traineeId the TIS id of the trainee
+   * @return true if the deletion was successful, otherwise false
+   */
+  boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId);
 }

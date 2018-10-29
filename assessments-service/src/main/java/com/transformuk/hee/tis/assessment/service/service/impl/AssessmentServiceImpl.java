@@ -12,7 +12,6 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMappe
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -30,6 +29,7 @@ import java.util.Optional;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
 
 
 /**
@@ -83,7 +83,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(pageable);
 
     log.debug("Request to get all Assessments Lists");
-    return assessmentRepository.findAll(pageable)
+
+    return assessmentRepository.findAllBySoftDeletedDate(null, pageable)
         .map(assessmentListMapper::toDto);
   }
 
@@ -110,6 +111,12 @@ public class AssessmentServiceImpl implements AssessmentService {
         CollectionUtils.isNotEmpty(columnFilters), "cannot use advanced search if both filters or search query are empty");
 
     List<Specification<Assessment>> specs = new ArrayList<>();
+
+    Specifications notDeleted = Specifications.where(
+      SpecificationFactory.isNull("softDeletedDate"));
+    specs.add(notDeleted);
+
+
     //add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
       Specifications whereClause = Specifications.where(
@@ -198,21 +205,21 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-    @Transactional
-    public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
-      Preconditions.checkNotNull(traineeId);
-      Preconditions.checkNotNull(assessmentId);
+  @Transactional
+  public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
 
-      Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
-      if (traineeAssessment.isPresent()) {
-        Assessment assessment = traineeAssessment.get();
+    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+    if (traineeAssessment.isPresent()) {
+      Assessment assessment = traineeAssessment.get();
 
-        // set softDeletedDate timestamp
-        assessment.setSoftDeletedDate(LocalDate.now());
-        assessmentRepository.save(assessment);
+      // set softDeletedDate timestamp
+      assessment.setSoftDeletedDate(java.time.LocalDate.now());
+      assessmentRepository.save(assessment);
 
-        return true;
-      }
-      return false;
+      return true;
     }
+    return false;
+  }
 }

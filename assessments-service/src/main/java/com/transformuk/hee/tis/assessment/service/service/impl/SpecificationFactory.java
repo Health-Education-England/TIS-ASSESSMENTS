@@ -51,6 +51,21 @@ public final class SpecificationFactory {
     };
   }
 
+  public static Specification isNull(String attribute) {
+    return (root, query, cb) -> {
+      if (StringUtils.isNotEmpty(attribute) && attribute.contains(DOT)) {
+        String[] joinTable = StringUtils.split(attribute, DOT);
+        Join tableJoin = root.join(joinTable[0], JoinType.LEFT);
+        for (int i = 1; i < joinTable.length - 1; i++) {
+          tableJoin = tableJoin.join(joinTable[i], JoinType.LEFT);
+        }
+        return cb.isNull(tableJoin.get(joinTable[joinTable.length - 1]));
+      } else {
+        return cb.isNull(root.get(attribute));
+      }
+    };
+  }
+
 
   /**
    * In condition for entity property, if property is from sub entity then it should contain '.' e.g sites.siteId

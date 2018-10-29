@@ -36,3 +36,5 @@ node_modules
 ######################
 .idea/
 **/*.iml
+assessments-client/bin
+assessments-api/bin
