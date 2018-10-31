@@ -93,7 +93,7 @@ public class AssessmentOutcomeResource {
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:delete:entities')")
   public ResponseEntity<AssessmentOutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) AssessmentOutcomeDTO assessmentOutcomeDTO,
                                                                               @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to create AssessmentOutcome : {}", assessmentOutcomeDTO);

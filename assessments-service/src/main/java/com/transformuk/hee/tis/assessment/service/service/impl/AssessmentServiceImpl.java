@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
 
 
 /**
@@ -82,7 +83,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(pageable);
 
     log.debug("Request to get all Assessments Lists");
-    return assessmentRepository.findAll(pageable)
+
+    return assessmentRepository.findAllBySoftDeletedDate(null, pageable)
         .map(assessmentListMapper::toDto);
   }
 
@@ -109,6 +111,12 @@ public class AssessmentServiceImpl implements AssessmentService {
         CollectionUtils.isNotEmpty(columnFilters), "cannot use advanced search if both filters or search query are empty");
 
     List<Specification<Assessment>> specs = new ArrayList<>();
+
+    Specifications notDeleted = Specifications.where(
+      SpecificationFactory.isNull("softDeletedDate"));
+    specs.add(notDeleted);
+
+
     //add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
       Specifications whereClause = Specifications.where(
@@ -191,6 +199,25 @@ public class AssessmentServiceImpl implements AssessmentService {
       Assessment assessment = traineeAssessment.get();
       //cascade delete is enabled on the relating entities so dont need to delete those manually
       assessmentRepository.delete(assessment);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
+  public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
+    Preconditions.checkNotNull(traineeId);
+    Preconditions.checkNotNull(assessmentId);
+
+    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
+    if (traineeAssessment.isPresent()) {
+      Assessment assessment = traineeAssessment.get();
+
+      // set softDeletedDate timestamp
+      assessment.setSoftDeletedDate(java.time.LocalDate.now());
+      assessmentRepository.save(assessment);
+
       return true;
     }
     return false;
