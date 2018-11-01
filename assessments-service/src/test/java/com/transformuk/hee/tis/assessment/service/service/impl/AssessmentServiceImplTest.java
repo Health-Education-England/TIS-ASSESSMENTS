@@ -98,7 +98,7 @@ public class AssessmentServiceImplTest {
     List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
-    when(assessmentRepositoryMock.findAll(pageableMock)).thenReturn(pagedAssessments);
+    when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock)).thenReturn(pagedAssessments);
     when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
     when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
     when(assessmentListMapperMock.toDto(assessmentMock3)).thenReturn(assessmentListDTOMock3);

@@ -3,10 +3,10 @@ VALUES
 (1, 'U1', 'Record keeping and evidence', 0, 0),
 (2, 'U2', 'Inadequate experience', 0, 0);
 
-INSERT INTO `Assessment` (`id`, `traineeId`, `firstName`, `lastName`, `reviewDate`, `programmeNumber`, `programmeName`, `status`, `type`, `intrepidId`, `amendedDate`, `programmeId`)
+INSERT INTO `Assessment` (`id`, `traineeId`, `firstName`, `lastName`, `reviewDate`, `programmeNumber`, `programmeName`, `status`, `type`, `intrepidId`, `amendedDate`, `programmeId`, `softDeletedDate`)
 VALUES
-(1, 8502, 'FirstName1', 'LastName1', NULL, 'PROG1', 'ProgName1', 'COMPLETED', 'ARCP', '111111111', NULL, 6242),
-(2, 9017, 'FirstName2', 'LastName2', NULL, 'PROG2', 'ProgName2', 'COMPLETED', 'ARCP', '222222222', NULL, 937);
+(1, 8502, 'FirstName1', 'LastName1', NULL, 'PROG1', 'ProgName1', 'COMPLETED', 'ARCP', '111111111', NULL, 6242, NULL),
+(2, 9017, 'FirstName2', 'LastName2', NULL, 'PROG2', 'ProgName2', 'COMPLETED', 'ARCP', '222222222', NULL, 937, NULL);
 
 INSERT INTO `AssessmentDetail` (`id`, `curriculumId`, `curriculumName`, `curriculumStartDate`, `curriculumEndDate`, `curriculumSpecialtyId`, `curriculumSpecialty`, `curriculumSubType`, `membershipType`, `gradeAbbreviation`, `gradeName`, `periodCoveredFrom`, `periodCoveredTo`, `portfolioReviewDate`, `monthsWteDuringPeriod`, `monthsCountedToTraining`, `traineeNtn`, `amendedDate`, `daysOutOfTraining`, `intrepidId`, `pya`, `gradeId`)
 VALUES
