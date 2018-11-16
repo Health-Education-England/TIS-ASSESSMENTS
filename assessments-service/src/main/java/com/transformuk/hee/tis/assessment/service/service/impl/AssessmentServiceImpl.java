@@ -183,10 +183,23 @@ public class AssessmentServiceImpl implements AssessmentService {
   public List<AssessmentDTO> findAllForTrainee(Long traineeId, Sort sort) {
     Preconditions.checkNotNull(traineeId);
 
-    Assessment example = new Assessment().traineeId(traineeId);
-    example.softDeletedDate(null);
+    List<Specification<Assessment>> specs = new ArrayList<>();
 
-    List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example), sort);
+    Specifications whereClause = Specifications.where(
+      SpecificationFactory.equal("traineeId", traineeId));
+    specs.add(whereClause);
+
+    Specifications notDeleted = Specifications.where(
+      SpecificationFactory.isNull("softDeletedDate"));
+    specs.add(notDeleted);
+
+    Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
+    //add the rest of the specs that made it in
+    for (int i = 1; i < specs.size(); i++) {
+      fullSpec = fullSpec.and(specs.get(i));
+    }
+
+    List<Assessment> allAssessments = assessmentRepository.findAll(fullSpec, sort);
     return assessmentMapper.toDto(allAssessments);
   }
 
