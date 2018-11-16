@@ -184,6 +184,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(traineeId);
 
     Assessment example = new Assessment().traineeId(traineeId);
+    example.softDeletedDate(null);
+
     List<Assessment> allAssessments = assessmentRepository.findAll(Example.of(example), sort);
     return assessmentMapper.toDto(allAssessments);
   }

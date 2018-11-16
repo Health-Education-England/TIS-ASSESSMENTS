@@ -184,6 +184,11 @@ public class Assessment implements Serializable {
     this.softDeletedDate = softDeletedDate;
   }
 
+  public Assessment softDeletedDate(LocalDate softDeletedDate) {
+    this.softDeletedDate = softDeletedDate;
+    return this;
+  }
+
   public Assessment programmeName(String programmeName) {
     this.programmeName = programmeName;
     return this;
