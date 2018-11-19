@@ -331,13 +331,14 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsForATrainee() {
-
     List<Assessment> traineeAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
     List<AssessmentDTO> traineeAssessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
 
     Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
-    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
     when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
+    when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
+    when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
 
     List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, sort);
 
@@ -345,9 +346,8 @@ public class AssessmentServiceImplTest {
     Assert.assertTrue(result.contains(assessmentDTOMock1));
     Assert.assertTrue(result.contains(assessmentDTOMock2));
 
-    Example<Assessment> captorValue = assessmentCaptor.getValue();
-    Assessment assessment = captorValue.getProbe();
-    Assert.assertEquals(TRAINEE_ID, assessment.getTraineeId());
+    Assert.assertEquals(assessmentDTOMock1, result.get(0));
+    Assert.assertEquals(assessmentDTOMock2, result.get(1));
   }
 
   @Test(expected = IllegalStateException.class)
