@@ -342,6 +342,7 @@ public class AssessmentServiceImplTest {
     when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
     when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
     when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
+    when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
     List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, sort);
 
@@ -352,22 +353,7 @@ public class AssessmentServiceImplTest {
     Assert.assertEquals(assessmentDTOMock1, result.get(0));
     Assert.assertEquals(assessmentDTOMock2, result.get(1));
   }
-
-  @Test(expected = IllegalStateException.class)
-  public void advancedSearchShouldThrowExceptionIfBothSearchStringAndFiltersIsEmpty() {
-    List<ColumnFilter> columnFilters = Lists.newArrayList();
-    Pageable pageable = new PageRequest(0, 20);
-    String searchQuery = StringUtils.EMPTY;
-
-    try {
-      testObj.advancedSearch(searchQuery, columnFilters, pageable);
-    } catch (Exception e) {
-      verify(assessmentRepositoryMock, never()).findAll(any(Specifications.class), any(Pageable.class));
-      verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
-      throw e;
-    }
-
-  }
+  
 
   @Test
   public void advancedSearchShouldSearchUsingSpecifications() {
@@ -381,6 +367,7 @@ public class AssessmentServiceImplTest {
     when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable))).thenReturn(pagedFoundAssessments);
     when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
     when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
+    when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
     Page<AssessmentListDTO> result = testObj.advancedSearch(searchQuery, columnFilters, pageable);
 

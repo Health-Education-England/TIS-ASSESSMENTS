@@ -505,7 +505,7 @@ public class AssessmentResourceTest {
     anotherAssessment.setOutcome(ANOTHER_OUTCOME);
 
     Page<AssessmentListDTO> pagedResponse = new PageImpl<>(Lists.newArrayList(assessmentListDTO, anotherAssessment));
-    when(assessmentServiceMock.findAll(pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
+    when(assessmentServiceMock.advancedSearch(eq(null), eq(null), pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
 
     mockMvc.perform(get("/api/trainee/assessments"))
         .andExpect(status().isOk())

@@ -42,19 +42,19 @@ import java.util.Collections;
 public class AssessmentServiceImpl implements AssessmentService {
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
+
   @Autowired
   private PermissionService permissionService;
 
-  private final AssessmentRepository assessmentRepository;
-  private final AssessmentMapper assessmentMapper;
-  private final AssessmentListMapper assessmentListMapper;
+  @Autowired
+  private AssessmentRepository assessmentRepository;
 
-  public AssessmentServiceImpl(AssessmentRepository assessmentRepository, AssessmentMapper assessmentMapper,
-      AssessmentListMapper assessmentListMapper) {
-    this.assessmentRepository = assessmentRepository;
-    this.assessmentMapper = assessmentMapper;
-    this.assessmentListMapper = assessmentListMapper;
-  }
+  @Autowired
+  private AssessmentMapper assessmentMapper;
+
+  @Autowired
+  private AssessmentListMapper assessmentListMapper;
+
 
   /**
    * Save a assessment.
