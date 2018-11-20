@@ -155,6 +155,11 @@ public class Assessment implements Serializable {
     this.programmeId = programmeId;
   }
 
+  public Assessment programmeId(Long programmeId) {
+    this.programmeId = programmeId;
+    return this;
+  }
+
   public String getProgrammeNumber() {
     return programmeNumber;
   }

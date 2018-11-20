@@ -61,6 +61,9 @@ public class AssessmentServiceImplTest {
   @Captor
   private ArgumentCaptor<Specifications<Assessment>> specificationsArgumentCaptor;
 
+  @Mock
+  private PermissionService permissionServiceMock;
+
   @Test
   public void saveShouldSaveAssessment() {
     when(assessmentMapperMock.toEntity(assessmentDTOMock)).thenReturn(assessmentMock);

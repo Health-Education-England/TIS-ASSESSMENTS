@@ -10,6 +10,7 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -120,6 +121,9 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PROGRAMME_NAME = "programmeName-AAAAA";
   private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
 
+  private static final Long DEFAULT_PROGRAMME_ID = 2323L;
+  private static final Long UPDATED_PROGRAMME_ID = 2324L;
+
   private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
   public static final long DEFAULT_ID = 1L;
@@ -151,6 +155,9 @@ public class AssessmentResourceIntTest {
   private MockMvc restAssessmentMockMvc;
 
   private Assessment assessment;
+
+  @Autowired
+  private PermissionService permissionService;
 
   /**
    * Create an entity for this scripts.
@@ -187,8 +194,10 @@ public class AssessmentResourceIntTest {
         .reviewDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
+        .programmeId(DEFAULT_PROGRAMME_ID)
         .type(DEFAULT_ASSESSMENT_TYPE)
         .intrepidId(DEFAULT_INTREPID_ID)
+        .softDeletedDate(null)
         .detail(assessmentDetail);
     return assessment;
   }
