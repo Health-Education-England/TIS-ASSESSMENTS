@@ -10,7 +10,9 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import com.transformuk.hee.tis.security.util.TisSecurityHelper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,6 +35,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -120,6 +124,9 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_PROGRAMME_NAME = "programmeName-AAAAA";
   private static final String UPDATED_PROGRAMME_NAME = "programmeName-BBBBB";
 
+  private static final Long DEFAULT_PROGRAMME_ID = 2323L;
+  private static final Long UPDATED_PROGRAMME_ID = 2324L;
+
   private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
   public static final long DEFAULT_ID = 1L;
@@ -148,9 +155,15 @@ public class AssessmentResourceIntTest {
   @Autowired
   private EntityManager em;
 
+  @MockBean
+  private PermissionService permissionServiceMock;
+
   private MockMvc restAssessmentMockMvc;
 
   private Assessment assessment;
+
+  @Autowired
+  private PermissionService permissionService;
 
   /**
    * Create an entity for this scripts.
@@ -187,8 +200,10 @@ public class AssessmentResourceIntTest {
         .reviewDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
+        .programmeId(DEFAULT_PROGRAMME_ID)
         .type(DEFAULT_ASSESSMENT_TYPE)
         .intrepidId(DEFAULT_INTREPID_ID)
+        .softDeletedDate(null)
         .detail(assessmentDetail);
     return assessment;
   }
@@ -290,6 +305,8 @@ public class AssessmentResourceIntTest {
   @Test
   @Transactional
   public void getAllAssessments() throws Exception {
+    when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
+
     // Initialize the database
     assessment = createEntity(em);
     assessmentDetailRepository.saveAndFlush(assessment.getDetail());

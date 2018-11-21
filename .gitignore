@@ -38,3 +38,4 @@ node_modules
 **/*.iml
 assessments-client/bin
 assessments-api/bin
+.vscode

@@ -96,7 +96,7 @@ public class AssessmentResource {
     List<ColumnFilter> columnFilters = ColumnFilterUtil.getColumnFilters(columnFilterJson, filterEnumList);
     Page<AssessmentListDTO> page;
     if (StringUtils.isEmpty(searchQuery) && StringUtils.isEmpty(columnFilterJson)) {
-      page = assessmentService.findAll(pageable);
+      page = assessmentService.advancedSearch(null, null, pageable);
     } else {
       page = assessmentService.advancedSearch(searchQuery, columnFilters, pageable);
     }

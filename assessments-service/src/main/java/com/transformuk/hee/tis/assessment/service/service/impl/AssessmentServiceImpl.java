@@ -30,7 +30,9 @@ import java.util.Optional;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Service Implementation for managing Assessment.
@@ -41,16 +43,18 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
-  private final AssessmentRepository assessmentRepository;
-  private final AssessmentMapper assessmentMapper;
-  private final AssessmentListMapper assessmentListMapper;
+  @Autowired
+  private PermissionService permissionService;
 
-  public AssessmentServiceImpl(AssessmentRepository assessmentRepository, AssessmentMapper assessmentMapper,
-                               AssessmentListMapper assessmentListMapper) {
-    this.assessmentRepository = assessmentRepository;
-    this.assessmentMapper = assessmentMapper;
-    this.assessmentListMapper = assessmentListMapper;
-  }
+  @Autowired
+  private AssessmentRepository assessmentRepository;
+
+  @Autowired
+  private AssessmentMapper assessmentMapper;
+
+  @Autowired
+  private AssessmentListMapper assessmentListMapper;
+
 
   /**
    * Save a assessment.
@@ -84,8 +88,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     log.debug("Request to get all Assessments Lists");
 
-    return assessmentRepository.findAllBySoftDeletedDate(null, pageable)
-        .map(assessmentListMapper::toDto);
+    return assessmentRepository.findAllBySoftDeletedDate(null, pageable).map(assessmentListMapper::toDto);
   }
 
   /**
@@ -106,24 +109,19 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters, Pageable pageable) {
-    Preconditions.checkState(StringUtils.isNotEmpty(searchString) ||
-        CollectionUtils.isNotEmpty(columnFilters), "cannot use advanced search if both filters or search query are empty");
+  public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters,
+      Pageable pageable) {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications notDeleted = Specifications.where(
-      SpecificationFactory.isNull("softDeletedDate"));
+    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
-
-    //add the text search criteria
+    // add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
-      Specifications whereClause = Specifications.where(
-          containsLike("detail.curriculumName", searchString)).
-          or(containsLike("firstName", searchString)).
-          or(containsLike("lastName", searchString)).
-          or(containsLike("type", searchString));
+      Specifications whereClause = Specifications.where(containsLike("detail.curriculumName", searchString))
+          .or(containsLike("firstName", searchString)).or(containsLike("lastName", searchString))
+          .or(containsLike("type", searchString));
 
       if (NumberUtils.isNumber(searchString)) {
         whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString));
@@ -131,13 +129,20 @@ public class AssessmentServiceImpl implements AssessmentService {
       specs.add(whereClause);
     }
 
-    //add the column filters criteria
+    // limit assessments that belong to specific programmes
+    if (permissionService.isProgrammeObserver()) {
+      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      specs.add(inProgrammes);
+    }
+
+    // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> specs.add(in(cf.getName(), cf.getValues())));
     }
 
     Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
-    //add the rest of the specs that made it in
+    // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));
     }
@@ -174,8 +179,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(page);
 
     Assessment example = new Assessment().traineeId(traineeId);
-    return assessmentRepository.findAll(Example.of(example), page)
-        .map(assessmentMapper::toDto);
+    return assessmentRepository.findAll(Example.of(example), page).map(assessmentMapper::toDto);
   }
 
   @Override
@@ -185,16 +189,21 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications whereClause = Specifications.where(
-      SpecificationFactory.equal("traineeId", traineeId));
+    Specifications whereClause = Specifications.where(SpecificationFactory.equal("traineeId", traineeId));
     specs.add(whereClause);
 
-    Specifications notDeleted = Specifications.where(
-      SpecificationFactory.isNull("softDeletedDate"));
+    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
+    // limit assessments that belong to specific programmes
+    if (permissionService.isProgrammeObserver()) {
+      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      specs.add(inProgrammes);
+    }
+
     Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
-    //add the rest of the specs that made it in
+    // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));
     }
@@ -212,7 +221,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
     if (traineeAssessment.isPresent()) {
       Assessment assessment = traineeAssessment.get();
-      //cascade delete is enabled on the relating entities so dont need to delete those manually
+      // cascade delete is enabled on the relating entities so dont need to delete
+      // those manually
       assessmentRepository.delete(assessment);
       return true;
     }
