@@ -12,7 +12,6 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import com.transformuk.hee.tis.security.util.TisSecurityHelper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +35,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the AssessmentResource REST controller.
@@ -384,7 +379,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findById(assessment.getId()).orElse(null);
     updatedAssessment
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)

@@ -74,7 +74,7 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
     Preconditions.checkState(assessment.getId().equals(assessmentOutcomeDTO.getId()), "AssessmentOutcome id must match the assessment id");
 
     //get the current version of the entity to see if its a legacy one
-    AssessmentOutcome originalAssessmentOutcome = assessmentOutcomeRepository.findOne(assessmentOutcomeDTO.getId());
+    AssessmentOutcome originalAssessmentOutcome = assessmentOutcomeRepository.findById(assessmentOutcomeDTO.getId()).orElse(null);
     if (originalAssessmentOutcome != null && BooleanUtils.isTrue(originalAssessmentOutcome.getLegacy())) { //method is used by create too so there doesn't need to be an assessmentOutcome atm
       throw new IllegalStateException("Cannot modify an assessmentOutcome marked as legacy");
     }
@@ -102,7 +102,7 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
         .filter(assessmentOutcomeReason -> !reasonsIdsToSave.contains(assessmentOutcomeReason.getId()))
         .collect(Collectors.toList());
 
-    assessmentOutcomeReasonRepository.delete(reasonsToRemove);
+    assessmentOutcomeReasonRepository.deleteAll(reasonsToRemove);
 
     //update the outcome reason
     if(CollectionUtils.isNotEmpty(reasonsToSave)) {
@@ -124,7 +124,7 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get AssessmentOutcome : {}", id);
-    AssessmentOutcome assessmentOutcome = assessmentOutcomeRepository.findOne(id);
+    AssessmentOutcome assessmentOutcome = assessmentOutcomeRepository.findById(id).orElse(null);
     AssessmentOutcomeDTO assessmentOutcomeDTO = assessmentOutcomeMapper.toDto(assessmentOutcome);
     return Optional.ofNullable(assessmentOutcomeDTO);
   }

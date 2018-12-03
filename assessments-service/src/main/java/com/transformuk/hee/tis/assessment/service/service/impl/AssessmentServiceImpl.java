@@ -9,11 +9,11 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,16 +23,10 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Service Implementation for managing Assessment.
@@ -103,7 +97,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get Assessment : {}", id);
-    Assessment assessment = assessmentRepository.findOne(id);
+    Assessment assessment = assessmentRepository.findById(id).orElse(null);
     return assessmentMapper.toDto(assessment);
   }
 
@@ -158,7 +152,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
+    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example)).orElse(null);
     return Optional.ofNullable(foundAssessment);
   }
 

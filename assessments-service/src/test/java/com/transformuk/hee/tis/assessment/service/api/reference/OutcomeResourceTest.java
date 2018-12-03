@@ -31,12 +31,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -101,7 +101,7 @@ public class OutcomeResourceTest {
 
   @Test
   public void getOutcomeShouldReturnSingleOutcomeWhenFound() throws Exception {
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(outcomeStub1);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID_1)).thenReturn(Optional.of(outcomeStub1));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isOk())
@@ -113,7 +113,7 @@ public class OutcomeResourceTest {
 
   @Test
   public void getOutcomeShouldReturnNotFoundWhenNoOutcomeWithId() throws Exception {
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(null);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID_1)).thenReturn(Optional.empty());
     mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isNotFound());
   }

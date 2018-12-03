@@ -3,7 +3,6 @@ package com.transformuk.hee.tis.assessment.api.dto;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Null;
@@ -18,23 +17,16 @@ public class RevalidationDTO implements Serializable {
 
   @Null(groups = Create.class, message = "id must be null when creating a new assessment revalidation")
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
-  @ApiModelProperty(value = "The id of this revalidation linked to the assessment, must match the id of the assessment." +
-      " Required during PUT and must be null during POST")
   private Long id;
 
-  @ApiModelProperty(value = "True of there are any known concerns linked to this trainee")
   private Boolean knownConcerns;
 
-  @ApiModelProperty(value = "Notes on any concerns in summary format")
   private String concernSummary;
 
-  @ApiModelProperty(value = "Any comments made by the responsible officer")
   private String responsibleOfficerComments;
 
-  @ApiModelProperty(value = "The intrepid id of this detail if the assessment was initiated from Intrepid")
   private String intrepidId;
 
-  @ApiModelProperty(value = "Versioning property to allow for optimistic locking, must match the DB value for updates")
   private LocalDateTime amendedDate;
 
   public Long getId() {

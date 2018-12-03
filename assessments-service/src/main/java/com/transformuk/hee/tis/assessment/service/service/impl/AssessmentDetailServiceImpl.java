@@ -45,7 +45,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
+    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example)).orElse(null);
     if (foundAssessment != null) {
       AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
       return Optional.ofNullable(assessmentDetailDTO);
@@ -100,7 +100,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentDetailId);
 
     log.debug("Request to get Assessment Detail : {}", assessmentDetailId);
-    AssessmentDetail assessmentDetail = assessmentDetailRepository.findOne(assessmentDetailId);
+    AssessmentDetail assessmentDetail = assessmentDetailRepository.findById(assessmentDetailId).orElse(null);
     AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(assessmentDetail);
     return Optional.ofNullable(assessmentDetailDTO);
   }

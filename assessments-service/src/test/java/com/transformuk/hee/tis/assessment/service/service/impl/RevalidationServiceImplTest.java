@@ -17,14 +17,10 @@ import org.springframework.data.domain.Example;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RevalidationServiceImplTest {
@@ -52,7 +48,7 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnRevalidation() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(revalidationMock);
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
 
@@ -70,7 +66,7 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnEmptyOptionalWhenNoRevalidationFound() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(null);
     when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
@@ -128,7 +124,6 @@ public class RevalidationServiceImplTest {
 
   @Test(expected = IllegalStateException.class)
   public void createShouldThrowExceptionIfRevalidationHasId() {
-    when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
     try {
@@ -164,7 +159,6 @@ public class RevalidationServiceImplTest {
     Assessment assessment = new Assessment().id(ASSESSMENT_ID);
     RevalidationDTO revalidationDTO = new RevalidationDTO();
 
-    when(revalidationMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationMapperMock.toEntity(revalidationDTO)).thenReturn(revalidationMock);
     when(revalidationRepositoryMock.saveAndFlush(revalidationMock)).thenReturn(revalidationMock);
@@ -188,7 +182,7 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findOneShouldReturnOutcomeWithId() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(revalidationMock);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.of(revalidationMock));
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
@@ -201,7 +195,7 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
     when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
     Optional<RevalidationDTO> result = testObj.findOne(ASSESSMENT_ID);

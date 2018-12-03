@@ -3,16 +3,8 @@ package com.transformuk.hee.tis.assessment.service.model.reference;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,35 +15,28 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "Reason")
-@ApiModel(description = "Reference type of data that can be managed via the Reason endpoint. Directly related to an " +
-    "outcome")
 public class Reason implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @ApiModelProperty(value = "System generated ID that is assigned to the reason upon creation. Required for updates")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
   @Column(name = "code")
-  @ApiModelProperty(value = "A user friendly code that end users may know this reason by", required = true)
   private String code;
 
   @NotNull(groups = {Create.class, Update.class}, message = "label cannot be null")
   @Column(name = "label")
-  @ApiModelProperty(value = "A human readable label that represents the Reason", required = true)
   private String label;
 
   @ManyToMany(mappedBy = "reasons")
   private Set<Outcome> outcomes;
 
   @NotNull(groups = {Create.class, Update.class}, message = "requireOther cannot be null")
-  @ApiModelProperty(value = "indicator to state that if this reason is selected, that the 'other' field needs to be filled", required = true)
   private boolean requireOther;
 
-  @ApiModelProperty(value = "Whether this reason was from intrepid and therefore is legacy")
   private boolean isLegacy;
 
   public Long getId() {

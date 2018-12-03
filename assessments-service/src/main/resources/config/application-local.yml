@@ -3,10 +3,9 @@ spring:
     url: jdbc:mysql://${DBHOST:localhost}:${DBPORT:3306}/${DBNAME:assessments}?useUnicode=true&characterEncoding=utf8&useSSL=${USE_SSL:false}
     username: ${DBUSER:root}
     password: ${DBPASSWORD:}
-
-flyway:
-  password: ${DBPASSWORD:}
-  schemas: ${DBNAME:assessments}
+  flyway:
+    password: ${DBPASSWORD:}
+    schemas: ${DBNAME:assessments}
 
 
 kc:

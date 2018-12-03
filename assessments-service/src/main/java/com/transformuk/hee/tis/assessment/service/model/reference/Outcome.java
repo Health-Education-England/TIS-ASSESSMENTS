@@ -3,18 +3,8 @@ package com.transformuk.hee.tis.assessment.service.model.reference;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -25,25 +15,20 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "Outcome")
-@ApiModel(description = "Reference type of data that can be managed via the Outcome endpoint. Directly related to an " +
-    "assessment outcome")
 public class Outcome implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @ApiModelProperty(value = "System generated ID that is assigned to the outcome upon creation. Required for updates")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
   @Column(name = "code")
-  @ApiModelProperty(value = "A user friendly code that end users may know this outcome by", required = true)
   private String code;
 
   @NotNull(groups = {Create.class, Update.class}, message = "label cannot be null")
   @Column(name = "label")
-  @ApiModelProperty(value = "A human readable label that represents the Outcome", required = true)
   private String label;
 
   @ManyToMany

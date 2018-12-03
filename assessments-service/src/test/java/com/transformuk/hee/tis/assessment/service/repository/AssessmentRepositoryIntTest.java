@@ -1,11 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.repository;
 
 import com.transformuk.hee.tis.assessment.service.Application;
-import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcomeReason;
-import com.transformuk.hee.tis.assessment.service.model.Revalidation;
+import com.transformuk.hee.tis.assessment.service.model.*;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +44,7 @@ public class AssessmentRepositoryIntTest {
     Assert.notNull(revalidation);
 
     //when we delete an assessment, all relating entities get deleted
-    testObj.delete(ASSESSMENT_ID);
+    testObj.deleteById(ASSESSMENT_ID);
 
     Assert.isNull(entityManager.find(Assessment.class, ASSESSMENT_ID));
     Assert.isNull(entityManager.find(AssessmentDetail.class, ASSESSMENT_ID));

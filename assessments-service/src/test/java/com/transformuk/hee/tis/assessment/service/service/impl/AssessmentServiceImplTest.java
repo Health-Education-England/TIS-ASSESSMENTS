@@ -7,16 +7,11 @@ import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.lang.StringUtils;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specifications;
@@ -24,16 +19,11 @@ import org.springframework.data.jpa.domain.Specifications;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentServiceImplTest {
@@ -130,7 +120,7 @@ public class AssessmentServiceImplTest {
     try {
       testObj.findOne(null);
     } catch (Exception e) {
-      verify(assessmentRepositoryMock, never()).findOne(anyLong());
+      verify(assessmentRepositoryMock, never()).findById(anyLong());
       verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
@@ -139,7 +129,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findOneShouldReturnAssessmentDTO() {
-    when(assessmentRepositoryMock.findOne(1L)).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findById(1L)).thenReturn(Optional.of(assessmentMock));
     when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
 
     AssessmentDTO result = testObj.findOne(1L);
@@ -149,7 +139,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.of(assessmentMock));
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -164,7 +154,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentShouldReturnEmptyOptional() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -198,7 +188,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.of(assessmentMock));
     when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
@@ -214,7 +204,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnEmptyAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
     when(assessmentMapperMock.toDto((Assessment) null)).thenReturn(null);
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
@@ -293,22 +283,22 @@ public class AssessmentServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenTraineeIdIsNull() {
     testObj.deleteTraineeAssessment(ASSESSMENT_ID, null);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
     testObj.deleteTraineeAssessment(null, TRAINEE_ID);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test
   public void deleteTraineeAssessementShouldReturnFalseWhenAssessmentCannotBeFound() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
     Assert.assertFalse(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
@@ -319,7 +309,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void deleteTraineeAssessementShouldReturnTrueWhenAssessmentIsDeleted() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.of(assessmentMock));
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
@@ -340,8 +330,6 @@ public class AssessmentServiceImplTest {
     Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
     when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
     when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
-    when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
-    when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
     List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, sort);

@@ -3,7 +3,6 @@ package com.transformuk.hee.tis.assessment.api.dto;
 
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -19,24 +18,18 @@ public class AssessmentOutcomeReasonDTO implements Serializable {
   @Null(groups = Create.class, message = "id must be null when creating a new AssessmentOutcomeReason")
   @NotNull(groups = Update.class, message = "id must be provided when updating an AssessmentOutcomeReason")
   @DecimalMin(value = "0", groups = Update.class, message = "id must not be negative")
-  @ApiModelProperty(value = "The id of this AssessmentOutcomeReason, must be null for POST, required for PUT")
   private Long id;
 
   @NotNull(groups = {Create.class, Update.class}, message = "reason id must be provided when updating/creating an AssessmentOutcomeReason")
-  @ApiModelProperty(value = "The reason id of this AssessmentOutcomeReason")
   private Long reasonId;
 
-  @ApiModelProperty(value = "The reason label related to the linked reason id")
   private String reasonLabel;
 
-  @ApiModelProperty(value = "The reason code related to the linked reason id")
   private String reasonCode;
 
   @NotNull(groups = {Create.class, Update.class}, message = "other cannot be null")
-  @ApiModelProperty(value = "Additional information stored in an 'other' field")
   private String other;
 
-  @ApiModelProperty(value = "indicator stating if the 'other' field is required, helps to enable/disable show/hide the other input field for the FE")
   private boolean requireOther;
 
 

@@ -15,22 +15,20 @@
 # ===================================================================
 
 management:
-  context-path: /management
-  security:
-    enabled: false
+  endpoints:
+    enabled-by-default: false
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
-  add-application-context-header: false
+  server:
+    add-application-context-header: false
+    servlet.context-path: /management
 
 spring:
   application:
     name: assessments
   profiles:
-    active: local
-    include:
-    - swagger
-    - prometheus
+    active: dev
   jackson:
     serialization.write_dates_as_timestamps: false
     date-format: dd/MM/yyyy
@@ -50,9 +48,24 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+  flyway:
+    baseline-version: 1 # version to start migration
+    baseline-on-migrate: true
+    check-location: false # Check that migration scripts location exists.
+    clean-on-validation-error: false
+    ignore-future-migrations: true
+    init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
+    locations: classpath:db/migration
+    out-of-order: true
+    password: ${DBPASSWORD:}
+    schemas: ${DBNAME:assessments}
+    sql-migration-prefix: V
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    enabled: true
   messages:
     basename: i18n/messages
-    cache-seconds: 1
+    cache-duration: 1s
   mvc:
     favicon:
       enabled: false
@@ -74,47 +87,20 @@ spring:
     port: 25
     username:
     password:
-
-flyway:
-  baseline-description: #
-  baseline-version: 1.0 # version to start migration
-  baseline-on-migrate: true
-  check-location: false # Check that migration scripts location exists.
-  clean-on-validation-error: false
-  flyway.enabled: true # Enable flyway.
-  encoding: #
-  ignore-failed-future-migration: #
-  init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
-  locations: classpath:db/migration
-  out-of-order: true
-  password: ${DBPASSWORD:}
-  placeholder-prefix:
-  placeholder-replacement:
-  placeholder-suffix:
-  placeholders.*:
-  schemas: ${DBNAME:assessments}
-  sql-migration-prefix: V
-  sql-migration-separator:
-  sql-migration-suffix: .sql
-  table:  #
-  url: ${spring.datasource.url}
-  user: ${spring.datasource.username}
-  validate-on-migrate:  #
-  initOnMigrate: true
-
-security:
-  basic:
-    enabled: false
-  user:
-    name: admin
-    password: admin
+  security:
+    basic:
+      enabled: false
+    user:
+      name: admin
+      password: admin
 
 server:
-  session:
-    cookie:
-      http-only: true
-  context-path: /assessments
   port: 8097
+  servlet:
+    context-path: /assessments
+    session:
+      cookie:
+        http-only: true
 
 
 info:
@@ -140,17 +126,6 @@ jhipster:
     #exposed-headers:
     #allow-credentials: true
     #max-age: 1800
-  swagger:
-    default-include-pattern: /api/.*
-    title: assessments API
-    description: assessments API documentation
-    version: 1.0.0
-    terms-of-service-url:
-    contact-name:
-    contact-url:
-    contact-email:
-    license:
-    license-url:
   ribbon:
     display-on-active-profiles: dev
   http:
@@ -170,19 +145,6 @@ jhipster:
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
-  metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-    jmx.enabled: true
-    graphite: # Use the "graphite" Maven profile to have the Graphite dependencies
-      enabled: false
-      host: localhost
-      port: 2003
-      prefix: assessments
-    prometheus: # Use the "prometheus" Maven profile to have the Prometheus dependencies
-      enabled: false
-      endpoint: /prometheusMetrics
-    logs: # Reports Dropwizard metrics in the logs
-      enabled: false
-      report-frequency: 60 # in seconds
   logging:
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
       enabled: false
@@ -201,6 +163,6 @@ jhipster:
 
 #log settings
 logging:
-  file: ${LOG_DIR:${HOME}}/assessments.log
+  file: ${LOG_DIR:}/assessments.log
 
 application:
