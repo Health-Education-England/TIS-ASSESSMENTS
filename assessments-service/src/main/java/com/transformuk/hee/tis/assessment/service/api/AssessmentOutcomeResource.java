@@ -71,7 +71,7 @@ public class AssessmentOutcomeResource {
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentOutcomeDTO> createTraineeAssessmentOutcomes(@RequestBody @Validated(Create.class) AssessmentOutcomeDTO assessmentOutcomeDTO,
                                                                               @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to create AssessmentOutcome : {}", assessmentOutcomeDTO);
@@ -93,7 +93,7 @@ public class AssessmentOutcomeResource {
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/outcomes")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:delete:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentOutcomeDTO> updateTraineeAssessmentOutcomes(@RequestBody @Validated(Update.class) AssessmentOutcomeDTO assessmentOutcomeDTO,
                                                                               @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to create AssessmentOutcome : {}", assessmentOutcomeDTO);

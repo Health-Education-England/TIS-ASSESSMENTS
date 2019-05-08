@@ -62,7 +62,7 @@ public class RevalidationResource {
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<RevalidationDTO> createTraineeAssessmentRevalidation(@RequestBody @Validated(Create.class) RevalidationDTO revalidationDTO,
                                                                              @PathVariable Long traineeId,
                                                                              @PathVariable Long assessmentId) {
@@ -85,7 +85,7 @@ public class RevalidationResource {
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<RevalidationDTO> updateTraineeAssessmentRevalidation(@RequestBody @Validated(Update.class) RevalidationDTO revalidationDTO,
                                                                             @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to update Revalidation : {}", revalidationDTO);

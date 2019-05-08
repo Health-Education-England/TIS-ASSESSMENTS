@@ -214,7 +214,7 @@ public class AssessmentResource {
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDTO> createTraineeAssessment(@RequestBody @Validated(Create.class) AssessmentDTO assessmentDTO,
                                                                @PathVariable Long traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
     if (!traineeId.equals(assessmentDTO.getTraineeId()) || !assessmentId.equals(assessmentDTO.getId())) {
@@ -234,7 +234,7 @@ public class AssessmentResource {
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDTO> updateTraineeAssessment(@RequestBody @Validated(Update.class) AssessmentDTO assessmentDTO,
                                                                @PathVariable Long traineeId, @PathVariable Long assessmentId) throws URISyntaxException {
     if (!traineeId.equals(assessmentDTO.getTraineeId()) || !assessmentId.equals(assessmentDTO.getId())) {
