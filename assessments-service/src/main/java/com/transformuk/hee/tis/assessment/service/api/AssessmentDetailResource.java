@@ -60,7 +60,7 @@ public class AssessmentDetailResource {
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/details")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDetailDTO> createTraineeAssessmentDetails(@RequestBody @Validated(Create.class) AssessmentDetailDTO assessmentDetailDTO,
                                                                             @PathVariable Long traineeId,
                                                                             @PathVariable Long assessmentId) {
@@ -83,7 +83,7 @@ public class AssessmentDetailResource {
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/details")
   @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDetailDTO> updateTraineeAssessmentDetails(@RequestBody @Validated(Update.class) AssessmentDetailDTO assessmentDetailDTO,
                                                                             @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to update AssessmentDetail : {}", assessmentDetailDTO);
