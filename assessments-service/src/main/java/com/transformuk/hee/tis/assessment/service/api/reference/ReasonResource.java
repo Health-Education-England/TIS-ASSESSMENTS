@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.nhs.tis.StringConverter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -41,8 +42,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 
 @RestController
 @RequestMapping("/api")
@@ -94,7 +93,7 @@ public class ReasonResource {
       @ApiParam(value = "any wildcard string to be searched")
       @RequestParam(value = "searchQuery", required = false) String searchQuery) throws IOException {
     log.debug("REST request to get a page of Curricula");
-    searchQuery = sanitize(searchQuery);
+    searchQuery = StringConverter.getConverter(searchQuery).fromJson().decodeUrl().escapeForSql().toString();
     Page<Reason> page;
     if (StringUtils.isEmpty(searchQuery)) {
       page = reasonRepository.findAll(pageable);

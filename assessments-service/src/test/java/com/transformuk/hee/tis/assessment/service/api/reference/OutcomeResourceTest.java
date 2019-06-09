@@ -9,6 +9,7 @@ import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRe
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.net.URI;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.when;
@@ -236,5 +239,21 @@ public class OutcomeResourceTest {
 
     String capturedSearchString = stringArgumentCaptor.getValue();
     Assert.assertEquals(searchParam, capturedSearchString);
+  }
+
+  @Test
+  public void shouldSanitizeParamWhenGetOutcomes() throws Exception {
+    Outcome outcome1 = new Outcome();
+    outcome1.id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
+    Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1));
+
+    when(outcomeServiceMock.advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
+      .thenReturn(pageOfOutcomes);
+
+    mockMvc.perform(get(new URI("/api/outcomes?searchQuery=%22OUTCOME_1%250D%250A%22")))
+        .andExpect(status().isOk());
+
+    String converted = stringArgumentCaptor.getValue();
+    Assert.assertThat("should sanitize param", converted, CoreMatchers.equalTo("OUTCOME\\_1"));
   }
 }

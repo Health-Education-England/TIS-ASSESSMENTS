@@ -8,21 +8,16 @@ import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import org.assertj.core.util.Lists;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.SortHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
@@ -31,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +81,8 @@ public class AssessmentResourceTest {
   private ArgumentCaptor<AssessmentDTO> assessmentDTOArgumentCaptor;
   @Captor
   private ArgumentCaptor<Sort> sortArgumentCaptor;
+  @Captor
+  private ArgumentCaptor<String> stringArgumentCaptor;
 
   private MockMvc mockMvc;
 
@@ -517,5 +515,25 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[*].lastName", hasItems(LAST_NAME, ANOTHER_LAST_NAME)))
         .andExpect(jsonPath("$.[*].outcome", hasItems(OUTCOME_1, ANOTHER_OUTCOME)))
     ;
+  }
+
+  @Test
+  public void shouldSanitizeParamWhenGetAllAssessment() throws Exception{
+      AssessmentListDTO assessmentListDTO = new AssessmentListDTO();
+      assessmentListDTO.setId(1L);
+      assessmentListDTO.setCurriculumName(CURRICULUM_NAME);
+      assessmentListDTO.setEventStatus(EventStatus.COMPLETED);
+      assessmentListDTO.setFirstName(FIRST_NAME);
+      assessmentListDTO.setLastName(LAST_NAME);
+      assessmentListDTO.setOutcome(OUTCOME_1);
+
+      Page<AssessmentListDTO> pagedResponse = new PageImpl<>(Lists.newArrayList(assessmentListDTO));
+      when(assessmentServiceMock.advancedSearch(stringArgumentCaptor.capture(), Matchers.any(), pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
+
+      mockMvc.perform(get(new URI("/api/trainee/assessments?page=0&size=20&sort=id,desc&searchQuery=%22King%27s%2520College%2520Dental%2520institute%2520-%2520ACF%2520(NIHR)%22")))
+          .andExpect(status().isOk());
+
+      String str = stringArgumentCaptor.getValue();
+      Assert.assertThat("should sanitize param", str, CoreMatchers.equalTo("King\\'s College Dental institute - ACF (NIHR)"));
   }
 }
