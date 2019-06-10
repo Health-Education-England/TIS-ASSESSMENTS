@@ -10,9 +10,13 @@ import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRe
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
 import org.assertj.core.util.Lists;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +85,9 @@ public class ReasonResourceIntTest {
   private Outcome outcomeMock;
 
   private MockMvc restReasonMockMvc;
+
+  @Captor
+  private ArgumentCaptor<String> stringCaptor;
 
   @Before
   public void setup() {
@@ -227,5 +235,18 @@ public class ReasonResourceIntTest {
 
     verify(outcomeRepositoryMock).findOne(OUTCOME_ID);
     verify(reasonRepositoryMock, never()).findByOutcome(any());
+  }
+
+  @Test
+  public void shouldSanitizeParamWhenGetAllOutcomes() throws Exception {
+    Reason reason1 = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
+    Page<Reason> reasons = new PageImpl<>(Lists.newArrayList(reason1));
+
+    when(reasonServiceMock.advancedSearch(stringCaptor.capture(), any(Pageable.class))).thenReturn(reasons);
+    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get(new URI("/api/reasons?searchQuery=%22Assessment%252FCurriculum%2520outcomes%2520not%2520achieved%250D%250A%22")))
+      .andExpect(status().isOk());
+
+    String converted = stringCaptor.getValue();
+    Assert.assertThat("should sanitize param", converted, CoreMatchers.equalTo("Assessment/Curriculum outcomes not achieved"));
   }
 }

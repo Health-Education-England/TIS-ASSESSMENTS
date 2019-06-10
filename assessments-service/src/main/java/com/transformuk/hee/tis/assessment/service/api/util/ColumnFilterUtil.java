@@ -8,6 +8,7 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.tis.StringConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.transformuk.hee.tis.assessment.service.api.util.StringUtil.sanitize;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.stream.Collectors.toList;
 
@@ -69,7 +69,10 @@ public final class ColumnFilterUtil {
           if (selectedEnumClass.isPresent()) {
             addToCfList(cfList, e, selectedEnumClass.get());
           } else {
-            List<Object> values = e.getValue().stream().map(v -> sanitize(v)).collect(toList());
+            List<Object> values = e.getValue()
+                .stream()
+                .map(v -> StringConverter.getConverter(v).toString())
+                .collect(toList());
             cfList.add(new ColumnFilter(e.getKey(), values));
           }
         }
