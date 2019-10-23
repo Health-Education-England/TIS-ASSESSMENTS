@@ -124,7 +124,8 @@ public class AssessmentServiceImpl implements AssessmentService {
           .or(containsLike("type", searchString));
 
       if (NumberUtils.isNumber(searchString)) {
-        whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString));
+        whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString))
+        .or(SpecificationFactory.equal("gmcNumber", searchString));
       }
       specs.add(whereClause);
     }

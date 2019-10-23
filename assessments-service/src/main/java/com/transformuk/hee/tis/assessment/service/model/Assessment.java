@@ -69,6 +69,9 @@ public class Assessment implements Serializable {
   @Column(name = "intrepidId")
   private String intrepidId;
 
+  @Column(name = "gmcNumber")
+  private String gmcNumber;
+
   @Version
   private LocalDateTime amendedDate;
 
@@ -304,7 +307,15 @@ public class Assessment implements Serializable {
     return this;
   }
 
-  @Override
+  public String getGmcNumber() {
+    return gmcNumber;
+  }
+
+  public void setGmcNumber(String gmcNumber) {
+    this.gmcNumber = gmcNumber;
+  }
+
+    @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -340,6 +351,7 @@ public class Assessment implements Serializable {
         ", type='" + getType() + "'" +
         ", intrepidId='" + getIntrepidId() + "'" +
         ", amendedDate='" + getAmendedDate() + "'" +
+        ", gmcNumber='" + getGmcNumber() + "'" +
         "}";
   }
 }

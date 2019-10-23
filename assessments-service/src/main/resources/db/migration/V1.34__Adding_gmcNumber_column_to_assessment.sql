@@ -1,0 +1,2 @@
+ALTER TABLE `Assessment`
+ADD `gmcNumber` VARCHAR(255) NULL DEFAULT NULL;
