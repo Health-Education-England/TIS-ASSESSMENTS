@@ -125,7 +125,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
       if (NumberUtils.isNumber(searchString)) {
         whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString))
-        .or(SpecificationFactory.equal("gmcNumber", searchString));
+            .or(SpecificationFactory.equal("gmcNumber", searchString))
+            .or(SpecificationFactory.equal("gdcNumber", searchString))
+            .or(SpecificationFactory.equal("publicHealthNumber", searchString));
       }
       specs.add(whereClause);
     }

@@ -17,6 +17,10 @@ public class AssessmentListDTO {
   private String lastName;
 
   private String gmcNumber;
+  
+  private String gdcNumber;
+  
+  private String publicHealthNumber;
 
   private LocalDate periodCoveredFrom;
 
@@ -83,6 +87,22 @@ public class AssessmentListDTO {
 
   public void setGmcNumber(String gmcNumber) {
       this.gmcNumber = gmcNumber;
+  }
+
+  public String getGdcNumber() {
+    return gdcNumber;
+  }
+
+  public void setGdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+  }
+
+  public String getPublicHealthNumber() {
+    return publicHealthNumber;
+  }
+
+  public void setPublicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
   }
 
   public LocalDate getPeriodCoveredFrom() {

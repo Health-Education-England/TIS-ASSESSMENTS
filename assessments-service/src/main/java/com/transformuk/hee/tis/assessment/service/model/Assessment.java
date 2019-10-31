@@ -71,6 +71,12 @@ public class Assessment implements Serializable {
 
   @Column(name = "gmcNumber")
   private String gmcNumber;
+  
+  @Column(name = "gdcNumber")
+  private String gdcNumber;
+  
+  @Column(name = "publicHealthNumber")
+  private String publicHealthNumber;
 
   @Version
   private LocalDateTime amendedDate;
@@ -315,6 +321,22 @@ public class Assessment implements Serializable {
     this.gmcNumber = gmcNumber;
   }
 
+    public String getGdcNumber() {
+    return gdcNumber;
+  }
+
+  public void setGdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+  }
+
+  public String getPublicHealthNumber() {
+    return publicHealthNumber;
+  }
+
+  public void setPublicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
+  }
+
     @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -352,6 +374,8 @@ public class Assessment implements Serializable {
         ", intrepidId='" + getIntrepidId() + "'" +
         ", amendedDate='" + getAmendedDate() + "'" +
         ", gmcNumber='" + getGmcNumber() + "'" +
+        ", gdcNumber='" + getGdcNumber() + "'" +
+        ", publicHealthNumber='" + getPublicHealthNumber() + "'" +
         "}";
   }
 }
