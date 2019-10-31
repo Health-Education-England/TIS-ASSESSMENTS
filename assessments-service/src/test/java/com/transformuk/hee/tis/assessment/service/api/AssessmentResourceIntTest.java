@@ -12,7 +12,6 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import com.transformuk.hee.tis.security.util.TisSecurityHelper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,6 +110,15 @@ public class AssessmentResourceIntTest {
 
   private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
   private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
+  
+  private static final String DEFAULT_GMC_NUMBER = "GMC_NUMBER-AAAAA";
+  private static final String UPDATED_GMC_NUMBER = "GMC_NUMBER-BBBBB";
+  
+  private static final String DEFAULT_GDC_NUMBER = "GDC_NUMBER-AAAAA";
+  private static final String UPDATED_GDC_NUMBER = "GDC_NUMBER-BBBBB";
+  
+  private static final String DEFAULT_PH_NUMBER = "PH_NUMBER-AAAAA";
+  private static final String UPDATED_PH_NUMBER = "PH_NUMBER-BBBBB";
 
   private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
   private static final LocalDate UPDATED_START_DATE = LocalDate.now();
@@ -162,9 +170,6 @@ public class AssessmentResourceIntTest {
 
   private Assessment assessment;
 
-  @Autowired
-  private PermissionService permissionService;
-
   /**
    * Create an entity for this scripts.
    * <p>
@@ -197,6 +202,9 @@ public class AssessmentResourceIntTest {
         .traineeId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
+        .gmcNumber(DEFAULT_GMC_NUMBER)
+        .gmcNumber(DEFAULT_GDC_NUMBER)
+        .publicHealthNumber(DEFAULT_PH_NUMBER)
         .reviewDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
@@ -232,6 +240,9 @@ public class AssessmentResourceIntTest {
         .personId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
+        .gmcNumber(DEFAULT_GMC_NUMBER)
+        .gdcNumber(DEFAULT_GDC_NUMBER)
+        .publicHealthNumber(DEFAULT_PH_NUMBER)
         .startDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
         .programmeName(DEFAULT_PROGRAMME_NAME)
@@ -252,7 +263,6 @@ public class AssessmentResourceIntTest {
         .setMessageConverters(jacksonMessageConverter).build();
   }
 
-
   @Test
   @Transactional
   public void createAssessment() throws Exception {
@@ -272,6 +282,9 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getTraineeId()).isEqualTo(DEFAULT_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
+    assertThat(testAssessment.getGmcNumber()).isEqualTo(DEFAULT_GMC_NUMBER);
+    assertThat(testAssessment.getGdcNumber()).isEqualTo(DEFAULT_GDC_NUMBER);
+    assertThat(testAssessment.getPublicHealthNumber()).isEqualTo(DEFAULT_PH_NUMBER);
     assertThat(testAssessment.getReviewDate()).isEqualTo(DEFAULT_START_DATE);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(DEFAULT_PROGRAMME_NUMBER);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(DEFAULT_PROGRAMME_NAME);
@@ -320,6 +333,39 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId().intValue())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
+        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
+        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
+        .andExpect(jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
+        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
+        .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
+        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
+        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
+        .andExpect(jsonPath("$.[*].periodCoveredTo").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
+        .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(assessment.getDetail().getCurriculumName())));
+  }
+
+  @Test
+  @Transactional
+  public void getAssessmentsBySearchParam() throws Exception {
+    when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
+
+    // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
+    assessmentRepository.saveAndFlush(assessment);
+
+    // Get all the assessmentList
+    restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
+        .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId().intValue())))
+        .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
+        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
+        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
+        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
+        .andExpect(jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
+        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
         .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
         .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
@@ -343,6 +389,9 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.traineeId").value(assessment.getTraineeId()))
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
+        .andExpect(jsonPath("$.gmcNumber").value(assessment.getGmcNumber()))
+        .andExpect(jsonPath("$.gmcNumber").value(assessment.getGmcNumber()))
+        .andExpect(jsonPath("$.publicHealthNumber").value(assessment.getPublicHealthNumber()))
         .andExpect(jsonPath("$.reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
@@ -389,6 +438,9 @@ public class AssessmentResourceIntTest {
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
         .lastName(UPDATED_LAST_NAME)
+        .gmcNumber(UPDATED_GMC_NUMBER)
+        .gdcNumber(UPDATED_GDC_NUMBER)
+        .publicHealthNumber(UPDATED_PH_NUMBER)
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
         .programmeName(UPDATED_PROGRAMME_NAME);
@@ -426,6 +478,9 @@ public class AssessmentResourceIntTest {
 //    assertThat(testAssessment.getTraineeId()).isEqualTo(UPDATED_PERSON_ID);
     assertThat(testAssessment.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
     assertThat(testAssessment.getLastName()).isEqualTo(UPDATED_LAST_NAME);
+    assertThat(testAssessment.getGmcNumber()).isEqualTo(UPDATED_GMC_NUMBER);
+    assertThat(testAssessment.getGdcNumber()).isEqualTo(UPDATED_GDC_NUMBER);
+    assertThat(testAssessment.getPublicHealthNumber()).isEqualTo(UPDATED_PH_NUMBER);
     assertThat(testAssessment.getReviewDate()).isEqualTo(UPDATED_START_DATE);
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);

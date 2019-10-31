@@ -2,7 +2,6 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,10 +70,10 @@ public class Assessment implements Serializable {
 
   @Column(name = "gmcNumber")
   private String gmcNumber;
-  
+
   @Column(name = "gdcNumber")
   private String gdcNumber;
-  
+
   @Column(name = "publicHealthNumber")
   private String publicHealthNumber;
 
@@ -320,13 +319,23 @@ public class Assessment implements Serializable {
   public void setGmcNumber(String gmcNumber) {
     this.gmcNumber = gmcNumber;
   }
+  
+  public Assessment gmcNumber(String gmcNumber) {
+    this.gmcNumber = gmcNumber;
+    return this;
+  }
 
-    public String getGdcNumber() {
+  public String getGdcNumber() {
     return gdcNumber;
   }
 
   public void setGdcNumber(String gdcNumber) {
     this.gdcNumber = gdcNumber;
+  }
+  
+  public Assessment gdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+    return this;
   }
 
   public String getPublicHealthNumber() {
@@ -336,8 +345,13 @@ public class Assessment implements Serializable {
   public void setPublicHealthNumber(String publicHealthNumber) {
     this.publicHealthNumber = publicHealthNumber;
   }
+  
+  public Assessment publicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
+    return this;
+  }
 
-    @Override
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -359,23 +373,14 @@ public class Assessment implements Serializable {
 
   @Override
   public String toString() {
-    return "Assessment{" +
-        "id=" + getId() +
-        ", traineeId='" + getTraineeId() + "'" +
-        ", firstName='" + getFirstName() + "'" +
-        ", lastName='" + getLastName() + "'" +
-        ", reviewDate='" + getReviewDate() + "'" +
-        ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
-        ", programmeNumber='" + getProgrammeNumber() + "'" +
-        ", programmeName='" + getProgrammeName() + "'" +
-        ", programmeId='" + getProgrammeId() + "'" +
-        ", eventStatus='" + getEventStatus() + "'" +
-        ", type='" + getType() + "'" +
-        ", intrepidId='" + getIntrepidId() + "'" +
-        ", amendedDate='" + getAmendedDate() + "'" +
-        ", gmcNumber='" + getGmcNumber() + "'" +
-        ", gdcNumber='" + getGdcNumber() + "'" +
-        ", publicHealthNumber='" + getPublicHealthNumber() + "'" +
-        "}";
+    return "Assessment{" + "id=" + getId() + ", traineeId='" + getTraineeId() + "'"
+        + ", firstName='" + getFirstName() + "'" + ", lastName='" + getLastName() + "'"
+        + ", reviewDate='" + getReviewDate() + "'" + ", programmeMembershipId='"
+        + getProgrammeMembershipId() + "'" + ", programmeNumber='" + getProgrammeNumber() + "'"
+        + ", programmeName='" + getProgrammeName() + "'" + ", programmeId='" + getProgrammeId()
+        + "'" + ", eventStatus='" + getEventStatus() + "'" + ", type='" + getType() + "'"
+        + ", intrepidId='" + getIntrepidId() + "'" + ", amendedDate='" + getAmendedDate() + "'"
+        + ", gmcNumber='" + getGmcNumber() + "'" + ", gdcNumber='" + getGdcNumber() + "'"
+        + ", publicHealthNumber='" + getPublicHealthNumber() + "'" + "}";
   }
 }
