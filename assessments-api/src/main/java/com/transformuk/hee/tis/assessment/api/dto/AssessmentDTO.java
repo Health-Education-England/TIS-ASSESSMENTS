@@ -353,6 +353,9 @@ public class AssessmentDTO implements Serializable {
         ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
+        ", gmcNumber='" + getGmcNumber() + "'" +
+        ", gdcNumber='" + getGdcNumber() + "'" +
+        ", publicHealthNumber='" + getPublicHealthNumber() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
