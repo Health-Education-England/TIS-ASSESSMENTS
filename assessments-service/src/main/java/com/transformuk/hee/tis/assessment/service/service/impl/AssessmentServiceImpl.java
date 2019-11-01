@@ -121,13 +121,13 @@ public class AssessmentServiceImpl implements AssessmentService {
     if (StringUtils.isNotEmpty(searchString)) {
       Specifications whereClause = Specifications.where(containsLike("detail.curriculumName", searchString))
           .or(containsLike("firstName", searchString)).or(containsLike("lastName", searchString))
-          .or(containsLike("type", searchString));
+          .or(containsLike("type", searchString))
+          .or(SpecificationFactory.equal("gmcNumber", searchString))
+          .or(SpecificationFactory.equal("gdcNumber", searchString))
+          .or(SpecificationFactory.equal("publicHealthNumber", searchString));
 
       if (NumberUtils.isNumber(searchString)) {
-        whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString))
-            .or(SpecificationFactory.equal("gmcNumber", searchString))
-            .or(SpecificationFactory.equal("gdcNumber", searchString))
-            .or(SpecificationFactory.equal("publicHealthNumber", searchString));
+        whereClause = whereClause.or(SpecificationFactory.equal("traineeId", searchString));
       }
       specs.add(whereClause);
     }

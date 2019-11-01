@@ -111,14 +111,14 @@ public class AssessmentResourceIntTest {
   private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
   private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
   
-  private static final String DEFAULT_GMC_NUMBER = "GMC_NUMBER-AAAAA";
-  private static final String UPDATED_GMC_NUMBER = "GMC_NUMBER-BBBBB";
+  private static final String DEFAULT_GMC_NUMBER = "GMCNUMBER-AAAAA";
+  private static final String UPDATED_GMC_NUMBER = "GMCNUMBER-BBBBB";
   
-  private static final String DEFAULT_GDC_NUMBER = "GDC_NUMBER-AAAAA";
-  private static final String UPDATED_GDC_NUMBER = "GDC_NUMBER-BBBBB";
+  private static final String DEFAULT_GDC_NUMBER = "GDCNUMBER-AAAAA";
+  private static final String UPDATED_GDC_NUMBER = "GDCNUMBER-BBBBB";
   
-  private static final String DEFAULT_PH_NUMBER = "PH_NUMBER-AAAAA";
-  private static final String UPDATED_PH_NUMBER = "PH_NUMBER-BBBBB";
+  private static final String DEFAULT_PH_NUMBER = "PHNUMBER-AAAAA";
+  private static final String UPDATED_PH_NUMBER = "PHNUMBER-BBBBB";
 
   private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
   private static final LocalDate UPDATED_START_DATE = LocalDate.now();
@@ -203,7 +203,7 @@ public class AssessmentResourceIntTest {
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
         .gmcNumber(DEFAULT_GMC_NUMBER)
-        .gmcNumber(DEFAULT_GDC_NUMBER)
+        .gdcNumber(DEFAULT_GDC_NUMBER)
         .publicHealthNumber(DEFAULT_PH_NUMBER)
         .reviewDate(DEFAULT_START_DATE)
         .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
@@ -334,7 +334,7 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
-        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
+        .andExpect(jsonPath("$.[*].gdcNumber").value(hasItem(assessment.getGdcNumber())))
         .andExpect(jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
@@ -353,24 +353,37 @@ public class AssessmentResourceIntTest {
     assessment = createEntity(em);
     assessmentDetailRepository.saveAndFlush(assessment.getDetail());
     assessmentRepository.saveAndFlush(assessment);
+    Assessment otherAssessment = (new Assessment())
+        .firstName(UPDATED_FIRST_NAME)
+        .lastName(UPDATED_LAST_NAME)
+        .gmcNumber(UPDATED_GMC_NUMBER)
+        .gdcNumber(UPDATED_GDC_NUMBER)
+        .publicHealthNumber(UPDATED_PH_NUMBER)
+        .reviewDate(UPDATED_START_DATE)
+        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
+        .programmeName(UPDATED_PROGRAMME_NAME);
+    assessmentRepository.saveAndFlush(otherAssessment);
 
-    // Get all the assessmentList
+   
+
+    // Get assessmentList with query
     restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
-        .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId().intValue())))
-        .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
-        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
-        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
-        .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
-        .andExpect(jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
-        .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
-        .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
-        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
-        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
-        .andExpect(jsonPath("$.[*].periodCoveredTo").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
-        .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(assessment.getDetail().getCurriculumName())));
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$.[0].id").value(assessment.getId().intValue()))
+        .andExpect(jsonPath("$.[0].traineeId").value(assessment.getTraineeId().intValue()))
+        .andExpect(jsonPath("$.[0].firstName").value(assessment.getFirstName()))
+        .andExpect(jsonPath("$.[0].lastName").value(assessment.getLastName()))
+        .andExpect(jsonPath("$.[0].gmcNumber").value(assessment.getGmcNumber()))
+        .andExpect(jsonPath("$.[0].gdcNumber").value(assessment.getGdcNumber()))
+        .andExpect(jsonPath("$.[0].publicHealthNumber").value(assessment.getPublicHealthNumber()))
+        .andExpect(jsonPath("$.[0].lastName").value(assessment.getLastName()))
+        .andExpect(jsonPath("$.[0].reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
+        .andExpect(jsonPath("$.[0].type").value(assessment.getType().toString()))
+        .andExpect(jsonPath("$.[0].periodCoveredFrom").value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom())))
+        .andExpect(jsonPath("$.[0].periodCoveredTo").value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo())))
+        .andExpect(jsonPath("$.[0].curriculumName").value(assessment.getDetail().getCurriculumName()));
   }
 
   @Test
@@ -390,7 +403,7 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
         .andExpect(jsonPath("$.lastName").value(assessment.getLastName()))
         .andExpect(jsonPath("$.gmcNumber").value(assessment.getGmcNumber()))
-        .andExpect(jsonPath("$.gmcNumber").value(assessment.getGmcNumber()))
+        .andExpect(jsonPath("$.gdcNumber").value(assessment.getGdcNumber()))
         .andExpect(jsonPath("$.publicHealthNumber").value(assessment.getPublicHealthNumber()))
         .andExpect(jsonPath("$.reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
