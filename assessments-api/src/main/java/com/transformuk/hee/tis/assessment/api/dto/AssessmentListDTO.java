@@ -195,6 +195,8 @@ public class AssessmentListDTO {
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
         ", gmcNumber='" + gmcNumber + '\'' +
+        ", gdcNumber='" + gdcNumber + '\'' +
+        ", publicHealthNumber='" + publicHealthNumber + '\'' +
         ", periodCoveredFrom=" + periodCoveredFrom +
         ", periodCoveredTo=" + periodCoveredTo +
         ", curriculumName='" + curriculumName + '\'' +
