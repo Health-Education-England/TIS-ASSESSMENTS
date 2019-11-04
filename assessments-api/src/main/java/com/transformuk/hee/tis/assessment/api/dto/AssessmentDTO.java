@@ -37,6 +37,12 @@ public class AssessmentDTO implements Serializable {
   @Length(min = 1, groups = {Create.class, Update.class}, message = "last name should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The last name of the trainee")
   private String lastName;
+  
+  private String gmcNumber;
+  
+  private String gdcNumber;
+  
+  private String publicHealthNumber;
 
   @ApiModelProperty(required = true, value = "The review date of the assessment event")
   private LocalDate reviewDate;
@@ -126,6 +132,45 @@ public class AssessmentDTO implements Serializable {
 
   public AssessmentDTO lastName(String lastName) {
     this.lastName = lastName;
+    return this;
+  }
+
+  public String getGmcNumber() {
+    return gmcNumber;
+  }
+
+  public void setGmcNumber(String gmcNumber) {
+    this.gmcNumber = gmcNumber;
+  }
+  
+  public AssessmentDTO gmcNumber(String gmcNumber) {
+    this.gmcNumber = gmcNumber;
+    return this;
+  }
+
+  public String getGdcNumber() {
+    return gdcNumber;
+  }
+
+  public void setGdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+  }
+  
+  public AssessmentDTO gdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+    return this;
+  }
+
+  public String getPublicHealthNumber() {
+    return publicHealthNumber;
+  }
+
+  public void setPublicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
+  }
+  
+  public AssessmentDTO publicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
     return this;
   }
 
@@ -308,6 +353,9 @@ public class AssessmentDTO implements Serializable {
         ", traineeId='" + getTraineeId() + "'" +
         ", firstName='" + getFirstName() + "'" +
         ", lastName='" + getLastName() + "'" +
+        ", gmcNumber='" + getGmcNumber() + "'" +
+        ", gdcNumber='" + getGdcNumber() + "'" +
+        ", publicHealthNumber='" + getPublicHealthNumber() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
         ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +

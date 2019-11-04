@@ -1,0 +1,8 @@
+ALTER TABLE `Assessment`
+ADD `gmcNumber` VARCHAR(255) NULL DEFAULT NULL;
+
+ALTER TABLE `Assessment`
+ADD `gdcNumber` VARCHAR(255) NULL DEFAULT NULL;
+
+ALTER TABLE `Assessment`
+ADD `publicHealthNumber` VARCHAR(255) NULL DEFAULT NULL;

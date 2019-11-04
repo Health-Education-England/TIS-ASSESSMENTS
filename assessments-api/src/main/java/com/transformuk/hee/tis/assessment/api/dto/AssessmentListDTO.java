@@ -16,6 +16,12 @@ public class AssessmentListDTO {
 
   private String lastName;
 
+  private String gmcNumber;
+  
+  private String gdcNumber;
+  
+  private String publicHealthNumber;
+
   private LocalDate periodCoveredFrom;
 
   private LocalDate periodCoveredTo;
@@ -73,6 +79,30 @@ public class AssessmentListDTO {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getGmcNumber() {
+      return gmcNumber;
+  }
+
+  public void setGmcNumber(String gmcNumber) {
+      this.gmcNumber = gmcNumber;
+  }
+
+  public String getGdcNumber() {
+    return gdcNumber;
+  }
+
+  public void setGdcNumber(String gdcNumber) {
+    this.gdcNumber = gdcNumber;
+  }
+
+  public String getPublicHealthNumber() {
+    return publicHealthNumber;
+  }
+
+  public void setPublicHealthNumber(String publicHealthNumber) {
+    this.publicHealthNumber = publicHealthNumber;
   }
 
   public LocalDate getPeriodCoveredFrom() {
@@ -164,6 +194,9 @@ public class AssessmentListDTO {
         ", traineeId='" + traineeId + '\'' +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
+        ", gmcNumber='" + gmcNumber + '\'' +
+        ", gdcNumber='" + gdcNumber + '\'' +
+        ", publicHealthNumber='" + publicHealthNumber + '\'' +
         ", periodCoveredFrom=" + periodCoveredFrom +
         ", periodCoveredTo=" + periodCoveredTo +
         ", curriculumName='" + curriculumName + '\'' +
