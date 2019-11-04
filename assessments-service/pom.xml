@@ -6,13 +6,13 @@
   <parent>
     <artifactId>tis-parent</artifactId>
     <groupId>com.transformuk.hee</groupId>
-    <version>2.3.0</version>
+    <version>2.2.3</version>
     <relativePath/>
   </parent>
 
   <groupId>com.transformuk.hee.tis</groupId>
   <artifactId>assessments-service</artifactId>
-  <version>1.8.1</version>
+  <version>1.9.0</version>
   <packaging>war</packaging>
 
   <properties>
