@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
 import com.google.common.collect.Sets;
+import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -9,6 +10,7 @@ import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.ReasonMapper;
 import org.assertj.core.util.Lists;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -84,6 +86,9 @@ public class ReasonResourceIntTest {
   @MockBean
   private Outcome outcomeMock;
 
+  @MockBean
+  private ReasonMapper reasonMapperMock;
+
   private MockMvc restReasonMockMvc;
 
   @Captor
@@ -128,7 +133,10 @@ public class ReasonResourceIntTest {
   public void createReasonShouldReturnNewlyCreatedReason() throws Exception {
     Reason reason = new Reason().code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
+    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
 
+    when(reasonMapperMock.toEntity(any())).thenReturn(reason);
+    when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.post("/api/reasons")
@@ -141,7 +149,10 @@ public class ReasonResourceIntTest {
   public void updateReasonWithNoIdShouldReturnNewlyCreatedReason() throws Exception {
     Reason reason = new Reason().code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
+    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
 
+    when(reasonMapperMock.toEntity(any())).thenReturn(reason);
+    when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")
@@ -157,7 +168,10 @@ public class ReasonResourceIntTest {
   public void updateReasonWithIdShouldReturnUpdatedReason() throws Exception {
     Reason reason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
+    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
 
+    when(reasonMapperMock.toEntity(any())).thenReturn(reason);
+    when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")

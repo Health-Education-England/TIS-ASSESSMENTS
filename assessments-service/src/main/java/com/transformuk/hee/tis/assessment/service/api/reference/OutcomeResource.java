@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
 import com.codahale.metrics.annotation.Timed;
+import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
@@ -8,6 +9,7 @@ import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
 import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,6 +53,8 @@ public class OutcomeResource {
   private OutcomeRepository outcomeRepository;
   @Autowired
   private OutcomeService outcomeService;
+  @Autowired
+  private OutcomeMapper outcomeMapper;
 
   /**
    * GET  /:id : get a outcome by id.
@@ -116,14 +120,14 @@ public class OutcomeResource {
    */
   @PostMapping("/outcomes")
   @Timed
-  @ApiOperation(value = "Create single Outcome", notes = "Creates a new Outcome", response = Outcome.class)
-  @ApiResponse(code = 201, message = "The newly created Outcome", response = Outcome.class)
-  public ResponseEntity<Outcome> createOutcome(@RequestBody @Validated(Create.class) Outcome outcome) throws URISyntaxException {
-    log.debug("REST request to create new Outcome with code [{}]", outcome.getCode());
-    Outcome result = outcomeRepository.save(outcome);
+  @ApiOperation(value = "Create single Outcome", notes = "Creates a new Outcome", response = OutcomeDTO.class)
+  @ApiResponse(code = 201, message = "The newly created Outcome", response = OutcomeDTO.class)
+  public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody @Validated(Create.class) OutcomeDTO outcomeDTO) throws URISyntaxException {
+    log.debug("REST request to create new Outcome with code [{}]", outcomeDTO.getCode());
+    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDTO));
     return ResponseEntity.created(new URI("/api/outcomes/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-        .body(result);
+        .body(outcomeMapper.toDto(result));
 
   }
 
@@ -134,15 +138,15 @@ public class OutcomeResource {
    */
   @PutMapping("/outcomes")
   @Timed
-  @ApiOperation(value = "Update/Create single Outcome", notes = "Updates or Creates a new Outcome", response = Outcome.class)
-  @ApiResponse(code = 200, message = "The updated/created Outcome", response = Outcome.class)
-  public ResponseEntity<Outcome> updateOrCreateOutcome(@RequestBody @Validated(Update.class) Outcome outcome) throws URISyntaxException {
-    log.debug("REST request to update Outcome with code: [{}]", outcome.getCode());
-    if (outcome.getId() == null) {
-      return createOutcome(outcome);
+  @ApiOperation(value = "Update/Create single Outcome", notes = "Updates or Creates a new Outcome", response = OutcomeDTO.class)
+  @ApiResponse(code = 200, message = "The updated/created Outcome", response = OutcomeDTO.class)
+  public ResponseEntity<OutcomeDTO> updateOrCreateOutcome(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDTO) throws URISyntaxException {
+    log.debug("REST request to update Outcome with code: [{}]", outcomeDTO.getCode());
+    if (outcomeDTO.getId() == null) {
+      return createOutcome(outcomeDTO);
     }
-    Outcome result = outcomeRepository.save(outcome);
-    return ResponseEntity.ok(result);
+    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDTO));
+    return ResponseEntity.ok(outcomeMapper.toDto(result));
   }
 
 

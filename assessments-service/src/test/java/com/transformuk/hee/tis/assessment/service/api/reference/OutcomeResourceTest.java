@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
+import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -7,6 +8,7 @@ import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.hamcrest.CoreMatchers;
@@ -35,6 +37,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.net.URI;
 
 import static org.hamcrest.Matchers.hasItems;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -74,6 +77,8 @@ public class OutcomeResourceTest {
   private OutcomeRepository outcomeRepositoryMock;
   @MockBean
   private OutcomeService outcomeServiceMock;
+  @MockBean
+  private OutcomeMapper outcomeMapperMock;
   @Captor
   private ArgumentCaptor<Outcome> outcomeArgumentCaptor;
   @Captor
@@ -83,6 +88,7 @@ public class OutcomeResourceTest {
 
   private MockMvc mockMvc;
   private Outcome outcomeStub1, outcomeStub2, unsavedOutcomeStub1;
+  private OutcomeDTO outcomeDTOStub1;
   private Reason reason1, reason2;
 
   @Before
@@ -95,6 +101,8 @@ public class OutcomeResourceTest {
         .setMessageConverters(jacksonMessageConverter).build();
 
     outcomeStub1 = new Outcome().id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
+    outcomeDTOStub1 = new OutcomeDTO().builder().id(OUTCOME_ID_1).code(OUTCOME_CODE_1)
+        .label(OUTCOME_LABEL_1).build();
     unsavedOutcomeStub1 = new Outcome().code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
     outcomeStub2 = new Outcome().id(OUTCOME_ID_2).code(OUTCOME_CODE_2).label(OUTCOME_LABEL_2);
     reason1 = new Reason().id(REASON_ID_1).code(REASON_CODE_1).label(REASON_LABEL_1);
@@ -137,6 +145,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void createOutcomeShouldSaveAndReturnNewOutcome() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
@@ -156,6 +166,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void updateOutcomeShouldUpdateAndReturnUpdatedOutcome() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(outcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
@@ -174,6 +186,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void updateOutcomeShouldCreateNewOutcomeWhenOutcomeDoesntExist() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")

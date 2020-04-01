@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
 import com.codahale.metrics.annotation.Timed;
+import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
@@ -10,6 +11,7 @@ import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.ReasonMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,6 +57,8 @@ public class ReasonResource {
   private ReasonService reasonService;
   @Autowired
   private OutcomeRepository outcomeRepository;
+  @Autowired
+  private ReasonMapper reasonMapper;
 
   /**
    * GET  /:id : get a reason by id.
@@ -111,14 +115,14 @@ public class ReasonResource {
    */
   @PostMapping("/reasons")
   @Timed
-  @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = Reason.class)
-  @ApiResponse(code = 201, message = "The newly created Reason", response = Reason.class)
-  public ResponseEntity<Reason> createReason(@RequestBody @Validated(Create.class) Reason reason) throws URISyntaxException {
-    log.debug("REST request to create new Reason with code [{}]", reason.getCode());
-    Reason result = reasonRepository.save(reason);
+  @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = ReasonDTO.class)
+  @ApiResponse(code = 201, message = "The newly created Reason", response = ReasonDTO.class)
+  public ResponseEntity<ReasonDTO> createReason(@RequestBody @Validated(Create.class) ReasonDTO reasonDTO) throws URISyntaxException {
+    log.debug("REST request to create new Reason with code [{}]", reasonDTO.getCode());
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDTO));
     return ResponseEntity.created(new URI("/api/reasons/" + result.getCode()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getCode()))
-        .body(result);
+        .body(reasonMapper.toDto(result));
 
   }
 
@@ -129,15 +133,15 @@ public class ReasonResource {
    */
   @PutMapping("/reasons")
   @Timed
-  @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = Reason.class)
-  @ApiResponse(code = 200, message = "The updated/created Reason", response = Reason.class)
-  public ResponseEntity<Reason> updateOrCreateReason(@RequestBody @Validated(Update.class) Reason reason) throws URISyntaxException {
-    log.debug("REST request to update Reason with code: [{}]", reason.getCode());
-    if (reason.getId() == null) {
-      return createReason(reason);
+  @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = ReasonDTO.class)
+  @ApiResponse(code = 200, message = "The updated/created Reason", response = ReasonDTO.class)
+  public ResponseEntity<ReasonDTO> updateOrCreateReason(@RequestBody @Validated(Update.class) ReasonDTO reasonDTO) throws URISyntaxException {
+    log.debug("REST request to update Reason with code: [{}]", reasonDTO.getCode());
+    if (reasonDTO.getId() == null) {
+      return createReason(reasonDTO);
     }
-    Reason result = reasonRepository.save(reason);
-    return ResponseEntity.ok(result);
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDTO));
+    return ResponseEntity.ok(reasonMapper.toDto(result));
   }
 
 
