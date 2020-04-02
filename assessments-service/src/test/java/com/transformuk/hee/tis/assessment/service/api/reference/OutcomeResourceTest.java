@@ -1,5 +1,14 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -7,6 +16,8 @@ import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
+import java.net.URI;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.hamcrest.CoreMatchers;
@@ -31,15 +42,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.net.URI;
-
-import static org.hamcrest.Matchers.hasItems;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -74,6 +76,8 @@ public class OutcomeResourceTest {
   private OutcomeRepository outcomeRepositoryMock;
   @MockBean
   private OutcomeService outcomeServiceMock;
+  @MockBean
+  private OutcomeMapper outcomeMapperMock;
   @Captor
   private ArgumentCaptor<Outcome> outcomeArgumentCaptor;
   @Captor
@@ -83,6 +87,7 @@ public class OutcomeResourceTest {
 
   private MockMvc mockMvc;
   private Outcome outcomeStub1, outcomeStub2, unsavedOutcomeStub1;
+  private OutcomeDTO outcomeDtoStub1;
   private Reason reason1, reason2;
 
   @Before
@@ -100,6 +105,11 @@ public class OutcomeResourceTest {
     reason1 = new Reason().id(REASON_ID_1).code(REASON_CODE_1).label(REASON_LABEL_1);
     reason2 = new Reason().id(REASON_ID_2).code(REASON_CODE_2).label(REASON_LABEL_2);
     outcomeStub1.setReasons(Sets.newLinkedHashSet(reason1, reason2));
+
+    outcomeDtoStub1 = new OutcomeDTO();
+    outcomeDtoStub1.setId(OUTCOME_ID_1);
+    outcomeDtoStub1.setCode(OUTCOME_CODE_1);
+    outcomeDtoStub1.setLabel(OUTCOME_LABEL_1);
   }
 
   @Test
@@ -123,20 +133,26 @@ public class OutcomeResourceTest {
 
   @Test
   public void getAllOutcomesShouldReturnOutcomesWithReasons() throws Exception {
-    when(outcomeRepositoryMock.findAllWithReasons()).thenReturn(Sets.newLinkedHashSet(outcomeStub1, outcomeStub2));
+    when(outcomeRepositoryMock.findAllWithReasons())
+        .thenReturn(Sets.newLinkedHashSet(outcomeStub1, outcomeStub2));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/all", OUTCOME_ID_1))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.[*].id").value(hasItems(OUTCOME_ID_1.intValue(), OUTCOME_ID_2.intValue())))
+        .andExpect(
+            jsonPath("$.[*].id").value(hasItems(OUTCOME_ID_1.intValue(), OUTCOME_ID_2.intValue())))
         .andExpect(jsonPath("$.[*].code").value(hasItems(OUTCOME_CODE_1, OUTCOME_CODE_2)))
         .andExpect(jsonPath("$.[*].label").value(hasItems(OUTCOME_LABEL_1, OUTCOME_LABEL_2)))
-        .andExpect(jsonPath("$.[0].reasons.[*].id").value(hasItems(REASON_ID_1.intValue(), REASON_ID_2.intValue())))
+        .andExpect(jsonPath("$.[0].reasons.[*].id")
+            .value(hasItems(REASON_ID_1.intValue(), REASON_ID_2.intValue())))
         .andExpect(jsonPath("$.[0].reasons.[*].code").value(hasItems(REASON_CODE_1, REASON_CODE_2)))
-        .andExpect(jsonPath("$.[0].reasons.[*].label").value(hasItems(REASON_LABEL_1, REASON_LABEL_2)));
+        .andExpect(
+            jsonPath("$.[0].reasons.[*].label").value(hasItems(REASON_LABEL_1, REASON_LABEL_2)));
   }
 
   @Test
   public void createOutcomeShouldSaveAndReturnNewOutcome() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
@@ -156,6 +172,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void updateOutcomeShouldUpdateAndReturnUpdatedOutcome() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(outcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
@@ -174,6 +192,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void updateOutcomeShouldCreateNewOutcomeWhenOutcomeDoesntExist() throws Exception {
+    when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
@@ -198,7 +218,8 @@ public class OutcomeResourceTest {
 
     Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1, outcome2));
 
-    when(outcomeRepositoryMock.findAll(pageableArgumentCaptor.capture())).thenReturn(pageOfOutcomes);
+    when(outcomeRepositoryMock.findAll(pageableArgumentCaptor.capture()))
+        .thenReturn(pageOfOutcomes);
 
     mockMvc.perform(get("/api/outcomes"))
         .andExpect(status().isOk())
@@ -221,7 +242,8 @@ public class OutcomeResourceTest {
 
     Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1, outcome2));
 
-    when(outcomeServiceMock.advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
+    when(outcomeServiceMock
+        .advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
         .thenReturn(pageOfOutcomes);
 
     String searchParam = "outcome";
@@ -247,8 +269,9 @@ public class OutcomeResourceTest {
     outcome1.id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
     Page<Outcome> pageOfOutcomes = new PageImpl<>(Lists.newArrayList(outcome1));
 
-    when(outcomeServiceMock.advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
-      .thenReturn(pageOfOutcomes);
+    when(outcomeServiceMock
+        .advancedSearch(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture()))
+        .thenReturn(pageOfOutcomes);
 
     mockMvc.perform(get(new URI("/api/outcomes?searchQuery=%22OUTCOME_1%250D%250A%22")))
         .andExpect(status().isOk());

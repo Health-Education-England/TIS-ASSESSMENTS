@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
 import com.codahale.metrics.annotation.Timed;
+import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
@@ -10,11 +11,18 @@ import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
+import com.transformuk.hee.tis.assessment.service.service.mapper.ReasonMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +44,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.tis.StringConverter;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 @RestController
 @RequestMapping("/api")
 public class ReasonResource {
@@ -55,12 +56,15 @@ public class ReasonResource {
   private ReasonService reasonService;
   @Autowired
   private OutcomeRepository outcomeRepository;
+  @Autowired
+  private ReasonMapper reasonMapper;
 
   /**
    * GET  /:id : get a reason by id.
    *
    * @param id the id of the reason
-   * @return the ResponseEntity with status 200 (OK) and with body the reason, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body the reason, or with status 404
+   * (Not Found)
    */
   @GetMapping("/reasons/{id}")
   @Timed
@@ -91,9 +95,11 @@ public class ReasonResource {
   public ResponseEntity<List<Reason>> reasonSmartSearch(
       @ApiParam Pageable pageable,
       @ApiParam(value = "any wildcard string to be searched")
-      @RequestParam(value = "searchQuery", required = false) String searchQuery) throws IOException {
+      @RequestParam(value = "searchQuery", required = false) String searchQuery)
+      throws IOException {
     log.debug("REST request to get a page of Curricula");
-    searchQuery = StringConverter.getConverter(searchQuery).fromJson().decodeUrl().escapeForSql().toString();
+    searchQuery = StringConverter.getConverter(searchQuery).fromJson().decodeUrl().escapeForSql()
+        .toString();
     Page<Reason> page;
     if (StringUtils.isEmpty(searchQuery)) {
       page = reasonRepository.findAll(pageable);
@@ -111,14 +117,15 @@ public class ReasonResource {
    */
   @PostMapping("/reasons")
   @Timed
-  @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = Reason.class)
-  @ApiResponse(code = 201, message = "The newly created Reason", response = Reason.class)
-  public ResponseEntity<Reason> createReason(@RequestBody @Validated(Create.class) Reason reason) throws URISyntaxException {
-    log.debug("REST request to create new Reason with code [{}]", reason.getCode());
-    Reason result = reasonRepository.save(reason);
+  @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = ReasonDTO.class)
+  @ApiResponse(code = 201, message = "The newly created Reason", response = ReasonDTO.class)
+  public ResponseEntity<ReasonDTO> createReason(
+      @RequestBody @Validated(Create.class) ReasonDTO reasonDto) throws URISyntaxException {
+    log.debug("REST request to create new Reason with code [{}]", reasonDto.getCode());
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDto));
     return ResponseEntity.created(new URI("/api/reasons/" + result.getCode()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getCode()))
-        .body(result);
+        .body(reasonMapper.toDto(result));
 
   }
 
@@ -129,15 +136,16 @@ public class ReasonResource {
    */
   @PutMapping("/reasons")
   @Timed
-  @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = Reason.class)
-  @ApiResponse(code = 200, message = "The updated/created Reason", response = Reason.class)
-  public ResponseEntity<Reason> updateOrCreateReason(@RequestBody @Validated(Update.class) Reason reason) throws URISyntaxException {
-    log.debug("REST request to update Reason with code: [{}]", reason.getCode());
-    if (reason.getId() == null) {
-      return createReason(reason);
+  @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = ReasonDTO.class)
+  @ApiResponse(code = 200, message = "The updated/created Reason", response = ReasonDTO.class)
+  public ResponseEntity<ReasonDTO> updateOrCreateReason(
+      @RequestBody @Validated(Update.class) ReasonDTO reasonDto) throws URISyntaxException {
+    log.debug("REST request to update Reason with code: [{}]", reasonDto.getCode());
+    if (reasonDto.getId() == null) {
+      return createReason(reasonDto);
     }
-    Reason result = reasonRepository.save(reason);
-    return ResponseEntity.ok(result);
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDto));
+    return ResponseEntity.ok(reasonMapper.toDto(result));
   }
 
 
@@ -145,7 +153,8 @@ public class ReasonResource {
    * GET  /outcomes/:id/reasons : get a reasons by that are valid against an outcome.
    *
    * @param id the id of the outcome
-   * @return the ResponseEntity with status 200 (OK) and with body containing a list of reasons, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body containing a list of reasons, or
+   * with status 404 (Not Found)
    */
   @GetMapping("/outcomes/{id}/reasons")
   @Timed
