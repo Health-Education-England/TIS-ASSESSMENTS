@@ -1,5 +1,17 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.google.common.collect.Sets;
 import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
@@ -11,6 +23,9 @@ import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRe
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
 import com.transformuk.hee.tis.assessment.service.service.ReasonService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.ReasonMapper;
+import java.net.URI;
+import java.util.List;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -34,22 +49,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Set;
-
-import static org.hamcrest.Matchers.hasItems;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -193,7 +192,8 @@ public class ReasonResourceIntTest {
   }
 
   @Test
-  public void reasonSmartSearchShouldReturnAllPaginatedReasonsWhenNoCriteriaProvided() throws Exception {
+  public void reasonSmartSearchShouldReturnAllPaginatedReasonsWhenNoCriteriaProvided()
+      throws Exception {
     Reason reason1 = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
     Reason reason2 = new Reason().id(REASON2_ID).code(REASON2_CODE).label(REASON2_LABEL);
     List<Reason> reasonsList = Lists.newArrayList(reason1, reason2);
@@ -205,7 +205,8 @@ public class ReasonResourceIntTest {
         .contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "2"))
-        .andExpect(jsonPath("$.[*].id").value(hasItems(REASON_ID.intValue(), REASON2_ID.intValue())))
+        .andExpect(
+            jsonPath("$.[*].id").value(hasItems(REASON_ID.intValue(), REASON2_ID.intValue())))
         .andExpect(jsonPath("$.[*].code").value(hasItems(REASON_CODE, REASON2_CODE)))
         .andExpect(jsonPath("$.[*].label").value(hasItems(REASON_LABEL, REASON2_LABEL)));
 
@@ -213,15 +214,18 @@ public class ReasonResourceIntTest {
   }
 
   @Test
-  public void reasonSmartSearchShouldReturnAdvanceSearchResultsWhenCriteriaProvided() throws Exception {
+  public void reasonSmartSearchShouldReturnAdvanceSearchResultsWhenCriteriaProvided()
+      throws Exception {
     Reason reason2 = new Reason().id(REASON2_ID).code(REASON2_CODE).label(REASON2_LABEL);
     List<Reason> reasonsList = Lists.newArrayList(reason2);
     Page<Reason> reasons = new PageImpl<>(reasonsList);
 
-    when(reasonServiceMock.advancedSearch(eq(REASON2_CODE), any(Pageable.class))).thenReturn(reasons);
+    when(reasonServiceMock.advancedSearch(eq(REASON2_CODE), any(Pageable.class)))
+        .thenReturn(reasons);
 
-    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/reasons?searchQuery=" + REASON2_CODE)
-        .contentType(MediaType.APPLICATION_JSON_UTF8))
+    this.restReasonMockMvc
+        .perform(MockMvcRequestBuilders.get("/api/reasons?searchQuery=" + REASON2_CODE)
+            .contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "1"))
         .andExpect(jsonPath("$.[*].id").value(hasItems(REASON2_ID.intValue())))
@@ -241,7 +245,8 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.findByOutcome(outcomeMock)).thenReturn(reasons);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}/reasons", 1))
-        .andExpect(jsonPath("$.[*].id").value(hasItems(REASON_ID.intValue(), REASON2_ID.intValue())))
+        .andExpect(
+            jsonPath("$.[*].id").value(hasItems(REASON_ID.intValue(), REASON2_ID.intValue())))
         .andExpect(jsonPath("$.[*].code").value(hasItems(REASON_CODE, REASON2_CODE)))
         .andExpect(jsonPath("$.[*].label").value(hasItems(REASON_LABEL, REASON2_LABEL)));
 
@@ -265,11 +270,14 @@ public class ReasonResourceIntTest {
     Reason reason1 = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
     Page<Reason> reasons = new PageImpl<>(Lists.newArrayList(reason1));
 
-    when(reasonServiceMock.advancedSearch(stringCaptor.capture(), any(Pageable.class))).thenReturn(reasons);
-    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get(new URI("/api/reasons?searchQuery=%22Assessment%252FCurriculum%2520outcomes%2520not%2520achieved%250D%250A%22")))
-      .andExpect(status().isOk());
+    when(reasonServiceMock.advancedSearch(stringCaptor.capture(), any(Pageable.class)))
+        .thenReturn(reasons);
+    this.restReasonMockMvc.perform(MockMvcRequestBuilders.get(new URI(
+        "/api/reasons?searchQuery=%22Assessment%252FCurriculum%2520outcomes%2520not%2520achieved%250D%250A%22")))
+        .andExpect(status().isOk());
 
     String converted = stringCaptor.getValue();
-    Assert.assertThat("should sanitize param", converted, CoreMatchers.equalTo("Assessment/Curriculum outcomes not achieved"));
+    Assert.assertThat("should sanitize param", converted,
+        CoreMatchers.equalTo("Assessment/Curriculum outcomes not achieved"));
   }
 }

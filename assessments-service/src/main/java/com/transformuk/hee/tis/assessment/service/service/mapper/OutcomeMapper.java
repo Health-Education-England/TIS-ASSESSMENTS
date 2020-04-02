@@ -15,11 +15,11 @@ public interface OutcomeMapper {
 
   OutcomeDTO toDto(Outcome outcome);
 
-  Outcome toEntity(OutcomeDTO outcomeDTO);
+  Outcome toEntity(OutcomeDTO outcomeDto);
 
   @Mapping(target = "outcomes", ignore = true)
   ReasonDTO reasonToReasonDto(Reason reason);
 
   @Mapping(target = "outcomes", ignore = true)
-  Reason reasonDtoToReason(ReasonDTO reasonDTO);
+  Reason reasonDtoToReason(ReasonDTO reasonDto);
 }

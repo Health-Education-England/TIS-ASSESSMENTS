@@ -4,8 +4,8 @@ import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
-import org.mapstruct.Mapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper for the entity Reason and its DTO ReasonDTO.
@@ -15,11 +15,11 @@ public interface ReasonMapper {
 
   ReasonDTO toDto(Reason reason);
 
-  Reason toEntity(ReasonDTO reasonDTO);
+  Reason toEntity(ReasonDTO reasonDto);
 
   @Mapping(target = "reasons", ignore = true)
   OutcomeDTO outcomeToOutcomeDto(Outcome outcome);
 
   @Mapping(target = "reasons", ignore = true)
-  Outcome outcomeDtoToOutcome(OutcomeDTO outcomeDTO);
+  Outcome outcomeDtoToOutcome(OutcomeDTO outcomeDto);
 }
