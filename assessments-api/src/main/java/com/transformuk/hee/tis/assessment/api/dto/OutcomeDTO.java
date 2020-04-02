@@ -12,9 +12,6 @@ import java.util.Set;
  * A DTO for the Outcome entity.
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class OutcomeDTO implements Serializable {
 
   private Long id;

@@ -122,9 +122,9 @@ public class OutcomeResource {
   @Timed
   @ApiOperation(value = "Create single Outcome", notes = "Creates a new Outcome", response = OutcomeDTO.class)
   @ApiResponse(code = 201, message = "The newly created Outcome", response = OutcomeDTO.class)
-  public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody @Validated(Create.class) OutcomeDTO outcomeDTO) throws URISyntaxException {
-    log.debug("REST request to create new Outcome with code [{}]", outcomeDTO.getCode());
-    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDTO));
+  public ResponseEntity<OutcomeDTO> createOutcome(@RequestBody @Validated(Create.class) OutcomeDTO outcomeDto) throws URISyntaxException {
+    log.debug("REST request to create new Outcome with code [{}]", outcomeDto.getCode());
+    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDto));
     return ResponseEntity.created(new URI("/api/outcomes/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
         .body(outcomeMapper.toDto(result));
@@ -140,12 +140,12 @@ public class OutcomeResource {
   @Timed
   @ApiOperation(value = "Update/Create single Outcome", notes = "Updates or Creates a new Outcome", response = OutcomeDTO.class)
   @ApiResponse(code = 200, message = "The updated/created Outcome", response = OutcomeDTO.class)
-  public ResponseEntity<OutcomeDTO> updateOrCreateOutcome(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDTO) throws URISyntaxException {
-    log.debug("REST request to update Outcome with code: [{}]", outcomeDTO.getCode());
-    if (outcomeDTO.getId() == null) {
-      return createOutcome(outcomeDTO);
+  public ResponseEntity<OutcomeDTO> updateOrCreateOutcome(@RequestBody @Validated(Update.class) OutcomeDTO outcomeDto) throws URISyntaxException {
+    log.debug("REST request to update Outcome with code: [{}]", outcomeDto.getCode());
+    if (outcomeDto.getId() == null) {
+      return createOutcome(outcomeDto);
     }
-    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDTO));
+    Outcome result = outcomeRepository.save(outcomeMapper.toEntity(outcomeDto));
     return ResponseEntity.ok(outcomeMapper.toDto(result));
   }
 

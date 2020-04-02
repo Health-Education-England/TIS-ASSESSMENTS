@@ -88,7 +88,7 @@ public class OutcomeResourceTest {
 
   private MockMvc mockMvc;
   private Outcome outcomeStub1, outcomeStub2, unsavedOutcomeStub1;
-  private OutcomeDTO outcomeDTOStub1;
+  private OutcomeDTO outcomeDtoStub1;
   private Reason reason1, reason2;
 
   @Before
@@ -101,13 +101,16 @@ public class OutcomeResourceTest {
         .setMessageConverters(jacksonMessageConverter).build();
 
     outcomeStub1 = new Outcome().id(OUTCOME_ID_1).code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
-    outcomeDTOStub1 = new OutcomeDTO().builder().id(OUTCOME_ID_1).code(OUTCOME_CODE_1)
-        .label(OUTCOME_LABEL_1).build();
     unsavedOutcomeStub1 = new Outcome().code(OUTCOME_CODE_1).label(OUTCOME_LABEL_1);
     outcomeStub2 = new Outcome().id(OUTCOME_ID_2).code(OUTCOME_CODE_2).label(OUTCOME_LABEL_2);
     reason1 = new Reason().id(REASON_ID_1).code(REASON_CODE_1).label(REASON_LABEL_1);
     reason2 = new Reason().id(REASON_ID_2).code(REASON_CODE_2).label(REASON_LABEL_2);
     outcomeStub1.setReasons(Sets.newLinkedHashSet(reason1, reason2));
+
+    outcomeDtoStub1 = new OutcomeDTO();
+    outcomeDtoStub1.setId(OUTCOME_ID_1);
+    outcomeDtoStub1.setCode(OUTCOME_CODE_1);
+    outcomeDtoStub1.setLabel(OUTCOME_LABEL_1);
   }
 
   @Test
@@ -146,7 +149,7 @@ public class OutcomeResourceTest {
   @Test
   public void createOutcomeShouldSaveAndReturnNewOutcome() throws Exception {
     when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
-    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
@@ -167,7 +170,7 @@ public class OutcomeResourceTest {
   @Test
   public void updateOutcomeShouldUpdateAndReturnUpdatedOutcome() throws Exception {
     when(outcomeMapperMock.toEntity(any())).thenReturn(outcomeStub1);
-    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
@@ -187,7 +190,7 @@ public class OutcomeResourceTest {
   @Test
   public void updateOutcomeShouldCreateNewOutcomeWhenOutcomeDoesntExist() throws Exception {
     when(outcomeMapperMock.toEntity(any())).thenReturn(unsavedOutcomeStub1);
-    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDTOStub1);
+    when(outcomeMapperMock.toDto(any())).thenReturn(outcomeDtoStub1);
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")

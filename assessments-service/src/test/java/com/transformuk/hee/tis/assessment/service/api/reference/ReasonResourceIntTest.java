@@ -133,7 +133,10 @@ public class ReasonResourceIntTest {
   public void createReasonShouldReturnNewlyCreatedReason() throws Exception {
     Reason reason = new Reason().code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
-    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
+    ReasonDTO savedReasonDto = new ReasonDTO();
+    savedReasonDto.setId(REASON_ID);
+    savedReasonDto.setCode(REASON_CODE);
+    savedReasonDto.setLabel(REASON_LABEL);
 
     when(reasonMapperMock.toEntity(any())).thenReturn(reason);
     when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);
@@ -149,7 +152,10 @@ public class ReasonResourceIntTest {
   public void updateReasonWithNoIdShouldReturnNewlyCreatedReason() throws Exception {
     Reason reason = new Reason().code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
-    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
+    ReasonDTO savedReasonDto = new ReasonDTO();
+    savedReasonDto.setId(REASON_ID);
+    savedReasonDto.setCode(REASON_CODE);
+    savedReasonDto.setLabel(REASON_LABEL);
 
     when(reasonMapperMock.toEntity(any())).thenReturn(reason);
     when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);
@@ -168,7 +174,10 @@ public class ReasonResourceIntTest {
   public void updateReasonWithIdShouldReturnUpdatedReason() throws Exception {
     Reason reason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
     Reason savedReason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
-    ReasonDTO savedReasonDto = new ReasonDTO().builder().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL).build();
+    ReasonDTO savedReasonDto = new ReasonDTO();
+    savedReasonDto.setId(REASON_ID);
+    savedReasonDto.setCode(REASON_CODE);
+    savedReasonDto.setLabel(REASON_LABEL);
 
     when(reasonMapperMock.toEntity(any())).thenReturn(reason);
     when(reasonMapperMock.toDto(any())).thenReturn(savedReasonDto);

@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mapper;
 
 /**
- * Mapper for the entity Outcome and its DTO OutcomeDTO.
+ * Mapper for the entity Reason and its DTO ReasonDTO.
  */
 @Mapper(componentModel = "spring")
 public interface ReasonMapper {

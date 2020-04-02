@@ -117,9 +117,9 @@ public class ReasonResource {
   @Timed
   @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = ReasonDTO.class)
   @ApiResponse(code = 201, message = "The newly created Reason", response = ReasonDTO.class)
-  public ResponseEntity<ReasonDTO> createReason(@RequestBody @Validated(Create.class) ReasonDTO reasonDTO) throws URISyntaxException {
-    log.debug("REST request to create new Reason with code [{}]", reasonDTO.getCode());
-    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDTO));
+  public ResponseEntity<ReasonDTO> createReason(@RequestBody @Validated(Create.class) ReasonDTO reasonDto) throws URISyntaxException {
+    log.debug("REST request to create new Reason with code [{}]", reasonDto.getCode());
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDto));
     return ResponseEntity.created(new URI("/api/reasons/" + result.getCode()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getCode()))
         .body(reasonMapper.toDto(result));
@@ -135,12 +135,12 @@ public class ReasonResource {
   @Timed
   @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = ReasonDTO.class)
   @ApiResponse(code = 200, message = "The updated/created Reason", response = ReasonDTO.class)
-  public ResponseEntity<ReasonDTO> updateOrCreateReason(@RequestBody @Validated(Update.class) ReasonDTO reasonDTO) throws URISyntaxException {
-    log.debug("REST request to update Reason with code: [{}]", reasonDTO.getCode());
-    if (reasonDTO.getId() == null) {
-      return createReason(reasonDTO);
+  public ResponseEntity<ReasonDTO> updateOrCreateReason(@RequestBody @Validated(Update.class) ReasonDTO reasonDto) throws URISyntaxException {
+    log.debug("REST request to update Reason with code: [{}]", reasonDto.getCode());
+    if (reasonDto.getId() == null) {
+      return createReason(reasonDto);
     }
-    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDTO));
+    Reason result = reasonRepository.save(reasonMapper.toEntity(reasonDto));
     return ResponseEntity.ok(reasonMapper.toDto(result));
   }
 

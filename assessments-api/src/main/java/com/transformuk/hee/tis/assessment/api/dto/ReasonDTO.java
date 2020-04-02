@@ -9,12 +9,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- * A DTO for the Outcome entity.
+ * A DTO for the Reason entity.
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ReasonDTO implements Serializable {
 
   private Long id;
