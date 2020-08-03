@@ -12,7 +12,7 @@
 
   <groupId>com.transformuk.hee.tis</groupId>
   <artifactId>assessments-service</artifactId>
-  <version>1.10.2</version>
+  <version>1.10.3</version>
   <packaging>war</packaging>
 
   <properties>
