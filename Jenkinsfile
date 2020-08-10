@@ -74,13 +74,26 @@ node {
             env.IMAGE_NAME = imageName
         }
 
-        try {
-        sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/dev $env.DEVOPS_BASE/ansible/tasks/spring-boot-build.yml"
-        } catch (err) {
-        throw err
-        } finally {
+        //urghhh
+        sh "mvn package -DskipTests"
+        sh "cp ./assessments-service/target/assessments-service-*.war ./assessments-service/target/app.jar"
+
+        def dockerImageName = "assessments"
+        def containerRegistryLocaltion = "430723991443.dkr.ecr.eu-west-2.amazonaws.com"
+
+        // log into aws docker
+        sh "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 430723991443.dkr.ecr.eu-west-2.amazonaws.com"
+
+        sh "docker build -t ${containerRegistryLocaltion}/${dockerImageName}:$buildVersion -f ./assessments-service/Dockerfile ./assessments-service"
+        sh "docker push ${containerRegistryLocaltion}/${dockerImageName}:$buildVersion"
+
+        sh "docker tag ${containerRegistryLocaltion}/${dockerImageName}:$buildVersion ${containerRegistryLocaltion}/${dockerImageName}:latest"
+        sh "docker push ${containerRegistryLocaltion}/${dockerImageName}:latest"
+
+        sh "docker rmi ${containerRegistryLocaltion}/${dockerImageName}:latest"
+        sh "docker rmi ${containerRegistryLocaltion}/${dockerImageName}:$buildVersion"
+
         println "[Jenkinsfile INFO] Stage Dockerize completed..."
-        }
     }
 
     if (env.BRANCH_NAME == "master") {
