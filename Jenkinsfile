@@ -108,7 +108,7 @@ node {
                 } catch (err) {
                     throw err
                 } finally {
-                    println "[Jenkinsfile INFO] Stage Dockerize completed..."
+                    println "[Jenkinsfile INFO] Stage Deploy completed..."
                 }
             }
         }
@@ -127,25 +127,11 @@ node {
             node {
                 try {
                     sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                } catch (err) {
-                    throw err
-                } finally {
-                    println "[Jenkinsfile INFO] Stage Dockerize completed..."
-                }
-            }
-        }
-
-        milestone 6
-
-        stage('Nimdta') {
-            node {
-                println "[Jenkinsfile INFO] NIMDTA Deploy starting..."
-                try {
                     sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/nimdta $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
                 } catch (err) {
                     throw err
                 } finally {
-                    println "[Jenkinsfile INFO] Stage Dockerize completed..."
+                    println "[Jenkinsfile INFO] Stage Deploy completed..."
                 }
             }
         }
