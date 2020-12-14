@@ -61,7 +61,7 @@ flyway:
     encoding: utf-8
     ignore-failed-future-migration: false
     init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
-    locations: classpath:db/migration
+    locations: classpath:db/migration/common,classpath:db/migration/hee
     out-of-order: true
     password:
     placeholders.*:
