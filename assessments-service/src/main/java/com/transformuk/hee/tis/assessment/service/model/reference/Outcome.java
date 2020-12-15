@@ -6,6 +6,7 @@ import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.UUID;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
