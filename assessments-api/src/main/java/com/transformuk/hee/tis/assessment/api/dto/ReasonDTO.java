@@ -2,6 +2,7 @@ package com.transformuk.hee.tis.assessment.api.dto;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Data;
 
 /**
@@ -11,6 +12,8 @@ import lombok.Data;
 public class ReasonDTO implements Serializable {
 
   private Long id;
+
+  private UUID uuid;
 
   private String code;
 

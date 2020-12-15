@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * A Reason.
@@ -33,6 +34,10 @@ public class Reason implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @ApiModelProperty(value = "System generated ID that is assigned to the reason upon creation. Required for updates")
   private Long id;
+
+  @NotNull
+  @Column(name = "uuid", nullable = false)
+  private UUID uuid;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
   @Column(name = "code")
