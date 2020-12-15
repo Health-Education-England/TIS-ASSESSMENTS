@@ -35,8 +35,7 @@ public class Reason implements Serializable {
   @ApiModelProperty(value = "System generated ID that is assigned to the reason upon creation. Required for updates")
   private Long id;
 
-  @NotNull
-  @Column(name = "uuid", nullable = false)
+  @Column(name = "uuid")
   private UUID uuid;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
