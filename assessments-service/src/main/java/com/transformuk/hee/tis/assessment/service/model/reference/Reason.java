@@ -14,11 +14,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A Reason.
