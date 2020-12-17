@@ -70,6 +70,10 @@ public class Outcome implements Serializable {
     return this;
   }
 
+  public UUID getUuid() { return uuid; }
+
+  public void setUuid(UUID uuid) { this.uuid = uuid; }
+
   public String getCode() {
     return code;
   }
@@ -133,6 +137,7 @@ public class Outcome implements Serializable {
   public String toString() {
     return "Reason{" +
         "id=" + id +
+        ", uuid='" + uuid.toString() + '\'' +
         ", code='" + code + '\'' +
         ", label='" + label + '\'' +
         '}';
