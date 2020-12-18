@@ -6,6 +6,7 @@ import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,6 +34,9 @@ public class Reason implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @ApiModelProperty(value = "System generated ID that is assigned to the reason upon creation. Required for updates")
   private Long id;
+
+  @Column(name = "uuid")
+  private UUID uuid;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
   @Column(name = "code")
@@ -65,6 +69,14 @@ public class Reason implements Serializable {
   public Reason id(Long id) {
     this.id = id;
     return this;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 
   public String getCode() {
@@ -141,6 +153,7 @@ public class Reason implements Serializable {
   public String toString() {
     return "Reason{" +
         "id=" + id +
+        ", uuid='" + uuid.toString() + '\'' +
         ", code='" + code + '\'' +
         ", label='" + label + '\'' +
         ", outcomes=" + outcomes +

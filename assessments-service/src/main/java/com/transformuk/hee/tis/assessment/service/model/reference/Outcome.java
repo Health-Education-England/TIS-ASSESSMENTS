@@ -5,7 +5,10 @@ import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +19,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * An Outcome.
@@ -35,6 +35,9 @@ public class Outcome implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @ApiModelProperty(value = "System generated ID that is assigned to the outcome upon creation. Required for updates")
   private Long id;
+
+  @Column(name = "uuid")
+  private UUID uuid;
 
   @NotNull(groups = {Create.class, Update.class}, message = "code cannot be null")
   @Column(name = "code")
@@ -65,6 +68,14 @@ public class Outcome implements Serializable {
   public Outcome id(Long id) {
     this.id = id;
     return this;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 
   public String getCode() {
@@ -130,6 +141,7 @@ public class Outcome implements Serializable {
   public String toString() {
     return "Reason{" +
         "id=" + id +
+        ", uuid='" + uuid.toString() + '\'' +
         ", code='" + code + '\'' +
         ", label='" + label + '\'' +
         '}';
