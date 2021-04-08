@@ -2,6 +2,9 @@ name: PR Analysis Workflow
 
 on:
   pull_request:
+  push:
+    branches-ignore:
+      - master
   workflow_dispatch:
 
 jobs:
