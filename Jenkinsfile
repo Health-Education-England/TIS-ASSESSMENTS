@@ -91,43 +91,40 @@ node {
         println "[Jenkinsfile INFO] Stage Dockerize completed..."
     }
 
-    if (env.BRANCH_NAME == "master") {
+    milestone 3
 
-        milestone 3
-
-        stage('Staging') {
-            node {
-                println "[Jenkinsfile INFO] Stage Deploy starting..."
-                try {
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/stage $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                } catch (err) {
-                    throw err
-                } finally {
-                    println "[Jenkinsfile INFO] Stage Deploy completed..."
-                }
+    stage('Staging') {
+        node {
+            println "[Jenkinsfile INFO] Stage Deploy starting..."
+            try {
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/stage $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+            } catch (err) {
+                throw err
+            } finally {
+                println "[Jenkinsfile INFO] Stage Deploy completed..."
             }
         }
+    }
 
-        milestone 4
+    milestone 4
 
-        stage('Approval') {
-            timeout(time: 5, unit: 'HOURS') {
-                input message: 'Deploy to production?', ok: 'Deploy!'
-            }
+    stage('Approval') {
+        timeout(time: 5, unit: 'HOURS') {
+            input message: 'Deploy to production?', ok: 'Deploy!'
         }
+    }
 
-        milestone 5
+    milestone 5
 
-        stage('Production') {
-            node {
-                try {
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/nimdta $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                } catch (err) {
-                    throw err
-                } finally {
-                    println "[Jenkinsfile INFO] Stage Deploy completed..."
-                }
+    stage('Production') {
+        node {
+            try {
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/nimdta $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+            } catch (err) {
+                throw err
+            } finally {
+                println "[Jenkinsfile INFO] Stage Deploy completed..."
             }
         }
     }
