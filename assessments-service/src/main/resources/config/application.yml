@@ -81,7 +81,7 @@ flyway:
   baseline-on-migrate: true
   check-location: false # Check that migration scripts location exists.
   clean-on-validation-error: false
-  flyway.enabled: true # Enable flyway.
+  enabled: true # Enable flyway.
   encoding: #
   ignore-failed-future-migration: #
   init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
