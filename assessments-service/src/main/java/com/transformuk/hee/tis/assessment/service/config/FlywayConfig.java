@@ -2,6 +2,7 @@ package com.transformuk.hee.tis.assessment.service.config;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * Flyway configuration
  */
 @Configuration
+@ConditionalOnProperty("flyway.enabled")
 public class FlywayConfig {
 
   @Value("${flyway.url}")

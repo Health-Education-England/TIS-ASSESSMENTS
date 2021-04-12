@@ -91,43 +91,59 @@ node {
         println "[Jenkinsfile INFO] Stage Dockerize completed..."
     }
 
-    if (env.BRANCH_NAME == "master") {
+    milestone 3
+    def healthcheckEndpoint = "/assessments/management/health"
 
-        milestone 3
-
-        stage('Staging') {
-            node {
-                println "[Jenkinsfile INFO] Stage Deploy starting..."
-                try {
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/stage $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                } catch (err) {
-                    throw err
-                } finally {
-                    println "[Jenkinsfile INFO] Stage Deploy completed..."
-                }
+    stage('Staging') {
+        node {
+            println "[Jenkinsfile INFO] Stage Deploy starting..."
+            try {
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/stage $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+            } catch (err) {
+                throw err
+            } finally {
+                println "[Jenkinsfile INFO] Stage Deploy completed..."
             }
         }
-
-        milestone 4
-
-        stage('Approval') {
-            timeout(time: 5, unit: 'HOURS') {
-                input message: 'Deploy to production?', ok: 'Deploy!'
-            }
+    }
+    stage('Health check on STAGE') {
+        withEnv(["endpoint=${healthcheckEndpoint}"]) {
+            def httpStatus=sh(returnStdout: true, script: 'sleep 30; curl -m 300 -s -o /dev/null -w "%{http_code}" 10.160.0.137:8097${endpoint}').trim()
+            if("200" == "${httpStatus}")  println "Status is 200"
+            else  throw new Exception("health check failed on STAGE with http status: $httpStatus")
         }
+    }
 
-        milestone 5
+    milestone 4
 
-        stage('Production') {
-            node {
-                try {
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                    sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/nimdta $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
-                } catch (err) {
-                    throw err
-                } finally {
-                    println "[Jenkinsfile INFO] Stage Deploy completed..."
+    stage('Approval') {
+        timeout(time: 5, unit: 'HOURS') {
+            input message: 'Deploy to production?', ok: 'Deploy!'
+        }
+    }
+
+    milestone 5
+
+    stage('Production') {
+        node {
+            try {
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/prod $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+                withEnv(["endpoint=${healthcheckEndpoint}"]) {
+                    def httpStatus=sh(returnStdout: true, script: 'sleep 30; curl -m 300 -s -o /dev/null -w "%{http_code}" 10.170.0.137:8097${endpoint}').trim()
+                    if("200" == "${httpStatus}")  println "Status is 200"
+                    else  throw new Exception("health check failed on HEE PROD with http status: $httpStatus")
                 }
+
+                sh "ansible-playbook -i $env.DEVOPS_BASE/ansible/inventory/nimdta $env.DEVOPS_BASE/ansible/${service}.yml --extra-vars=\"{\'versions\': {\'${service}\': \'${env.GIT_COMMIT}\'}}\""
+                withEnv(["endpoint=${healthcheckEndpoint}"]) {
+                    def httpStatus=sh(returnStdout: true, script: 'sleep 30; curl -m 300 -s -o /dev/null -w "%{http_code}" 10.254.1.137:8097${endpoint}').trim()
+                    if("200" == "${httpStatus}")  println "Status is 200"
+                    else  throw new Exception("health check failed on NIMDTA PROD with http status: $httpStatus")
+                }
+            } catch (err) {
+                throw err
+            } finally {
+                println "[Jenkinsfile INFO] Production Deploy completed..."
             }
         }
     }
