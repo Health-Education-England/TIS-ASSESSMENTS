@@ -68,3 +68,5 @@ application:
 
 endpoints:
   enabled: false # disable all endpoints
+  health:
+    enabled: true # except for healthchecks
