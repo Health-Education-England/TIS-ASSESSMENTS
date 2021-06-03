@@ -1,13 +1,13 @@
 package com.transformuk.hee.tis.assessment.service.config;
 
-import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.JvmAttributeGaugeSet;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.codahale.metrics.jvm.BufferPoolMetricSet;
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.JvmAttributeGaugeSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 /**
  * Configuration for runtime metrics
  */
@@ -42,8 +41,8 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
   private final Logger log = LoggerFactory.getLogger(MetricsConfiguration.class);
   private final JHipsterProperties jHipsterProperties;
-  private MetricRegistry metricRegistry = new MetricRegistry();
-  private HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
+  private final MetricRegistry metricRegistry = new MetricRegistry();
+  private final HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
   private HikariDataSource hikariDataSource;
 
   public MetricsConfiguration(JHipsterProperties jHipsterProperties) {
@@ -95,6 +94,7 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
           .convertRatesTo(TimeUnit.SECONDS)
           .convertDurationsTo(TimeUnit.MILLISECONDS)
           .build();
+
       reporter.start(jHipsterProperties.getMetrics().getLogs().getReportFrequency(),
           TimeUnit.SECONDS);
     }
