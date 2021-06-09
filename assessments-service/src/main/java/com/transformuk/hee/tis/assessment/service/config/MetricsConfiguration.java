@@ -25,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration for runtime metrics
+ */
 @Configuration
 @EnableMetrics(proxyTargetClass = true)
 public class MetricsConfiguration extends MetricsConfigurerAdapter {
@@ -91,8 +94,9 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
           .convertRatesTo(TimeUnit.SECONDS)
           .convertDurationsTo(TimeUnit.MILLISECONDS)
           .build();
-      reporter
-          .start(jHipsterProperties.getMetrics().getLogs().getReportFrequency(), TimeUnit.SECONDS);
+
+      reporter.start(jHipsterProperties.getMetrics().getLogs().getReportFrequency(),
+          TimeUnit.SECONDS);
     }
   }
 }
