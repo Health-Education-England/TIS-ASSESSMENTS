@@ -22,9 +22,7 @@
     <commons-io.version>2.9.0</commons-io.version>
     <commons-lang.version>3.5</commons-lang.version>
     <dockerfile-maven-plugin.version>1.3.4</dockerfile-maven-plugin.version>
-    <!-- Overridden to get metrics-jcache -->
     <docker-maven-plugin.version>1.2.2</docker-maven-plugin.version>
-    <dropwizard-metrics.version>4.2.0</dropwizard-metrics.version>
     <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
     <hibernate.version>5.2.10.Final</hibernate.version>
     <hikaricp.version>2.6.0</hikaricp.version>
@@ -42,11 +40,9 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.version>3.0.0</maven.version>
-    <metrics-spring.version>3.1.3</metrics-spring.version>
     <node.version>v6.11.4</node.version>
     <problem-spring-web.version>0.21.0</problem-spring-web.version>
     <profile.swagger/>
-    <prometheus-simpleclient.version>0.11.0</prometheus-simpleclient.version>
 
     <project.build.finalName>assessments</project.build.finalName>
     <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
@@ -132,57 +128,9 @@
     <!-- Custom end -->
 
     <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient</artifactId>
-      <version>${prometheus-simpleclient.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient_servlet</artifactId>
-      <version>${prometheus-simpleclient.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient_dropwizard</artifactId>
-      <version>${prometheus-simpleclient.version}</version>
-    </dependency>
-    <dependency>
       <groupId>io.github.jhipster</groupId>
       <artifactId>jhipster</artifactId>
       <version>${jhipster.server.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-annotation</artifactId>
-      <version>${dropwizard-metrics.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-json</artifactId>
-      <version>${dropwizard-metrics.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-jvm</artifactId>
-      <version>${dropwizard-metrics.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-jmx</artifactId>
-      <version>${dropwizard-metrics.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-servlet</artifactId>
-      <version>${dropwizard-metrics.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-servlets</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -246,11 +194,6 @@
       <groupId>io.springfox</groupId>
       <artifactId>springfox-bean-validators</artifactId>
       <version>${springfox.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ryantenney.metrics</groupId>
-      <artifactId>metrics-spring</artifactId>
-      <version>${metrics-spring.version}</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -639,41 +582,6 @@
         <!-- default Spring profiles -->
         <spring.profiles.active>prod</spring.profiles.active>
       </properties>
-    </profile>
-    <profile>
-      <!--
-          Profile for monitoring the application with Graphite.
-      -->
-      <id>graphite</id>
-      <dependencies>
-        <dependency>
-          <groupId>io.dropwizard.metrics</groupId>
-          <artifactId>metrics-graphite</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <!--
-          Profile for monitoring the application with Prometheus.
-      -->
-      <id>prometheus</id>
-      <dependencies>
-        <dependency>
-          <groupId>io.prometheus</groupId>
-          <artifactId>simpleclient</artifactId>
-          <version>${prometheus-simpleclient.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>io.prometheus</groupId>
-          <artifactId>simpleclient_servlet</artifactId>
-          <version>${prometheus-simpleclient.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>io.prometheus</groupId>
-          <artifactId>simpleclient_dropwizard</artifactId>
-          <version>${prometheus-simpleclient.version}</version>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
       <!--
