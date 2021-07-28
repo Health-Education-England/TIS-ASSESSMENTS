@@ -1,5 +1,15 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
@@ -12,7 +22,10 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
+import javax.persistence.EntityManager;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,20 +41,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the AssessmentResource REST controller.
@@ -174,8 +173,8 @@ public class AssessmentResourceIntTest {
   /**
    * Create an entity for this scripts.
    * <p>
-   * This is a static method, as tests for other entities might also need it,
-   * if they scripts an entity which requires the current entity.
+   * This is a static method, as tests for other entities might also need it, if they scripts an
+   * entity which requires the current entity.
    */
   public static Assessment createEntity(EntityManager em) {
     AssessmentDetail assessmentDetail = new AssessmentDetail()
@@ -272,8 +271,8 @@ public class AssessmentResourceIntTest {
     // Create the Assessment
     AssessmentDTO assessmentDTO = createDTO();
     restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
-        .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
 
     // Validate the Assessment in the database
@@ -307,8 +306,8 @@ public class AssessmentResourceIntTest {
 
     // An entity with an existing ID cannot be created, so this API call must fail
     restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
-        .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isBadRequest());
 
     // Validate the Assessment in the database
@@ -336,13 +335,19 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
         .andExpect(jsonPath("$.[*].gmcNumber").value(hasItem(assessment.getGmcNumber())))
         .andExpect(jsonPath("$.[*].gdcNumber").value(hasItem(assessment.getGdcNumber())))
-        .andExpect(jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
+        .andExpect(
+            jsonPath("$.[*].publicHealthNumber").value(hasItem(assessment.getPublicHealthNumber())))
         .andExpect(jsonPath("$.[*].lastName").value(hasItem(assessment.getLastName())))
-        .andExpect(jsonPath("$.[*].reviewDate").value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
-        .andExpect(jsonPath("$.[*].type").value(hasItem(assessment.getType().toString())))
-        .andExpect(jsonPath("$.[*].periodCoveredFrom").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
-        .andExpect(jsonPath("$.[*].periodCoveredTo").value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
-        .andExpect(jsonPath("$.[*].curriculumName").value(hasItem(assessment.getDetail().getCurriculumName())));
+        .andExpect(jsonPath("$.[*].reviewDate")
+            .value(Matchers.hasItem(TestUtil.sameDate(DEFAULT_START_DATE))))
+        .andExpect(jsonPath("$.[*].type")
+            .value(hasItem(assessment.getType())))
+        .andExpect(jsonPath("$.[*].periodCoveredFrom")
+            .value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom()))))
+        .andExpect(jsonPath("$.[*].periodCoveredTo")
+            .value(hasItem(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo()))))
+        .andExpect(jsonPath("$.[*].curriculumName")
+            .value(hasItem(assessment.getDetail().getCurriculumName())));
   }
 
   @Test
@@ -365,10 +370,9 @@ public class AssessmentResourceIntTest {
         .programmeName(UPDATED_PROGRAMME_NAME);
     assessmentRepository.saveAndFlush(otherAssessment);
 
-
-
     // Get assessmentList with query
-    restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
+    restAssessmentMockMvc
+        .perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.length()").value(1))
@@ -381,10 +385,13 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.[0].publicHealthNumber").value(assessment.getPublicHealthNumber()))
         .andExpect(jsonPath("$.[0].lastName").value(assessment.getLastName()))
         .andExpect(jsonPath("$.[0].reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
-        .andExpect(jsonPath("$.[0].type").value(assessment.getType().toString()))
-        .andExpect(jsonPath("$.[0].periodCoveredFrom").value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom())))
-        .andExpect(jsonPath("$.[0].periodCoveredTo").value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo())))
-        .andExpect(jsonPath("$.[0].curriculumName").value(assessment.getDetail().getCurriculumName()));
+        .andExpect(jsonPath("$.[0].type").value(assessment.getType()))
+        .andExpect(jsonPath("$.[0].periodCoveredFrom")
+            .value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredFrom())))
+        .andExpect(jsonPath("$.[0].periodCoveredTo")
+            .value(TestUtil.sameDate(assessment.getDetail().getPeriodCoveredTo())))
+        .andExpect(
+            jsonPath("$.[0].curriculumName").value(assessment.getDetail().getCurriculumName()));
   }
 
   @Test
@@ -396,7 +403,9 @@ public class AssessmentResourceIntTest {
     assessmentRepository.saveAndFlush(assessment);
 
     // Get the assessment
-    restAssessmentMockMvc.perform(get("/api/trainee/{traineeId}/assessments/{assessmentId}", DEFAULT_PERSON_ID, assessment.getId()))
+    restAssessmentMockMvc.perform(
+            get("/api/trainee/{traineeId}/assessments/{assessmentId}", DEFAULT_PERSON_ID,
+                assessment.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.id").value(assessment.getId().intValue()))
@@ -409,22 +418,33 @@ public class AssessmentResourceIntTest {
         .andExpect(jsonPath("$.reviewDate").value(TestUtil.sameDate(DEFAULT_START_DATE)))
         .andExpect(jsonPath("$.programmeNumber").value(assessment.getProgrammeNumber()))
         .andExpect(jsonPath("$.programmeName").value(assessment.getProgrammeName()))
-        .andExpect(jsonPath("$.type").value(assessment.getType().toString()))
+        .andExpect(jsonPath("$.type").value(assessment.getType()))
         .andExpect(jsonPath("$.detail.curriculumId").value(DEFAULT_CURRICULUM_ID.intValue()))
         .andExpect(jsonPath("$.detail.curriculumName").value(DEFAULT_CURRICULUM_NAME.toString()))
-        .andExpect(jsonPath("$.detail.curriculumStartDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
-        .andExpect(jsonPath("$.detail.curriculumEndDate").value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
-        .andExpect(jsonPath("$.detail.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID))
-        .andExpect(jsonPath("$.detail.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
-        .andExpect(jsonPath("$.detail.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
+        .andExpect(jsonPath("$.detail.curriculumStartDate")
+            .value(TestUtil.sameDate(DEFAULT_CURRICULUM_START_DATE)))
+        .andExpect(jsonPath("$.detail.curriculumEndDate")
+            .value(TestUtil.sameDate(DEFAULT_CURRICULUM_END_DATE)))
+        .andExpect(
+            jsonPath("$.detail.curriculumSpecialtyId").value(DEFAULT_CURRICULUM_SPECIALTY_ID))
+        .andExpect(
+            jsonPath("$.detail.curriculumSpecialty").value(DEFAULT_CURRICULUM_SPECIALTY.toString()))
+        .andExpect(
+            jsonPath("$.detail.curriculumSubType").value(DEFAULT_CURRICULUM_SUB_TYPE.toString()))
         .andExpect(jsonPath("$.detail.membershipType").value(DEFAULT_MEMBERSHIP_TYPE.toString()))
-        .andExpect(jsonPath("$.detail.gradeAbbreviation").value(DEFAULT_GRADE_ABBREVIATION.toString()))
+        .andExpect(
+            jsonPath("$.detail.gradeAbbreviation").value(DEFAULT_GRADE_ABBREVIATION.toString()))
         .andExpect(jsonPath("$.detail.gradeName").value(DEFAULT_GRADE_NAME.toString()))
-        .andExpect(jsonPath("$.detail.periodCoveredFrom").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM)))
-        .andExpect(jsonPath("$.detail.periodCoveredTo").value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO)))
-        .andExpect(jsonPath("$.detail.portfolioReviewDate").value(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE)))
-        .andExpect(jsonPath("$.detail.monthsWTEDuringPeriod").value(DEFAULT_MONTHS_WTE_DURING_PERIOD))
-        .andExpect(jsonPath("$.detail.monthsCountedToTraining").value(DEFAULT_MONTHS_COUNTED_TO_TRAINING))
+        .andExpect(jsonPath("$.detail.periodCoveredFrom")
+            .value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_FROM)))
+        .andExpect(jsonPath("$.detail.periodCoveredTo")
+            .value(TestUtil.sameDate(DEFAULT_PERIOD_COVERED_TO)))
+        .andExpect(jsonPath("$.detail.portfolioReviewDate")
+            .value(TestUtil.sameDate(DEFAULT_PORTFOLIO_REVIEW_DATE)))
+        .andExpect(
+            jsonPath("$.detail.monthsWTEDuringPeriod").value(DEFAULT_MONTHS_WTE_DURING_PERIOD))
+        .andExpect(
+            jsonPath("$.detail.monthsCountedToTraining").value(DEFAULT_MONTHS_COUNTED_TO_TRAINING))
         .andExpect(jsonPath("$.detail.traineeNTN").value(DEFAULT_TRAINEE_NTN.toString()))
         .andExpect(jsonPath("$.detail.pya").value(DEFAULT_PYA.toString()));
   }
@@ -447,7 +467,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.getById(assessment.getId());
     updatedAssessment
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
@@ -481,8 +501,8 @@ public class AssessmentResourceIntTest {
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
 
     restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
-        .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isOk());
 
     // Validate the Assessment in the database
@@ -511,8 +531,8 @@ public class AssessmentResourceIntTest {
 
     // If the entity doesn't have an ID, it will be created instead of just being updated
     restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
-        .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
 
     // Validate the Assessment in the database
@@ -560,7 +580,7 @@ public class AssessmentResourceIntTest {
 
     restAssessmentMockMvc.perform(get("/api/trainee/assessments/{ids}", assessment.getId()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.*.id").value(hasItem(assessment.getId().intValue())));
   }
 
@@ -574,7 +594,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.getById(assessment.getId());
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -593,7 +613,7 @@ public class AssessmentResourceIntTest {
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment testAssessment = assessmentRepository.getById(assessment.getId());
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);

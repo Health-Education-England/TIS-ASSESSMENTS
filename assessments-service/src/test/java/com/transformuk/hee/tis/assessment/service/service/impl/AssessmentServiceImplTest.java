@@ -33,7 +33,6 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutco
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeReasonMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapperImpl;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +57,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -75,7 +73,7 @@ public class AssessmentServiceImplTest {
   @Captor
   private ArgumentCaptor<Example<Assessment>> assessmentCaptor;
   @Captor
-  private ArgumentCaptor<Specifications<Assessment>> specificationsArgumentCaptor;
+  private ArgumentCaptor<Specification<Assessment>> specificationsArgumentCaptor;
 
   @Mock
   private PermissionService permissionServiceMock;
@@ -160,6 +158,7 @@ public class AssessmentServiceImplTest {
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
     when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock))
+
         .thenReturn(pagedAssessments);
 
     Page<AssessmentListDTO> result = testObj.findAll(pageableMock);
@@ -193,11 +192,10 @@ public class AssessmentServiceImplTest {
     try {
       testObj.findOne(null);
     } catch (Exception e) {
-      verify(assessmentRepositoryMock, never()).findOne(anyLong());
+      verify(assessmentRepositoryMock, never()).findById(anyLong());
       throw e;
     }
   }
-
 
   @Test
   public void findOneShouldReturnAssessmentDTO() {
@@ -206,7 +204,7 @@ public class AssessmentServiceImplTest {
     assessment.setFirstName("firstName");
     assessment.setLastName("lastName");
 
-    when(assessmentRepositoryMock.findOne(1L)).thenReturn(assessment);
+    when(assessmentRepositoryMock.findById(1L)).thenReturn(Optional.of(assessment));
 
     AssessmentDTO result = testObj.findOne(1L);
 
@@ -223,7 +221,8 @@ public class AssessmentServiceImplTest {
     assessment.setFirstName("firstName");
     assessment.setLastName("lastName");
 
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessment));
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -278,7 +277,8 @@ public class AssessmentServiceImplTest {
     assessment.setFirstName("firstName");
     assessment.setLastName("lastName");
 
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessment));
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -350,6 +350,7 @@ public class AssessmentServiceImplTest {
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
     when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), Matchers.eq(pageableMock)))
+
         .thenReturn(pagedAssessments);
 
     Page<AssessmentDTO> result = testObj.findForTrainee(TRAINEE_ID, pageableMock);
@@ -396,13 +397,13 @@ public class AssessmentServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenTraineeIdIsNull() {
     testObj.deleteTraineeAssessment(ASSESSMENT_ID, null);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
     testObj.deleteTraineeAssessment(null, TRAINEE_ID);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test
@@ -411,7 +412,7 @@ public class AssessmentServiceImplTest {
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
     Assert.assertFalse(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
@@ -426,7 +427,8 @@ public class AssessmentServiceImplTest {
     assessment.setId(ASSESSMENT_ID);
     assessment.setTraineeId(TRAINEE_ID);
 
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessment));
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
@@ -442,16 +444,16 @@ public class AssessmentServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void deleteAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
     testObj.deleteAssessment(null);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test
   public void deleteAssessmentShouldReturnFalseWhenAssessmentCannotBeFound() {
-    when(assessmentRepositoryMock.exists(ASSESSMENT_ID)).thenReturn(false);
+    when(assessmentRepositoryMock.existsById(ASSESSMENT_ID)).thenReturn(false);
 
     boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
 
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
     Assert.assertFalse(result);
   }
 
@@ -460,11 +462,11 @@ public class AssessmentServiceImplTest {
     Assessment assessment = new Assessment();
     assessment.setId(ASSESSMENT_ID);
 
-    when(assessmentRepositoryMock.exists(ASSESSMENT_ID)).thenReturn(true);
+    when(assessmentRepositoryMock.existsById(ASSESSMENT_ID)).thenReturn(true);
 
     boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
 
-    verify(assessmentRepositoryMock).delete(ASSESSMENT_ID);
+    verify(assessmentRepositoryMock).deleteById(ASSESSMENT_ID);
     Assert.assertTrue(result);
   }
 
@@ -481,8 +483,9 @@ public class AssessmentServiceImplTest {
 
     List<Assessment> traineeAssessments = Arrays.asList(assessment1, assessment2);
 
-    Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
+    Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
     when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort)))
+
         .thenReturn(traineeAssessments);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
@@ -511,7 +514,7 @@ public class AssessmentServiceImplTest {
     assessment2.setFirstName("firstName2");
 
     List<ColumnFilter> columnFilters = Lists.newArrayList();
-    Pageable pageable = new PageRequest(0, 20);
+    Pageable pageable = PageRequest.of(0, 20);
     String searchQuery = "search query";
 
     List<Assessment> foundAssessments = Lists.newArrayList(assessment1, assessment2);
@@ -548,7 +551,7 @@ public class AssessmentServiceImplTest {
     ColumnFilter columnFilter = new ColumnFilter("reviewDate",
         Lists.newArrayList(reviewDateString));
     List<ColumnFilter> columnFilters = Lists.newArrayList(columnFilter);
-    Pageable pageable = new PageRequest(0, 20);
+    Pageable pageable = PageRequest.of(0, 20);
 
     List<Assessment> foundAssessments = Lists.newArrayList(assessment1);
     Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
