@@ -199,7 +199,7 @@ public class AssessmentResourceTest {
     assessmentToCreate.setProgrammeName(PROGRAMME_NAME);
     assessmentToCreate.setType(TYPE);
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.title").value("Method argument not valid"));
@@ -217,7 +217,7 @@ public class AssessmentResourceTest {
     assessmentToCreate.setType(TYPE);
 
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.title").value("A new assessment does not have the same trainee id as uri path"));
@@ -248,7 +248,7 @@ public class AssessmentResourceTest {
     assessmentToCreate.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID))
@@ -289,7 +289,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(createdAssessment);
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToUpdate)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID));
@@ -320,7 +320,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(assessmentToUpdate);
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToUpdate)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID_1));
@@ -387,7 +387,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
 
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(toCreate)))
         .andExpect(status().isBadRequest());
   }
@@ -408,7 +408,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
         .andExpect(status().isBadRequest());
   }
@@ -429,7 +429,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
         .andExpect(status().isBadRequest());
   }
@@ -449,7 +449,7 @@ public class AssessmentResourceTest {
     when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(assessmentToUpdate);
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToUpdate)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID_1));
