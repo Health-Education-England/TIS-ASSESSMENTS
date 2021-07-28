@@ -143,7 +143,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.post("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isCreated());
   }
@@ -162,7 +162,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(REASON_ID))
@@ -184,7 +184,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(REASON_ID))
@@ -203,7 +203,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.findAll(isA(Pageable.class))).thenReturn(reasons);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8))
+        .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "2"))
         .andExpect(
@@ -226,7 +226,7 @@ public class ReasonResourceIntTest {
 
     this.restReasonMockMvc
         .perform(MockMvcRequestBuilders.get("/api/reasons?searchQuery=" + REASON2_CODE)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "1"))
         .andExpect(jsonPath("$.[*].id").value(hasItems(REASON2_ID.intValue())))

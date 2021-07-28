@@ -157,7 +157,7 @@ public class OutcomeResourceTest {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.post("/api/outcomes")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(unsavedOutcomeStub1)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "/api/outcomes/" + OUTCOME_ID_1.intValue()))
@@ -178,7 +178,7 @@ public class OutcomeResourceTest {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(outcomeStub1)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(OUTCOME_ID_1.intValue()))
@@ -198,7 +198,7 @@ public class OutcomeResourceTest {
     when(outcomeRepositoryMock.save(outcomeArgumentCaptor.capture())).thenReturn(outcomeStub1);
 
     mockMvc.perform(MockMvcRequestBuilders.put("/api/outcomes")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(unsavedOutcomeStub1)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(OUTCOME_ID_1.intValue()))
