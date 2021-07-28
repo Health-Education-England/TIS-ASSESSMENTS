@@ -1,5 +1,8 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
+
 import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
@@ -9,30 +12,23 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Service Implementation for managing Assessment.
@@ -88,7 +84,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     log.debug("Request to get all Assessments Lists");
 
-    return assessmentRepository.findAllBySoftDeletedDate(null, pageable).map(assessmentListMapper::toDto);
+    return assessmentRepository.findAllBySoftDeletedDate(null, pageable)
+        .map(assessmentListMapper::toDto);
   }
 
   /**
@@ -103,23 +100,25 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get Assessment : {}", id);
-    Assessment assessment = assessmentRepository.findOne(id);
+    Assessment assessment = assessmentRepository.getById(id);
     return assessmentMapper.toDto(assessment);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters,
+  public Page<AssessmentListDTO> advancedSearch(String searchString,
+      List<ColumnFilter> columnFilters,
       Pageable pageable) {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
+    Specification notDeleted = Specification.where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
-      Specifications whereClause = Specifications.where(containsLike("detail.curriculumName", searchString))
+      Specification whereClause = Specification
+          .where(containsLike("detail.curriculumName", searchString))
           .or(containsLike("firstName", searchString)).or(containsLike("lastName", searchString))
           .or(containsLike("type", searchString))
           .or(SpecificationFactory.equal("gmcNumber", searchString))
@@ -134,8 +133,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     // limit assessments that belong to specific programmes
     if (permissionService.isProgrammeObserver()) {
-      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      Collection<Object> set = Collections
+          .unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specification inProgrammes = Specification.where(SpecificationFactory.in("programmeId", set));
       specs.add(inProgrammes);
     }
 
@@ -144,7 +144,7 @@ public class AssessmentServiceImpl implements AssessmentService {
       columnFilters.forEach(cf -> specs.add(in(cf.getName(), cf.getValues())));
     }
 
-    Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
+    Specification<Assessment> fullSpec = Specification.where(specs.get(0));
     // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));
@@ -161,8 +161,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    return Optional.ofNullable(foundAssessment);
+    return assessmentRepository.findOne(Example.of(example));
   }
 
   @Override
@@ -192,20 +191,22 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications whereClause = Specifications.where(SpecificationFactory.equal("traineeId", traineeId));
+    Specification whereClause = Specification
+        .where(SpecificationFactory.equal("traineeId", traineeId));
     specs.add(whereClause);
 
-    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
+    Specification notDeleted = Specification.where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // limit assessments that belong to specific programmes
     if (permissionService.isProgrammeObserver()) {
-      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      Collection<Object> set = Collections
+          .unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specification inProgrammes = Specification.where(SpecificationFactory.in("programmeId", set));
       specs.add(inProgrammes);
     }
 
-    Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
+    Specification<Assessment> fullSpec = Specification.where(specs.get(0));
     // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));

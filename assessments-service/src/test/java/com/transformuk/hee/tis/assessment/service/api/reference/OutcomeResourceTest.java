@@ -18,6 +18,7 @@ import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRe
 import com.transformuk.hee.tis.assessment.service.service.OutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.OutcomeMapper;
 import java.net.URI;
+import java.util.Optional;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.hamcrest.CoreMatchers;
@@ -114,7 +115,8 @@ public class OutcomeResourceTest {
 
   @Test
   public void getOutcomeShouldReturnSingleOutcomeWhenFound() throws Exception {
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(outcomeStub1);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID_1)).thenReturn(
+        java.util.Optional.ofNullable(outcomeStub1));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isOk())
@@ -126,7 +128,7 @@ public class OutcomeResourceTest {
 
   @Test
   public void getOutcomeShouldReturnNotFoundWhenNoOutcomeWithId() throws Exception {
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID_1)).thenReturn(null);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID_1)).thenReturn(Optional.empty());
     mockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}", OUTCOME_ID_1))
         .andExpect(status().isNotFound());
   }

@@ -1,29 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
-import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
-import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
-import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
-import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.lang.StringUtils;
-import org.assertj.core.util.Lists;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specifications;
-
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,6 +10,33 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentServiceImplTest {
@@ -59,7 +62,7 @@ public class AssessmentServiceImplTest {
   @Captor
   private ArgumentCaptor<Example<Assessment>> assessmentCaptor;
   @Captor
-  private ArgumentCaptor<Specifications<Assessment>> specificationsArgumentCaptor;
+  private ArgumentCaptor<Specification<Assessment>> specificationsArgumentCaptor;
 
   @Mock
   private PermissionService permissionServiceMock;
@@ -98,10 +101,12 @@ public class AssessmentServiceImplTest {
   @Test
   public void findAllShouldSearchAsPerPageable() {
     Pageable pageableMock = mock(Pageable.class);
-    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
+    List<Assessment> assessments = Lists
+        .newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
-    when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock)).thenReturn(pagedAssessments);
+    when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock))
+        .thenReturn(pagedAssessments);
     when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
     when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
     when(assessmentListMapperMock.toDto(assessmentMock3)).thenReturn(assessmentListDTOMock3);
@@ -130,16 +135,15 @@ public class AssessmentServiceImplTest {
     try {
       testObj.findOne(null);
     } catch (Exception e) {
-      verify(assessmentRepositoryMock, never()).findOne(anyLong());
+      verify(assessmentRepositoryMock, never()).findById(anyLong());
       verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
 
-
   @Test
   public void findOneShouldReturnAssessmentDTO() {
-    when(assessmentRepositoryMock.findOne(1L)).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findById(1L)).thenReturn(Optional.of(assessmentMock));
     when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
 
     AssessmentDTO result = testObj.findOne(1L);
@@ -149,7 +153,8 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -198,7 +203,8 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
     when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
@@ -252,10 +258,12 @@ public class AssessmentServiceImplTest {
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsByPage() {
     Pageable pageableMock = mock(Pageable.class);
-    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
+    List<Assessment> assessments = Lists
+        .newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
-    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), Matchers.eq(pageableMock))).thenReturn(pagedAssessments);
+    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), Matchers.eq(pageableMock)))
+        .thenReturn(pagedAssessments);
     when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
     when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
     when(assessmentMapperMock.toDto(assessmentMock3)).thenReturn(assessmentDTOMock3);
@@ -293,13 +301,13 @@ public class AssessmentServiceImplTest {
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenTraineeIdIsNull() {
     testObj.deleteTraineeAssessment(ASSESSMENT_ID, null);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test(expected = NullPointerException.class)
   public void deleteTraineeAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
     testObj.deleteTraineeAssessment(null, TRAINEE_ID);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
   }
 
   @Test
@@ -308,7 +316,7 @@ public class AssessmentServiceImplTest {
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
+    verify(assessmentRepositoryMock, never()).deleteById(anyLong());
     Assert.assertFalse(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
@@ -319,7 +327,8 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void deleteTraineeAssessementShouldReturnTrueWhenAssessmentIsDeleted() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
@@ -335,10 +344,12 @@ public class AssessmentServiceImplTest {
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsForATrainee() {
     List<Assessment> traineeAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
-    List<AssessmentDTO> traineeAssessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
+    List<AssessmentDTO> traineeAssessmentDtos = Lists
+        .newArrayList(assessmentDTOMock1, assessmentDTOMock2);
 
-    Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
-    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
+    Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort)))
+        .thenReturn(traineeAssessments);
     when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
     when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
     when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
@@ -353,18 +364,19 @@ public class AssessmentServiceImplTest {
     Assert.assertEquals(assessmentDTOMock1, result.get(0));
     Assert.assertEquals(assessmentDTOMock2, result.get(1));
   }
-  
+
 
   @Test
   public void advancedSearchShouldSearchUsingSpecifications() {
     List<ColumnFilter> columnFilters = Lists.newArrayList();
-    Pageable pageable = new PageRequest(0, 20);
+    Pageable pageable = PageRequest.of(0, 20);
     String searchQuery = "search query";
 
     List<Assessment> foundAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
     Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
 
-    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable))).thenReturn(pagedFoundAssessments);
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable)))
+        .thenReturn(pagedFoundAssessments);
     when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
     when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
