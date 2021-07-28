@@ -35,34 +35,42 @@ public class RevalidationResource {
   private AssessmentService assessmentService;
 
   /**
-   * GET  /:traineeId/assessments/:assessmentId/revalidations : get the a revalidation that's linked to a trainee assessment.
+   * GET  /:traineeId/assessments/:assessmentId/revalidations : get the a revalidation that's linked
+   * to a trainee assessment.
    *
    * @param traineeId    the id of the trainee
    * @param assessmentId the id of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status
+   *     404 (Not Found)
    */
   @GetMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<RevalidationDTO> getTraineeAssessmentRevalidation(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<RevalidationDTO> getTraineeAssessmentRevalidation(
+      @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Revalidation");
-    Optional<RevalidationDTO> revalidationDTO = revalidationService.findAssessmentRevalidationBy(traineeId, assessmentId);
+    Optional<RevalidationDTO> revalidationDTO = revalidationService
+        .findAssessmentRevalidationBy(traineeId, assessmentId);
     return ResponseUtil.wrapOrNotFound(revalidationDTO);
   }
 
   /**
-   * POST  /:traineeId/assessments/:assessmentId/revalidations : create a revalidation that's linked to a trainees assessment.
+   * POST  /:traineeId/assessments/:assessmentId/revalidations : create a revalidation that's linked
+   * to a trainees assessment.
    *
    * @param traineeId    the id of the trainee
    * @param assessmentId the id of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the revalidation, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body the revalidation, or with status
+   *     404 (Not Found)
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<RevalidationDTO> createTraineeAssessmentRevalidation(@RequestBody @Validated(Create.class) RevalidationDTO revalidationDTO,
-                                                                             @PathVariable Long traineeId,
-                                                                             @PathVariable Long assessmentId) {
+  public ResponseEntity<RevalidationDTO> createTraineeAssessmentRevalidation(
+      @RequestBody @Validated(Create.class) RevalidationDTO revalidationDTO,
+      @PathVariable Long traineeId,
+      @PathVariable Long assessmentId) {
     log.debug("REST request to create Revalidation : {}", revalidationDTO);
-    Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
+    Optional<Assessment> traineeAssessment = assessmentService
+        .findTraineeAssessment(traineeId, assessmentId);
     RevalidationDTO savedRevalidation = null;
     if (traineeAssessment.isPresent()) {
       savedRevalidation = revalidationService.create(traineeAssessment.get(), revalidationDTO);
@@ -72,18 +80,22 @@ public class RevalidationResource {
   }
 
   /**
-   * PUT  /:traineeId/assessments/:assessmentId/revalidations : update a revalidation that's linked to a trainee.
+   * PUT  /:traineeId/assessments/:assessmentId/revalidations : update a revalidation that's linked
+   * to a trainee.
    *
    * @param traineeId    the id of the trainee
    * @param assessmentId the id of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the revalidationDTO, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body the revalidationDTO, or with
+   *     status 404 (Not Found)
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<RevalidationDTO> updateTraineeAssessmentRevalidation(@RequestBody @Validated(Update.class) RevalidationDTO revalidationDTO,
-                                                                            @PathVariable Long traineeId, @PathVariable Long assessmentId) {
+  public ResponseEntity<RevalidationDTO> updateTraineeAssessmentRevalidation(
+      @RequestBody @Validated(Update.class) RevalidationDTO revalidationDTO,
+      @PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to update Revalidation : {}", revalidationDTO);
-    Optional<Assessment> traineeAssessment = assessmentService.findTraineeAssessment(traineeId, assessmentId);
+    Optional<Assessment> traineeAssessment = assessmentService
+        .findTraineeAssessment(traineeId, assessmentId);
     RevalidationDTO savedRevalidation = null;
     if (traineeAssessment.isPresent()) {
       savedRevalidation = revalidationService.save(traineeAssessment.get(), revalidationDTO);
