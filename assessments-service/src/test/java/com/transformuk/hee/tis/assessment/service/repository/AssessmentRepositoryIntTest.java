@@ -7,6 +7,8 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcomeReason;
 import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import io.jsonwebtoken.lang.Assert;
+import java.util.List;
+import javax.persistence.EntityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -40,7 +39,8 @@ public class AssessmentRepositoryIntTest {
     Assert.notNull(assessment);
     AssessmentDetail assessmentDetail = entityManager.find(AssessmentDetail.class, ASSESSMENT_ID);
     Assert.notNull(assessmentDetail);
-    AssessmentOutcome assessmentOutcome = entityManager.find(AssessmentOutcome.class, ASSESSMENT_ID);
+    AssessmentOutcome assessmentOutcome = entityManager
+        .find(AssessmentOutcome.class, ASSESSMENT_ID);
     Assert.notNull(assessmentOutcome);
     List<AssessmentOutcomeReason> reasons = assessmentOutcome.getReasons();
     Assert.notEmpty(reasons);
@@ -48,7 +48,7 @@ public class AssessmentRepositoryIntTest {
     Assert.notNull(revalidation);
 
     //when we delete an assessment, all relating entities get deleted
-    testObj.delete(ASSESSMENT_ID);
+    testObj.deleteById(ASSESSMENT_ID);
 
     Assert.isNull(entityManager.find(Assessment.class, ASSESSMENT_ID));
     Assert.isNull(entityManager.find(AssessmentDetail.class, ASSESSMENT_ID));
