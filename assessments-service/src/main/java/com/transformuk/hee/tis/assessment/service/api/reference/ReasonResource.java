@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
-import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.ReasonDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
@@ -67,7 +66,6 @@ public class ReasonResource {
    *     (Not Found)
    */
   @GetMapping("/reasons/{id}")
-  @Timed
   @ApiOperation(value = "Get single Reason by id", notes = "Returns a Reason when provided with an id", response = Reason.class)
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "The reason related to the id", response = Reason.class),
@@ -90,7 +88,6 @@ public class ReasonResource {
   @ApiOperation(value = "Lists Reasons",
       notes = "Returns a list of Reasons with support for pagination, sorting and smart search")
   @GetMapping("/reasons")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<List<Reason>> reasonSmartSearch(
       @ApiParam Pageable pageable,
@@ -116,7 +113,6 @@ public class ReasonResource {
    * @return the ResponseEntity with status 200 (OK) and with body the reason
    */
   @PostMapping("/reasons")
-  @Timed
   @ApiOperation(value = "Create single Reason", notes = "Creates a new Reason", response = ReasonDTO.class)
   @ApiResponse(code = 201, message = "The newly created Reason", response = ReasonDTO.class)
   public ResponseEntity<ReasonDTO> createReason(
@@ -135,7 +131,6 @@ public class ReasonResource {
    * * @return the ResponseEntity with status 200 (OK) and with body the Reason
    */
   @PutMapping("/reasons")
-  @Timed
   @ApiOperation(value = "Update/Create single Reason", notes = "Updates or Creates a new Reason", response = ReasonDTO.class)
   @ApiResponse(code = 200, message = "The updated/created Reason", response = ReasonDTO.class)
   public ResponseEntity<ReasonDTO> updateOrCreateReason(
@@ -157,7 +152,6 @@ public class ReasonResource {
    *     with status 404 (Not Found)
    */
   @GetMapping("/outcomes/{id}/reasons")
-  @Timed
   @ApiOperation(value = "Get a list of Reason by for an Outcome", notes = "Returns a list of Reason when provided with the id of an Outcome", response = Reason.class)
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "The reasons related to the Outcome id", response = Reason.class),
