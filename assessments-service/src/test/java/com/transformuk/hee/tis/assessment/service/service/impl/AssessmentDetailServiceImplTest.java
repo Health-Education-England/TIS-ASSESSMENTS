@@ -21,7 +21,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Example;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -86,10 +86,10 @@ public class AssessmentDetailServiceImplTest {
     Assert.assertEquals(ASSESSMENT_ID, capturedAssessment.getId());
   }
 
-
   @Test
   public void findAssessmentDetailByShouldReturnEmptyOptionalNoData() {
-    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture()))
+        .thenReturn(Optional.empty());
 
     Optional<AssessmentDetailDTO> result = testObj
         .findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);

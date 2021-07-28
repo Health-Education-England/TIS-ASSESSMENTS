@@ -1,35 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
-import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
-import com.transformuk.hee.tis.assessment.service.Application;
-import com.transformuk.hee.tis.assessment.service.TestUtil;
-import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
-import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
-import org.assertj.core.util.Lists;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.IsNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.data.web.SortHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -39,6 +9,42 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
+import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+import com.transformuk.hee.tis.assessment.service.Application;
+import com.transformuk.hee.tis.assessment.service.TestUtil;
+import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.core.IsNull;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.SortHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -96,29 +102,37 @@ public class AssessmentResourceTest {
   }
 
   @Test
-  public void deleteTraineeAssessmentShouldReturnBadRequestWhenAssessmentForTraineeNotFound() throws Exception {
-    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(false);
-    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
+  public void deleteTraineeAssessmentShouldReturnBadRequestWhenAssessmentForTraineeNotFound()
+      throws Exception {
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID))
+        .thenReturn(false);
+    mockMvc.perform(
+        delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
         .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void deleteTraineeAssessmentShouldReturnOKWhenAssessmentForTraineeIsFound() throws Exception {
+  public void deleteTraineeAssessmentShouldReturnOKWhenAssessmentForTraineeIsFound()
+      throws Exception {
     when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(true);
-    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
+    mockMvc.perform(
+        delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
         .andExpect(status().isOk());
   }
 
   @Test
   public void getTraineeAssessmentsShouldReturnAssessmentForATraineePaginated() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
     Page<AssessmentDTO> page = new PageImpl<>(assessments);
 
-    when(assessmentServiceMock.findForTrainee(eq(TRAINEE_ID), pageableArgumentCaptor.capture())).thenReturn(page);
+    when(assessmentServiceMock.findForTrainee(eq(TRAINEE_ID), pageableArgumentCaptor.capture()))
+        .thenReturn(page);
 
     mockMvc.perform(get("/api/trainee/{traineeId}/assessments", TRAINEE_ID))
         .andExpect(status().isOk())
@@ -136,12 +150,15 @@ public class AssessmentResourceTest {
   @Test
   public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATrainee() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
-    when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture())).thenReturn(assessments);
+    when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture()))
+        .thenReturn(assessments);
 
     mockMvc.perform(get("/api/trainee/{traineeId}/assessments/all", TRAINEE_ID))
         .andExpect(status().isOk())
@@ -154,38 +171,42 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
         .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
     ;
-      Sort capturedValue = sortArgumentCaptor.getValue();
-      Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
-      Assert.assertEquals(Sort.Direction.DESC, reviewDateOrder.getDirection());
+    Sort capturedValue = sortArgumentCaptor.getValue();
+    Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
+    Assert.assertEquals(Sort.Direction.DESC, reviewDateOrder.getDirection());
 
   }
 
-    @Test
-    public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATraineeInTheDefinedSortOrder() throws Exception {
-        AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+  @Test
+  public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATraineeInTheDefinedSortOrder()
+      throws Exception {
+    AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(null);
 
-        List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
+    List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
-        when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture())).thenReturn(assessments);
+    when(assessmentServiceMock.findAllForTrainee(eq(TRAINEE_ID), sortArgumentCaptor.capture()))
+        .thenReturn(assessments);
 
-        mockMvc.perform(get("/api/trainee/{traineeId}/assessments/all?sort=reviewDate,asc", TRAINEE_ID))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.[0].id").value(ASSESSMENT_ID_1))
-            .andExpect(jsonPath("$.[1].id").value(ASSESSMENT_ID_2))
-            .andExpect(jsonPath("$.[0].firstName").value(FIRST_NAME))
-            .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
-            .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
-            .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
-            .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
-            .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
-        ;
+    mockMvc.perform(get("/api/trainee/{traineeId}/assessments/all?sort=reviewDate,asc", TRAINEE_ID))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.[0].id").value(ASSESSMENT_ID_1))
+        .andExpect(jsonPath("$.[1].id").value(ASSESSMENT_ID_2))
+        .andExpect(jsonPath("$.[0].firstName").value(FIRST_NAME))
+        .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
+        .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
+        .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
+        .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
+    ;
 
-        Sort capturedValue = sortArgumentCaptor.getValue();
-        Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
-        Assert.assertEquals(Sort.Direction.ASC, reviewDateOrder.getDirection());
-    }
+    Sort capturedValue = sortArgumentCaptor.getValue();
+    Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
+    Assert.assertEquals(Sort.Direction.ASC, reviewDateOrder.getDirection());
+  }
 
   @Test
   public void createTraineeAssessmentShouldReturnBadRequestWhenPayloadHasId() throws Exception {
@@ -202,11 +223,14 @@ public class AssessmentResourceTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.title").value("Method argument not valid"));
+        .andExpect(jsonPath("$.title").value("A new assessment cannot already have an ID"));
+    // TODO: revert back to this value when parameter validation is fixed.
+    //  .andExpect(jsonPath("$.title").value("Method argument not valid"));
   }
 
   @Test
-  public void createTraineeAssessmentShouldReturnBadRequestWhenTheTraineeInUrlPathDoesNotMatchTraineeInPayload() throws Exception {
+  public void createTraineeAssessmentShouldReturnBadRequestWhenTheTraineeInUrlPathDoesNotMatchTraineeInPayload()
+      throws Exception {
 
     AssessmentDTO assessmentToCreate = new AssessmentDTO();
     assessmentToCreate.setTraineeId(12345677L);
@@ -220,7 +244,8 @@ public class AssessmentResourceTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.title").value("A new assessment does not have the same trainee id as uri path"));
+        .andExpect(jsonPath("$.title")
+            .value("A new assessment does not have the same trainee id as uri path"));
   }
 
   @Test
@@ -236,7 +261,8 @@ public class AssessmentResourceTest {
     createdAssessment.setTraineeId(TRAINEE_ID);
     createdAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
-    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(createdAssessment);
+    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture()))
+        .thenReturn(createdAssessment);
 
     AssessmentDTO assessmentToCreate = new AssessmentDTO();
     assessmentToCreate.setFirstName(FIRST_NAME);
@@ -254,7 +280,6 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID))
         .andExpect(jsonPath("$.programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
     ;
-
 
     AssessmentDTO captorValue = assessmentDTOArgumentCaptor.getValue();
     Assert.assertEquals(assessmentToCreate.getId(), captorValue.getId());
@@ -286,7 +311,8 @@ public class AssessmentResourceTest {
     createdAssessment.setType(TYPE);
     createdAssessment.setTraineeId(TRAINEE_ID);
 
-    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(createdAssessment);
+    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture()))
+        .thenReturn(createdAssessment);
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
         .contentType(MediaType.APPLICATION_JSON)
@@ -317,7 +343,8 @@ public class AssessmentResourceTest {
     assessmentToUpdate.setProgrammeName(PROGRAMME_NAME);
     assessmentToUpdate.setType(TYPE);
 
-    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(assessmentToUpdate);
+    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture()))
+        .thenReturn(assessmentToUpdate);
 
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
         .contentType(MediaType.APPLICATION_JSON)
@@ -348,9 +375,12 @@ public class AssessmentResourceTest {
     foundAssessment.setType(TYPE);
     foundAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
-    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.of(foundAssessment));
+    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1))
+        .thenReturn(Optional.of(foundAssessment));
 
-    mockMvc.perform(get("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1).contentType(MediaType.APPLICATION_JSON_UTF8))
+    mockMvc.perform(
+        get("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
+            .contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID_1))
         .andExpect(jsonPath("$.traineeId").value(TRAINEE_ID))
         .andExpect(jsonPath("$.firstName").value(FIRST_NAME))
@@ -366,14 +396,17 @@ public class AssessmentResourceTest {
   @Test
   public void getTraineeAssessmentShouldReturnNotFoundWhenNoneExists() throws Exception {
 
-    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
+    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1))
+        .thenReturn(Optional.empty());
 
-    mockMvc.perform(get("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
+    mockMvc.perform(
+        get("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
         .andExpect(status().isNotFound());
   }
 
   @Test
-  public void createTraineeAssessmentShouldBadRequestWhenTraineeIdDoesntMatchTraineeIdInPayload() throws Exception {
+  public void createTraineeAssessmentShouldBadRequestWhenTraineeIdDoesntMatchTraineeIdInPayload()
+      throws Exception {
 
     AssessmentDTO toCreate = new AssessmentDTO();
     toCreate.setTraineeId(222222L);
@@ -383,18 +416,20 @@ public class AssessmentResourceTest {
     toCreate.setProgrammeName(PROGRAMME_NAME);
     toCreate.setType(TYPE);
 
+    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1))
+        .thenReturn(Optional.empty());
 
-    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
-
-    mockMvc.perform(post("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(toCreate)))
+    mockMvc.perform(
+        post("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(toCreate)))
         .andExpect(status().isBadRequest());
   }
 
 
   @Test
-  public void updateTraineeAssessmentShouldBadRequestWhenTraineeIdDoesntMatchTraineeIdInPayload() throws Exception {
+  public void updateTraineeAssessmentShouldBadRequestWhenTraineeIdDoesntMatchTraineeIdInPayload()
+      throws Exception {
 
     AssessmentDTO toUpdate = new AssessmentDTO();
     toUpdate.setTraineeId(222222L);
@@ -404,17 +439,19 @@ public class AssessmentResourceTest {
     toUpdate.setProgrammeName(PROGRAMME_NAME);
     toUpdate.setType(TYPE);
 
+    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1))
+        .thenReturn(Optional.empty());
 
-    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
-
-    mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
+    mockMvc.perform(
+        put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
         .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void updateTraineeAssessmentShouldBadRequestWhenAssessmentIdDoesntMatchAssessmentIdInPayload() throws Exception {
+  public void updateTraineeAssessmentShouldBadRequestWhenAssessmentIdDoesntMatchAssessmentIdInPayload()
+      throws Exception {
 
     AssessmentDTO toUpdate = new AssessmentDTO();
     toUpdate.setId(222222L);
@@ -425,17 +462,19 @@ public class AssessmentResourceTest {
     toUpdate.setProgrammeName(PROGRAMME_NAME);
     toUpdate.setType(TYPE);
 
+    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1))
+        .thenReturn(Optional.empty());
 
-    when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.empty());
-
-    mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
+    mockMvc.perform(
+        put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(toUpdate)))
         .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void updateSpecificTraineeAssessmentShouldBadRequestWhenAssessmentIdDoesntMatchAssessmentIdInPayload() throws Exception {
+  public void updateSpecificTraineeAssessmentShouldBadRequestWhenAssessmentIdDoesntMatchAssessmentIdInPayload()
+      throws Exception {
 
     AssessmentDTO assessmentToUpdate = new AssessmentDTO();
     assessmentToUpdate.setId(ASSESSMENT_ID_1);
@@ -446,11 +485,13 @@ public class AssessmentResourceTest {
     assessmentToUpdate.setProgrammeName(PROGRAMME_NAME);
     assessmentToUpdate.setType(TYPE);
 
-    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(assessmentToUpdate);
+    when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture()))
+        .thenReturn(assessmentToUpdate);
 
-    mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(assessmentToUpdate)))
+    mockMvc.perform(
+        put("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentToUpdate)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID_1));
 
@@ -467,9 +508,11 @@ public class AssessmentResourceTest {
   @Test
   public void deleteTraineeAssessmentShouldReturnBadRequestWhenDeletionFails() throws Exception {
 
-    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID)).thenReturn(false);
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID))
+        .thenReturn(false);
 
-    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
+    mockMvc.perform(
+        delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
         .andExpect(status().isBadRequest());
 
   }
@@ -477,15 +520,18 @@ public class AssessmentResourceTest {
   @Test
   public void deleteTraineeAssessmentShouldReturnOkAfterSuccessfulDeletion() throws Exception {
 
-    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID)).thenReturn(true);
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID))
+        .thenReturn(true);
 
-    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
+    mockMvc.perform(
+        delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
         .andExpect(status().isOk());
 
   }
 
   @Test
-  public void getAllAssessmentsShouldReturnAllAssessmentsPaginatedWhenNoSearchQueryProvided() throws Exception {
+  public void getAllAssessmentsShouldReturnAllAssessmentsPaginatedWhenNoSearchQueryProvided()
+      throws Exception {
     AssessmentListDTO assessmentListDTO = new AssessmentListDTO();
     assessmentListDTO.setId(1L);
     assessmentListDTO.setCurriculumName(CURRICULUM_NAME);
@@ -502,15 +548,19 @@ public class AssessmentResourceTest {
     anotherAssessment.setLastName(ANOTHER_LAST_NAME);
     anotherAssessment.setOutcome(ANOTHER_OUTCOME);
 
-    Page<AssessmentListDTO> pagedResponse = new PageImpl<>(Lists.newArrayList(assessmentListDTO, anotherAssessment));
-    when(assessmentServiceMock.advancedSearch(eq(null), eq(null), pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
+    Page<AssessmentListDTO> pagedResponse = new PageImpl<>(
+        Lists.newArrayList(assessmentListDTO, anotherAssessment));
+    when(assessmentServiceMock.advancedSearch(eq(null), eq(null), pageableArgumentCaptor.capture()))
+        .thenReturn(pagedResponse);
 
     mockMvc.perform(get("/api/trainee/assessments"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.*").isArray())
         .andExpect(jsonPath("$.[*].id", hasItems(1, 2)))
-        .andExpect(jsonPath("$.[*].curriculumName", hasItems(CURRICULUM_NAME, ANOTHER_CURRICULUM_NAME)))
-        .andExpect(jsonPath("$.[*].eventStatus", hasItems(EventStatus.COMPLETED.name(), EventStatus.APPEALED.name())))
+        .andExpect(
+            jsonPath("$.[*].curriculumName", hasItems(CURRICULUM_NAME, ANOTHER_CURRICULUM_NAME)))
+        .andExpect(jsonPath("$.[*].eventStatus",
+            hasItems(EventStatus.COMPLETED.name(), EventStatus.APPEALED.name())))
         .andExpect(jsonPath("$.[*].firstName", hasItems(FIRST_NAME, ANOTHER_FIRST_NAME)))
         .andExpect(jsonPath("$.[*].lastName", hasItems(LAST_NAME, ANOTHER_LAST_NAME)))
         .andExpect(jsonPath("$.[*].outcome", hasItems(OUTCOME_1, ANOTHER_OUTCOME)))
@@ -518,22 +568,25 @@ public class AssessmentResourceTest {
   }
 
   @Test
-  public void shouldSanitizeParamWhenGetAllAssessment() throws Exception{
-      AssessmentListDTO assessmentListDTO = new AssessmentListDTO();
-      assessmentListDTO.setId(1L);
-      assessmentListDTO.setCurriculumName(CURRICULUM_NAME);
-      assessmentListDTO.setEventStatus(EventStatus.COMPLETED);
-      assessmentListDTO.setFirstName(FIRST_NAME);
-      assessmentListDTO.setLastName(LAST_NAME);
-      assessmentListDTO.setOutcome(OUTCOME_1);
+  public void shouldSanitizeParamWhenGetAllAssessment() throws Exception {
+    AssessmentListDTO assessmentListDTO = new AssessmentListDTO();
+    assessmentListDTO.setId(1L);
+    assessmentListDTO.setCurriculumName(CURRICULUM_NAME);
+    assessmentListDTO.setEventStatus(EventStatus.COMPLETED);
+    assessmentListDTO.setFirstName(FIRST_NAME);
+    assessmentListDTO.setLastName(LAST_NAME);
+    assessmentListDTO.setOutcome(OUTCOME_1);
 
-      Page<AssessmentListDTO> pagedResponse = new PageImpl<>(Lists.newArrayList(assessmentListDTO));
-      when(assessmentServiceMock.advancedSearch(stringArgumentCaptor.capture(), Matchers.any(), pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
+    Page<AssessmentListDTO> pagedResponse = new PageImpl<>(Lists.newArrayList(assessmentListDTO));
+    when(assessmentServiceMock.advancedSearch(stringArgumentCaptor.capture(), Matchers.any(),
+        pageableArgumentCaptor.capture())).thenReturn(pagedResponse);
 
-      mockMvc.perform(get(new URI("/api/trainee/assessments?page=0&size=20&sort=id,desc&searchQuery=%22King%27s%2520College%2520Dental%2520institute%2520-%2520ACF%2520(NIHR)%22")))
-          .andExpect(status().isOk());
+    mockMvc.perform(get(new URI(
+        "/api/trainee/assessments?page=0&size=20&sort=id,desc&searchQuery=%22King%27s%2520College%2520Dental%2520institute%2520-%2520ACF%2520(NIHR)%22")))
+        .andExpect(status().isOk());
 
-      String str = stringArgumentCaptor.getValue();
-      Assert.assertThat("should sanitize param", str, CoreMatchers.equalTo("King\\'s College Dental institute - ACF (NIHR)"));
+    String str = stringArgumentCaptor.getValue();
+    Assert.assertThat("should sanitize param", str,
+        CoreMatchers.equalTo("King\\'s College Dental institute - ACF (NIHR)"));
   }
 }

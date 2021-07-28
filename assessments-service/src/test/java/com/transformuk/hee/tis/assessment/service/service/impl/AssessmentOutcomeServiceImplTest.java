@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentOutcomeServiceImplTest {
@@ -48,7 +48,6 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(resultAssessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
-    when(savedAssessmentOutcomeMock.getId()).thenReturn(ASSESSMENT_ID);
   }
 
   @Test
@@ -188,7 +187,6 @@ public class AssessmentOutcomeServiceImplTest {
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
     when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
-    when(assessmentOutcomeMapperMock.toDto((AssessmentOutcome) null)).thenReturn(null);
 
     Optional<AssessmentOutcomeDTO> result = testObj.findOne(ASSESSMENT_ID);
 
