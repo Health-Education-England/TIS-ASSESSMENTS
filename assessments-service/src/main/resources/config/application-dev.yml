@@ -4,9 +4,9 @@ spring:
     username: ${DBUSER}
     password: ${DBPASSWORD}
 
-flyway:
-  password: ${DBPASSWORD}
-  schemas: ${DBNAME}
+  flyway:
+    password: ${DBPASSWORD}
+    schemas: ${DBNAME}
 
 
 kc:
