@@ -22,7 +22,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Example;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -131,7 +131,6 @@ public class RevalidationServiceImplTest {
 
   @Test(expected = IllegalStateException.class)
   public void createShouldThrowExceptionIfRevalidationHasId() {
-    when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
     try {
@@ -167,7 +166,6 @@ public class RevalidationServiceImplTest {
     Assessment assessment = new Assessment().id(ASSESSMENT_ID);
     RevalidationDTO revalidationDTO = new RevalidationDTO();
 
-    when(revalidationMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationMapperMock.toEntity(revalidationDTO)).thenReturn(revalidationMock);
     when(revalidationRepositoryMock.saveAndFlush(revalidationMock)).thenReturn(revalidationMock);
@@ -205,7 +203,6 @@ public class RevalidationServiceImplTest {
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
     when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
-    when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
     Optional<RevalidationDTO> result = testObj.findOne(ASSESSMENT_ID);
 

@@ -237,7 +237,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentShouldReturnEmptyOptional() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -298,7 +298,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnEmptyAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -408,7 +408,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void deleteTraineeAssessementShouldReturnFalseWhenAssessmentCannotBeFound() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(Optional.empty());
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
@@ -485,7 +485,6 @@ public class AssessmentServiceImplTest {
 
     Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
     when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort)))
-
         .thenReturn(traineeAssessments);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
