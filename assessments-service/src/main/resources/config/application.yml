@@ -15,13 +15,14 @@
 # ===================================================================
 
 management:
-  context-path: /management
   security:
     enabled: false
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
   add-application-context-header: false
+  server:
+    base-path: /management
 
 spring:
   application:
@@ -52,7 +53,7 @@ spring:
       hibernate.generate_statistics: true
   messages:
     basename: i18n/messages
-    cache-seconds: 1
+    cache-duration: 1
   mvc:
     favicon:
       enabled: false
@@ -75,46 +76,34 @@ spring:
     username:
     password:
 
-flyway:
-  baseline-description: #
-  baseline-version: 1.0 # version to start migration
-  baseline-on-migrate: true
-  check-location: false # Check that migration scripts location exists.
-  clean-on-validation-error: false
-  enabled: true # Enable flyway.
-  encoding: #
-  ignore-failed-future-migration: #
-  init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
-  locations: classpath:db/migration/common,classpath:db/migration/tenant/hee # hee should be used by default.
-  out-of-order: true
-  password: ${DBPASSWORD:}
-  placeholder-prefix:
-  placeholder-replacement:
-  placeholder-suffix:
-  placeholders.*:
-  schemas: ${DBNAME:assessments}
-  sql-migration-prefix: V
-  sql-migration-separator:
-  sql-migration-suffix: .sql
-  table:  #
-  url: ${spring.datasource.url}
-  user: ${spring.datasource.username}
-  validate-on-migrate:  #
-  initOnMigrate: true
+  flyway:
+    baseline-version: 1.0 # version to start migration
+    baseline-on-migrate: true
+    check-location: false # Check that migration scripts location exists.
+    clean-on-validation-error: false
+    ignore-future-migrations: true
+    init-sqls: # SQL statements to execute to initialize a connection immediately after obtaining it.
+    locations: classpath:db/migration/common,classpath:db/migration/tenant/hee # hee should be used by default.
+    out-of-order: true
+    password: ${DBPASSWORD:}
+    sql-migration-prefix: V
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
 
-security:
-  basic:
-    enabled: false
-  user:
-    name: admin
-    password: admin
+  security:
+    basic:
+      enabled: false
+    user:
+      name: admin
+      password: admin
 
 server:
-  session:
-    cookie:
-      http-only: true
-  context-path: /assessments
   port: 8097
+  servlet:
+    session:
+      cookie:
+        http-only: true
+    context-path: /assessments
 
 
 info:
@@ -188,6 +177,6 @@ jhipster:
 
 #log settings
 logging:
-  file: ${LOG_DIR:${HOME}}/assessments.log
-
+  file:
+    name: ${LOG_DIR:${HOME}}/assessments.log
 application:
