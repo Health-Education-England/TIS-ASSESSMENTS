@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api.reference;
 
-import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.OutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
@@ -63,7 +62,6 @@ public class OutcomeResource {
    *     (Not Found)
    */
   @GetMapping("/outcomes/{id}")
-  @Timed
   @ApiOperation(value = "Get single outcome by id", notes = "Returns a Outcome when provided with an id", response = Outcome.class)
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "The outcome related to the id", response = Outcome.class),
@@ -86,7 +84,6 @@ public class OutcomeResource {
   @ApiOperation(value = "Lists Outcomes",
       notes = "Returns a list of Outcomes with support for pagination, sorting and smart search")
   @GetMapping("/outcomes")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<List<Outcome>> outcomeSmartSearch(
       @ApiParam Pageable pageable,
@@ -108,7 +105,6 @@ public class OutcomeResource {
 
   @ApiOperation(value = "Lists all Outcomes with linked reasons", notes = "Returns a list of all Outcomes with reasons")
   @GetMapping("/outcomes/all")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<Set<Outcome>> allOutcomes() {
     Set<Outcome> allOutcomesWithReasons = outcomeRepository.findAllWithReasons();
@@ -121,7 +117,6 @@ public class OutcomeResource {
    * @return the ResponseEntity with status 200 (OK) and with body the outcome
    */
   @PostMapping("/outcomes")
-  @Timed
   @ApiOperation(value = "Create single Outcome", notes = "Creates a new Outcome", response = OutcomeDTO.class)
   @ApiResponse(code = 201, message = "The newly created Outcome", response = OutcomeDTO.class)
   public ResponseEntity<OutcomeDTO> createOutcome(
@@ -140,7 +135,6 @@ public class OutcomeResource {
    * * @return the ResponseEntity with status 200 (OK) and with body the Outcome
    */
   @PutMapping("/outcomes")
-  @Timed
   @ApiOperation(value = "Update/Create single Outcome", notes = "Updates or Creates a new Outcome", response = OutcomeDTO.class)
   @ApiResponse(code = 200, message = "The updated/created Outcome", response = OutcomeDTO.class)
   public ResponseEntity<OutcomeDTO> updateOrCreateOutcome(
