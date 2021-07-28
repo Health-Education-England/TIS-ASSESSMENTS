@@ -1,11 +1,17 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapper;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,13 +23,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Example;
-
-import java.util.Optional;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentDetailServiceImplTest {
@@ -69,10 +68,13 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findAssessmentDetailByShouldReturnPopulatedOptionalDataAvailable() {
-    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(assessmentMock);
-    when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
+    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
+    when(assessmentDetailMapperMock.toDto(assessmentDetailMock))
+        .thenReturn(assessmentDetailDTOMock);
 
-    Optional<AssessmentDetailDTO> result = testObj.findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
+    Optional<AssessmentDetailDTO> result = testObj
+        .findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
 
     Assert.assertTrue(result.isPresent());
     AssessmentDetailDTO assessmentDetailDTO = result.get();
@@ -89,7 +91,8 @@ public class AssessmentDetailServiceImplTest {
   public void findAssessmentDetailByShouldReturnEmptyOptionalNoData() {
     when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(null);
 
-    Optional<AssessmentDetailDTO> result = testObj.findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
+    Optional<AssessmentDetailDTO> result = testObj
+        .findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
 
     verify(assessmentDetailMapperMock, never()).toDto(any(AssessmentDetail.class));
 
@@ -103,9 +106,12 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void saveShouldSaveDetailAgainstAnAssessment() {
-    when(assessmentDetailMapperMock.toEntity(assessmentDetailDTOMock)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
+    when(assessmentDetailMapperMock.toEntity(assessmentDetailDTOMock))
+        .thenReturn(assessmentDetailMock);
+    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock))
+        .thenReturn(assessmentDetailMock);
+    when(assessmentDetailMapperMock.toDto(assessmentDetailMock))
+        .thenReturn(assessmentDetailDTOMock);
 
     AssessmentDetailDTO result = testObj.save(assessmentMock, assessmentDetailDTOMock);
 
@@ -138,7 +144,8 @@ public class AssessmentDetailServiceImplTest {
     Assessment assessment = new Assessment().id(ASSESSMENT_ID);
     AssessmentDetailDTO assessmentDetailDTO = new AssessmentDetailDTO();
     when(assessmentDetailMapperMock.toEntity(assessmentDetailDTO)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock)).thenReturn(assessmentDetailMock);
+    when(assessmentDetailRepositoryMock.saveAndFlush(assessmentDetailMock))
+        .thenReturn(assessmentDetailMock);
     when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTO);
 
     AssessmentDetailDTO result = testObj.create(assessment, assessmentDetailDTO);
@@ -166,8 +173,10 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findOneShouldReturnDtoOfDetail() {
-    when(assessmentDetailRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
+    when(assessmentDetailRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(
+        Optional.of(assessmentDetailMock));
+    when(assessmentDetailMapperMock.toDto(assessmentDetailMock))
+        .thenReturn(assessmentDetailDTOMock);
 
     Optional<AssessmentDetailDTO> result = testObj.findOne(ASSESSMENT_ID);
 
@@ -177,7 +186,7 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findOneShouldReturnEmptyDTOWhenNoDetailMatches() {
-    when(assessmentDetailRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
+    when(assessmentDetailRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
 
     Optional<AssessmentDetailDTO> result = testObj.findOne(ASSESSMENT_ID);
 

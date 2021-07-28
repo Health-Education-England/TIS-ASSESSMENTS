@@ -1,22 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
-import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.Revalidation;
-import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
-import com.transformuk.hee.tis.assessment.service.repository.RevalidationRepository;
-import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Example;
-
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +8,22 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.Revalidation;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.repository.RevalidationRepository;
+import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapper;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Example;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RevalidationServiceImplTest {
@@ -52,11 +51,13 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnRevalidation() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(revalidationMock);
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
 
-    Optional<RevalidationDTO> result = testObj.findAssessmentRevalidationBy(TRAINEE_ID, ASSESSMENT_ID);
+    Optional<RevalidationDTO> result = testObj
+        .findAssessmentRevalidationBy(TRAINEE_ID, ASSESSMENT_ID);
 
     assertTrue(result.isPresent());
     RevalidationDTO revalidationDTO = result.get();
@@ -70,11 +71,13 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnEmptyOptionalWhenNoRevalidationFound() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(
+        Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(null);
     when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
-    Optional<RevalidationDTO> result = testObj.findAssessmentRevalidationBy(TRAINEE_ID, ASSESSMENT_ID);
+    Optional<RevalidationDTO> result = testObj
+        .findAssessmentRevalidationBy(TRAINEE_ID, ASSESSMENT_ID);
 
     assertFalse(result.isPresent());
 
@@ -188,7 +191,8 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findOneShouldReturnOutcomeWithId() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(revalidationMock);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(
+        Optional.of(revalidationMock));
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
@@ -198,10 +202,9 @@ public class RevalidationServiceImplTest {
     assertEquals(ASSESSMENT_ID, result.get().getId());
   }
 
-
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
     when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
     Optional<RevalidationDTO> result = testObj.findOne(ASSESSMENT_ID);

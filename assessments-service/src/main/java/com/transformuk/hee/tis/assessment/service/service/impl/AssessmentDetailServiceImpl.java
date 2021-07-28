@@ -8,13 +8,12 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRep
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapper;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class AssessmentDetailServiceImpl implements AssessmentDetailService {
@@ -24,8 +23,9 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   private final AssessmentDetailRepository assessmentDetailRepository;
   private final AssessmentDetailMapper assessmentDetailMapper;
 
-  public AssessmentDetailServiceImpl(AssessmentRepository assessmentRepository, AssessmentDetailRepository assessmentDetailRepository,
-                                     AssessmentDetailMapper assessmentDetailMapper) {
+  public AssessmentDetailServiceImpl(AssessmentRepository assessmentRepository,
+      AssessmentDetailRepository assessmentDetailRepository,
+      AssessmentDetailMapper assessmentDetailMapper) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentDetailRepository = assessmentDetailRepository;
     this.assessmentDetailMapper = assessmentDetailMapper;
@@ -34,7 +34,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
   /**
    * Get one assessment detail by assessment id.
    *
-   * @param traineeId the id of the trainee linked to the assessment
+   * @param traineeId    the id of the trainee linked to the assessment
    * @param assessmentId the id of the assessment entity
    * @return the entity
    */
@@ -45,9 +45,10 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    if (foundAssessment != null) {
-      AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
+    Optional<Assessment> foundAssessment = assessmentRepository.findOne(Example.of(example));
+    if (foundAssessment.isPresent()) {
+      AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.get()
+          .getDetail());
       return Optional.ofNullable(assessmentDetailDTO);
     }
     return Optional.empty();
@@ -80,7 +81,8 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
    * @return the persisted entity
    */
   @Override
-  public AssessmentDetailDTO create(Assessment assessment, AssessmentDetailDTO assessmentDetailDTO) {
+  public AssessmentDetailDTO create(Assessment assessment,
+      AssessmentDetailDTO assessmentDetailDTO) {
     Preconditions.checkNotNull(assessment);
     Preconditions.checkNotNull(assessmentDetailDTO);
     Preconditions.checkState(assessmentDetailDTO.getId() == null);
@@ -91,6 +93,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
 
   /**
    * Find an assessment detail by id
+   *
    * @param assessmentDetailId the id of the entity
    * @return the detail matching the ID
    */
@@ -100,8 +103,8 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentDetailId);
 
     log.debug("Request to get Assessment Detail : {}", assessmentDetailId);
-    AssessmentDetail assessmentDetail = assessmentDetailRepository.findOne(assessmentDetailId);
-    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(assessmentDetail);
-    return Optional.ofNullable(assessmentDetailDTO);
+    Optional<AssessmentDetail> assessmentDetail = assessmentDetailRepository
+        .findById(assessmentDetailId);
+    return assessmentDetail.map(assessmentDetailMapper::toDto);
   }
 }

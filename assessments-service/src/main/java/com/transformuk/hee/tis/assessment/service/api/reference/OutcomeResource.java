@@ -59,7 +59,7 @@ public class OutcomeResource {
    *
    * @param id the id of the outcome
    * @return the ResponseEntity with status 200 (OK) and with body the outcome, or with status 404
-   * (Not Found)
+   *     (Not Found)
    */
   @GetMapping("/outcomes/{id}")
   @ApiOperation(value = "Get single outcome by id", notes = "Returns a Outcome when provided with an id", response = Outcome.class)
@@ -69,7 +69,7 @@ public class OutcomeResource {
   })
   public ResponseEntity<Outcome> getOutcome(@PathVariable Long id) {
     log.debug("REST request to get Outcome with id: [{}]", id);
-    Optional<Outcome> outcome = Optional.ofNullable(outcomeRepository.findOne(id));
+    Optional<Outcome> outcome = outcomeRepository.findById(id);
     return ResponseUtil.wrapOrNotFound(outcome);
   }
 

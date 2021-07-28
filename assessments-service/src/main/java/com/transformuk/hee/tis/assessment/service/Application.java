@@ -70,16 +70,19 @@ public class Application {
    * <p>
    * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
    * <p>
-   * You can find more information on how profiles work with JHipster on <a href="http://www.jhipster.tech/profiles/">http://www.jhipster.tech/profiles/</a>.
+   * You can find more information on how profiles work with JHipster on <a
+   * href="http://www.jhipster.tech/profiles/">http://www.jhipster.tech/profiles/</a>.
    */
   @PostConstruct
   public void initApplication() {
     Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-    if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
+    if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles
+        .contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
       log.error("You have misconfigured your application! It should not run " +
           "with both the 'dev' and 'prod' profiles at the same time.");
     }
-    if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)) {
+    if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles
+        .contains(JHipsterConstants.SPRING_PROFILE_CLOUD)) {
       log.error("You have misconfigured your application! It should not " +
           "run with both the 'dev' and 'cloud' profiles at the same time.");
     }

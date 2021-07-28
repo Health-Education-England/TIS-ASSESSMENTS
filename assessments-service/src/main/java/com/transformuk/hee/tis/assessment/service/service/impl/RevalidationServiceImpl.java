@@ -8,13 +8,12 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.repository.RevalidationRepository;
 import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapper;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * Service Implementation for managing Revalidation.
@@ -29,8 +28,9 @@ public class RevalidationServiceImpl implements RevalidationService {
   private final RevalidationMapper revalidationMapper;
   private final AssessmentRepository assessmentRepository;
 
-  public RevalidationServiceImpl(RevalidationRepository revalidationRepository, RevalidationMapper revalidationMapper,
-                                 AssessmentRepository assessmentRepository) {
+  public RevalidationServiceImpl(RevalidationRepository revalidationRepository,
+      RevalidationMapper revalidationMapper,
+      AssessmentRepository assessmentRepository) {
     this.revalidationRepository = revalidationRepository;
     this.revalidationMapper = revalidationMapper;
     this.assessmentRepository = assessmentRepository;
@@ -50,9 +50,10 @@ public class RevalidationServiceImpl implements RevalidationService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    RevalidationDTO revalidationDTO = revalidationMapper.toDto(foundAssessment.getRevalidation());
-    return Optional.ofNullable(revalidationDTO);
+    Optional<Assessment> foundAssessment = assessmentRepository.findOne(Example.of(example));
+
+    return foundAssessment
+        .map(assessment -> revalidationMapper.toDto(assessment.getRevalidation()));
   }
 
 
@@ -99,9 +100,8 @@ public class RevalidationServiceImpl implements RevalidationService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get revalidation : {}", id);
-    Revalidation revalidation = revalidationRepository.findOne(id);
-    RevalidationDTO revalidationDTO = revalidationMapper.toDto(revalidation);
-    return Optional.ofNullable(revalidationDTO);
+    Optional<Revalidation> revalidation = revalidationRepository.findById(id);
+    return revalidation.map(revalidationMapper::toDto);
   }
 
 }

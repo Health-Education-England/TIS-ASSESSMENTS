@@ -44,7 +44,8 @@ public class JsonPatchResource {
   private final JsonPatchRepository jsonPatchRepository;
   private final JsonPatchMapper jsonPatchMapper;
 
-  public JsonPatchResource(JsonPatchRepository jsonPatchRepository, JsonPatchMapper jsonPatchMapper) {
+  public JsonPatchResource(JsonPatchRepository jsonPatchRepository,
+      JsonPatchMapper jsonPatchMapper) {
     this.jsonPatchRepository = jsonPatchRepository;
     this.jsonPatchMapper = jsonPatchMapper;
   }
@@ -53,15 +54,19 @@ public class JsonPatchResource {
    * POST  /jsonPatches : Create a new JsonPatch.
    *
    * @param jsonPatchDTO the JsonPatchDTO to create
-   * @return the ResponseEntity with status 201 (Created) and with body the new JsonPatchDTO, or with status 400 (Bad Request) if the jsonPatch has already an ID
+   * @return the ResponseEntity with status 201 (Created) and with body the new JsonPatchDTO, or
+   *     with status 400 (Bad Request) if the jsonPatch has already an ID
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PostMapping("/jsonPatches")
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<JsonPatchDTO> createJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO) throws URISyntaxException {
+  public ResponseEntity<JsonPatchDTO> createJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO)
+      throws URISyntaxException {
     log.debug("REST request to save jsonPatch : {}", jsonPatchDTO);
     if (jsonPatchDTO.getId() != null) {
-      return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new jsonPatch cannot already have an ID")).body(null);
+      return ResponseEntity.badRequest().headers(HeaderUtil
+          .createFailureAlert(ENTITY_NAME, "idexists", "A new jsonPatch cannot already have an ID"))
+          .body(null);
     }
     JsonPatch jsonPatch = jsonPatchMapper.jsonPatchDTOToJsonPatch(jsonPatchDTO);
     jsonPatch = jsonPatchRepository.save(jsonPatch);
@@ -75,14 +80,15 @@ public class JsonPatchResource {
    * PUT  /jsonPatches : Updates an existing JsonPatch.
    *
    * @param jsonPatchDTO the jsonPatchDTO to update
-   * @return the ResponseEntity with status 200 (OK) and with body the updated jsonPatchDTO,
-   * or with status 400 (Bad Request) if the jsonPatchDTO is not valid,
-   * or with status 500 (Internal Server Error) if the jsonPatchDTO couldnt be updated
+   * @return the ResponseEntity with status 200 (OK) and with body the updated jsonPatchDTO, or with
+   *     status 400 (Bad Request) if the jsonPatchDTO is not valid, or with status 500 (Internal
+   *     Server Error) if the jsonPatchDTO couldnt be updated
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PutMapping("/jsonPatches")
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<JsonPatchDTO> updateJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO) throws URISyntaxException {
+  public ResponseEntity<JsonPatchDTO> updateJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO)
+      throws URISyntaxException {
     log.debug("REST request to update jsonPatch : {}", jsonPatchDTO);
     if (jsonPatchDTO.getId() == null) {
       return createJsonPatch(jsonPatchDTO);
@@ -107,21 +113,26 @@ public class JsonPatchResource {
     log.debug("REST request to get a page of jsonPatches");
     Page<JsonPatch> page = jsonPatchRepository.findAll(pageable);
     HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/jsonPatches");
-    return new ResponseEntity<>(jsonPatchMapper.jsonPatchesToJsonPatchDTOs(page.getContent()), headers, HttpStatus.OK);
+    return new ResponseEntity<>(jsonPatchMapper.jsonPatchesToJsonPatchDTOs(page.getContent()),
+        headers, HttpStatus.OK);
   }
 
   /**
-   * GET //jsonPatches/updateType/:tableDtoName : get the "updateType" and "tableDtoName" jsonPatches
+   * GET //jsonPatches/updateType/:tableDtoName : get the "updateType" and "tableDtoName"
+   * jsonPatches
    *
    * @param tableDtoName
    * @return
    */
   @GetMapping("/jsonPatches/updateType/{tableDtoName}")
-  public ResponseEntity<List<JsonPatchDTO>> getJsonPatchesByUpdateTypeAndTableName(@PathVariable String tableDtoName) {
+  public ResponseEntity<List<JsonPatchDTO>> getJsonPatchesByUpdateTypeAndTableName(
+      @PathVariable String tableDtoName) {
     log.debug("REST request to get a page of jsonPatches");
-    List<JsonPatch> jsonPatches = jsonPatchRepository.findByTableDtoNameAndPatchIdIsNotNullOrderByDateAddedAsc(
-        tableDtoName);
-    return new ResponseEntity<>(jsonPatchMapper.jsonPatchesToJsonPatchDTOs(jsonPatches), HttpStatus.OK);
+    List<JsonPatch> jsonPatches = jsonPatchRepository
+        .findByTableDtoNameAndPatchIdIsNotNullOrderByDateAddedAsc(
+            tableDtoName);
+    return new ResponseEntity<>(jsonPatchMapper.jsonPatchesToJsonPatchDTOs(jsonPatches),
+        HttpStatus.OK);
 
   }
 
@@ -129,14 +140,16 @@ public class JsonPatchResource {
    * GET  /jsonPatches/:id : get the "id" jsonPatch.
    *
    * @param id the id of the jsonPatchDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the JsonPatchDTO, or with status 404 (Not Found)
+   * @return the ResponseEntity with status 200 (OK) and with body the JsonPatchDTO, or with status
+   *     404 (Not Found)
    */
   @GetMapping("/jsonPatches/{id}")
   public ResponseEntity<JsonPatchDTO> getJsonPatch(@PathVariable Long id) {
     log.debug("REST request to get JsonPatch : {}", id);
-    JsonPatch jsonPatch = jsonPatchRepository.findOne(id);
-    JsonPatchDTO jsonPatchDTO = jsonPatchMapper.jsonPatchToJsonPatchDTO(jsonPatch);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(jsonPatchDTO));
+    Optional<JsonPatch> foundJsonPatch = jsonPatchRepository.findById(id);
+    Optional<JsonPatchDTO> jsonPatchDto = foundJsonPatch
+        .map(jsonPatchMapper::jsonPatchToJsonPatchDTO);
+    return ResponseUtil.wrapOrNotFound(jsonPatchDto);
   }
 
   /**
@@ -149,40 +162,47 @@ public class JsonPatchResource {
   @PreAuthorize("hasAuthority('assessment:delete:entities')")
   public ResponseEntity<Void> deleteJsonPatch(@PathVariable Long id) {
     log.debug("REST request to delete JsonPatch : {}", id);
-    JsonPatch jsonPatch = jsonPatchRepository.findOne(id);
+    JsonPatch jsonPatch = jsonPatchRepository.getById(id);
     jsonPatch.setEnabled(false);
     jsonPatchRepository.save(jsonPatch);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
   }
 
   /**
    * PUT  /bulk-JsonPatches : Updates an existing country.
    *
    * @param jsonPatchDTOs List of the jsonPatchDTOs to update
-   * @return the ResponseEntity with status 200 (OK) and with body the updated countryDTOS,
-   * or with status 400 (Bad Request) if the countryDTOS is not valid,
-   * or with status 500 (Internal Server Error) if the countryDTOS couldnt be updated
+   * @return the ResponseEntity with status 200 (OK) and with body the updated countryDTOS, or with
+   *     status 400 (Bad Request) if the countryDTOS is not valid, or with status 500 (Internal
+   *     Server Error) if the countryDTOS couldnt be updated
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PutMapping("/bulk-jsonPatches")
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<List<JsonPatchDTO>> bulkDeleteJsonPatch(@Valid @RequestBody List<JsonPatchDTO> jsonPatchDTOs) throws URISyntaxException {
+  public ResponseEntity<List<JsonPatchDTO>> bulkDeleteJsonPatch(
+      @Valid @RequestBody List<JsonPatchDTO> jsonPatchDTOs) throws URISyntaxException {
     log.debug("REST request to bulk update JsonPatchDTO : {}", jsonPatchDTOs);
     if (Collections.isEmpty(jsonPatchDTOs)) {
-      return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "request.body.empty",
-          "The request body for this end point cannot be empty")).body(null);
+      return ResponseEntity.badRequest()
+          .headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "request.body.empty",
+              "The request body for this end point cannot be empty")).body(null);
     } else if (!Collections.isEmpty(jsonPatchDTOs)) {
-      List<JsonPatchDTO> entitiesWithNoId = jsonPatchDTOs.stream().filter(c -> c.getId() == null).collect(Collectors.toList());
+      List<JsonPatchDTO> entitiesWithNoId = jsonPatchDTOs.stream().filter(c -> c.getId() == null)
+          .collect(Collectors.toList());
       if (!Collections.isEmpty(entitiesWithNoId)) {
-        return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(StringUtils.join(entitiesWithNoId, ","),
-            "bulk.update.failed.noId", "Some DTOs you've provided have no Id, cannot update entities that dont exist")).body(entitiesWithNoId);
+        return ResponseEntity.badRequest()
+            .headers(HeaderUtil.createFailureAlert(StringUtils.join(entitiesWithNoId, ","),
+                "bulk.update.failed.noId",
+                "Some DTOs you've provided have no Id, cannot update entities that dont exist"))
+            .body(entitiesWithNoId);
       }
     }
     List<JsonPatch> jsonPatches = jsonPatchMapper.jsonPatchDTOsToJsonPatches(jsonPatchDTOs);
     jsonPatches.forEach(jsonPatch -> jsonPatch.setEnabled(false));
-    jsonPatches = jsonPatchRepository.save(jsonPatches);
+    jsonPatches = jsonPatchRepository.saveAll(jsonPatches);
     List<JsonPatchDTO> results = jsonPatchMapper.jsonPatchesToJsonPatchDTOs(jsonPatches);
-    List<Long> ids = results.stream().map(c -> c.getId()).collect(Collectors.toList());
+    List<Long> ids = results.stream().map(JsonPatchDTO::getId).collect(Collectors.toList());
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, StringUtils.join(ids, ",")))
         .body(results);

@@ -1,7 +1,14 @@
 package com.transformuk.hee.tis.assessment.service.service.impl.reference;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.transformuk.hee.tis.assessment.service.model.reference.Reason;
 import com.transformuk.hee.tis.assessment.service.repository.reference.ReasonRepository;
+import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,15 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
-
-import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReasonServiceImplTest {
@@ -39,7 +37,7 @@ public class ReasonServiceImplTest {
   private Pageable pageableMock;
 
   @Captor
-  private ArgumentCaptor<Specifications<Reason>> specificationsArgumentCaptor;
+  private ArgumentCaptor<Specification<Reason>> specificationsArgumentCaptor;
 
   @Test(expected = NullPointerException.class)
   public void advanceSearchShouldThrowExceptionWhenNoSearchString() {
@@ -67,7 +65,8 @@ public class ReasonServiceImplTest {
     Reason reason2 = new Reason().id(2L).code("reason2").label("a reason 2");
     List<Reason> reasons = Lists.newArrayList(reason1, reason2);
     Page<Reason> pagedResult = new PageImpl<>(reasons);
-    when(reasonRepositoryMock.findAll(any(Specifications.class), eq(pageableMock))).thenReturn(pagedResult);
+    when(reasonRepositoryMock.findAll(any(Specification.class), eq(pageableMock)))
+        .thenReturn(pagedResult);
 
     Page<Reason> result = testObj.advancedSearch(SEARCH_STRING, pageableMock);
 

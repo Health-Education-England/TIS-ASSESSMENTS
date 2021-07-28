@@ -63,7 +63,7 @@ public class ReasonResource {
    *
    * @param id the id of the reason
    * @return the ResponseEntity with status 200 (OK) and with body the reason, or with status 404
-   * (Not Found)
+   *     (Not Found)
    */
   @GetMapping("/reasons/{id}")
   @ApiOperation(value = "Get single Reason by id", notes = "Returns a Reason when provided with an id", response = Reason.class)
@@ -73,7 +73,7 @@ public class ReasonResource {
   })
   public ResponseEntity<Reason> getReason(@PathVariable Long id) {
     log.debug("REST request to get Reason with id: [{}]", id);
-    Optional<Reason> reason = Optional.ofNullable(reasonRepository.findOne(id));
+    Optional<Reason> reason = reasonRepository.findById(id);
     return ResponseUtil.wrapOrNotFound(reason);
   }
 
@@ -149,7 +149,7 @@ public class ReasonResource {
    *
    * @param id the id of the outcome
    * @return the ResponseEntity with status 200 (OK) and with body containing a list of reasons, or
-   * with status 404 (Not Found)
+   *     with status 404 (Not Found)
    */
   @GetMapping("/outcomes/{id}/reasons")
   @ApiOperation(value = "Get a list of Reason by for an Outcome", notes = "Returns a list of Reason when provided with the id of an Outcome", response = Reason.class)
@@ -160,10 +160,10 @@ public class ReasonResource {
   public ResponseEntity<Set<Reason>> getOutcomeReasons(@PathVariable Long id) {
     log.debug("REST request to get Reasons with for Outcome id: [{}]", id);
 
-    Outcome outcome = outcomeRepository.findOne(id);
+    Optional<Outcome> outcome = outcomeRepository.findById(id);
     Set<Reason> reasons;
-    if (outcome != null) {
-      reasons = reasonRepository.findByOutcome(outcome);
+    if (outcome.isPresent()) {
+      reasons = reasonRepository.findByOutcome(outcome.get());
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

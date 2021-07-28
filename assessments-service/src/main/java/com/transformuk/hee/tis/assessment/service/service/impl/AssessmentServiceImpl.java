@@ -34,7 +34,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.nhs.tis.StringConverter;
@@ -133,7 +132,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get Assessment : {}", id);
-    Assessment assessment = assessmentRepository.findOne(id);
+    Assessment assessment = assessmentRepository.getById(id);
     return assessmentMapper.toDto(assessment);
   }
 
@@ -145,13 +144,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications notDeleted = Specifications
+    Specification notDeleted = Specification
         .where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
-      Specifications whereClause = Specifications
+      Specification whereClause = Specification
           .where(containsLike("detail.curriculumName", searchString))
           .or(containsLike("firstName", searchString)).or(containsLike("lastName", searchString))
           .or(containsLike("type", searchString))
@@ -169,8 +168,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     if (permissionService.isProgrammeObserver()) {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications
-          .where(in("programmeId", set));
+      Specification inProgrammes = Specification.where(in("programmeId", set));
       specs.add(inProgrammes);
     }
 
@@ -180,7 +178,7 @@ public class AssessmentServiceImpl implements AssessmentService {
           in(cf.getName(), SpecificationFactory.getDateAwareValuesFromColumnFilter(cf))));
     }
 
-    Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
+    Specification<Assessment> fullSpec = Specification.where(specs.get(0));
     // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));
@@ -197,8 +195,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    return Optional.ofNullable(foundAssessment);
+    return assessmentRepository.findOne(Example.of(example));
   }
 
   @Override
@@ -235,24 +232,22 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications whereClause = Specifications
+    Specification whereClause = Specification
         .where(SpecificationFactory.equal("traineeId", traineeId));
     specs.add(whereClause);
 
-    Specifications notDeleted = Specifications
-        .where(SpecificationFactory.isNull("softDeletedDate"));
+    Specification notDeleted = Specification.where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // limit assessments that belong to specific programmes
     if (permissionService.isProgrammeObserver()) {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications
-          .where(in("programmeId", set));
+      Specification inProgrammes = Specification.where(SpecificationFactory.in("programmeId", set));
       specs.add(inProgrammes);
     }
 
-    Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
+    Specification<Assessment> fullSpec = Specification.where(specs.get(0));
     // add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));
@@ -267,10 +262,10 @@ public class AssessmentServiceImpl implements AssessmentService {
   public boolean deleteAssessment(Long assessmentId) {
     Preconditions.checkNotNull(assessmentId);
 
-    if (assessmentRepository.exists(assessmentId)) {
+    if (assessmentRepository.existsById(assessmentId)) {
       // cascade delete is enabled on the relating entities so don't need to delete
       // those manually
-      assessmentRepository.delete(assessmentId);
+      assessmentRepository.deleteById(assessmentId);
       return true;
     }
     return false;

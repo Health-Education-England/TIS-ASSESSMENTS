@@ -1,5 +1,11 @@
 package com.transformuk.hee.tis.assessment.service.service.impl.reference;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.service.model.reference.Outcome;
 import com.transformuk.hee.tis.assessment.service.repository.reference.OutcomeRepository;
@@ -15,13 +21,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutcomeServiceImplTest {
@@ -44,7 +43,7 @@ public class OutcomeServiceImplTest {
 
   @Before
   public void setup() {
-    pageable = new PageRequest(PAGE, SIZE);
+    pageable = PageRequest.of(PAGE, SIZE);
   }
 
   @Test(expected = NullPointerException.class)
@@ -67,7 +66,8 @@ public class OutcomeServiceImplTest {
 
     Page<Outcome> pagedOutcomes = new PageImpl<>(Lists.newArrayList(outcome1, outcome2));
 
-    when(outcomeRepositoryMock.findAll(any(Specification.class), eq(pageable))).thenReturn(pagedOutcomes);
+    when(outcomeRepositoryMock.findAll(any(Specification.class), eq(pageable)))
+        .thenReturn(pagedOutcomes);
 
     Page<Outcome> result = testObj.advancedSearch(searchString, pageable);
 
