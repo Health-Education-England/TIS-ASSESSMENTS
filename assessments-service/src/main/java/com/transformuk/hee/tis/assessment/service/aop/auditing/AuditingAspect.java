@@ -1,5 +1,8 @@
 package com.transformuk.hee.tis.assessment.service.aop.auditing;
 
+import static com.transformuk.hee.tis.audit.enumeration.GenericAuditEventType.createEvent;
+import static com.transformuk.hee.tis.security.util.TisSecurityHelper.getProfileFromContext;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -8,6 +11,9 @@ import com.transformuk.hee.tis.assessment.service.model.JsonPatch;
 import com.transformuk.hee.tis.assessment.service.repository.JsonPatchRepository;
 import com.transformuk.hee.tis.audit.enumeration.GenericAuditEventType;
 import com.transformuk.hee.tis.security.model.UserProfile;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -18,13 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.http.ResponseEntity;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.transformuk.hee.tis.audit.enumeration.GenericAuditEventType.createEvent;
-import static com.transformuk.hee.tis.security.util.TisSecurityHelper.getProfileFromContext;
 
 /**
  * Aspect for auditing execution of rest calls Spring components.
@@ -72,11 +71,12 @@ public class AuditingAspect {
   }
 
   /**
-   * Advice that Audit method before execution
-   * check if any modification then its creating a jsonPatch and stored into JsonPatch table
+   * Advice that Audit method before execution check if any modification then its creating a
+   * jsonPatch and stored into JsonPatch table
    */
   @Before("execution(* com.transformuk.hee.tis.assessment.service.api.*.update*(..))")
   public void auditUpdateBeforeExecution(JoinPoint joinPoint) throws Throwable {
+    // TODO: Review auditing implementation, increased accessibility via reflection flagged as a potential issue.
     // store old value to map, wait until the update process
     UserProfile userPofile = getProfileFromContext();
     if (!userPofile.getUserName().equalsIgnoreCase(ETL_USERNAME)) {
@@ -86,7 +86,8 @@ public class AuditingAspect {
       if (StringUtils.isEmpty(fieldName)) {
         fieldName = ID_KEY;
       }
-      String entityName = StringUtils.left(className, StringUtils.length(className) - StringUtils.length(DTO_POSTFIX));
+      String entityName = StringUtils
+          .left(className, StringUtils.length(className) - StringUtils.length(DTO_POSTFIX));
       if (StringUtils.isNoneEmpty(fieldName)) {
         final Field idField = newValue.getClass().getDeclaredField(fieldName);
         idField.setAccessible(true);
@@ -97,7 +98,8 @@ public class AuditingAspect {
         JsonNode oldJsonNode = NullNode.getInstance();
         // if the idFieldValue is null means it's new record so don't fetch old value from db
         if (idFieldValue != null) {
-          final Method method = joinPoint.getTarget().getClass().getDeclaredMethod(GET_PREFIX + entityName, new Class[]{Long.class});
+          final Method method = joinPoint.getTarget().getClass()
+              .getDeclaredMethod(GET_PREFIX + entityName, new Class[] {Long.class});
           method.setAccessible(true);
           final Object responseEntity = method.invoke(joinPoint.getTarget(), idField.get(newValue));
           oldValue = ((ResponseEntity) responseEntity).getBody();
@@ -139,10 +141,12 @@ public class AuditingAspect {
     setAuditEvent(GenericAuditEventType.delete, joinPoint);
   }
 
-  private void setAuditEvent(GenericAuditEventType auditEventType, JoinPoint joinPoint) throws Throwable {
+  private void setAuditEvent(GenericAuditEventType auditEventType, JoinPoint joinPoint)
+      throws Throwable {
     try {
       UserProfile userPofile = getProfileFromContext();
-      AuditEvent auditEvent = createEvent(userPofile.getUserName(), PROFILE_PREFIX, joinPoint.getSignature().getName()
+      AuditEvent auditEvent = createEvent(userPofile.getUserName(), PROFILE_PREFIX,
+          joinPoint.getSignature().getName()
           , auditEventType, joinPoint.getArgs());
       auditEventRepository.add(auditEvent);
     } catch (IllegalArgumentException e) {
