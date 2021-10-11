@@ -489,4 +489,67 @@ public class AssessmentServiceImplTest {
     assertThat("Unexpected trainee ID.", assessmentListDto.getTraineeId(), is(TRAINEE_ID));
     assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName2"));
   }
+
+  @Test
+  public void findByIdsShouldReturnAssessmentsList() {
+    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
+    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
+    Set<Long> ids = new HashSet<>();
+    ids.add(1L);
+    ids.add(2L);
+
+    when(assessmentRepositoryMock.findByIdIn(ids)).thenReturn(assessments);
+    when(assessmentMapperMock.toDto(assessments)).thenReturn(assessmentDtos);
+
+    List<AssessmentDTO> result = testObj.findAssessmentsByIds(ids);
+    Assert.assertEquals(assessmentDTOMock1, result.get(0));
+    Assert.assertEquals(assessmentDTOMock2, result.get(1));
+  }
+
+  @Test
+  public void patchAssessmentShouldSaveAssessments() {
+    AssessmentDTO assessmentDto = new AssessmentDTO();
+    AssessmentDetailDTO assessmentDetailDto = new AssessmentDetailDTO();
+    AssessmentOutcomeDTO assessmentOutcomeDto = new AssessmentOutcomeDTO();
+    RevalidationDTO revalidationDto = new RevalidationDTO();
+    assessmentDto.id(1L).detail(assessmentDetailDto).outcome(assessmentOutcomeDto)
+        .revalidation(revalidationDto);
+
+    Assessment assessment = new Assessment();
+    assessment.setId(1L);
+    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDto);
+    when(assessmentMapperMock.toEntity(assessmentDto)).thenReturn(assessment);
+    when(assessmentRepositoryMock.saveAndFlush(assessment)).thenReturn(assessment);
+    when(assessmentMapperMock.toDto(assessment)).thenReturn(assessmentDto);
+    when(assessmentDetailServiceMock.save(assessment, assessmentDetailDto)).thenReturn(
+        assessmentDetailDto);
+    when(assessmentOutcomeServiceMock.save(assessment, assessmentOutcomeDto)).thenReturn(
+        assessmentOutcomeDto);
+    when(revalidationServiceMock.save(assessment, revalidationDto)).thenReturn(revalidationDto);
+
+    AssessmentDTO result = testObj.patchAssessments(assessmentDtos).get(0);
+    Assert.assertEquals(assessmentDto, result);
+    Assert.assertTrue(result.getMessageList().isEmpty());
+  }
+
+  @Test
+  public void patchAssessmentShouldReturnEmptyListWhenRequestListIsEmpty() {
+    List<AssessmentDTO> emptyList = new ArrayList<>();
+    List<AssessmentDTO> result = testObj.patchAssessments(emptyList);
+    Assert.assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void patchAssessmentShouldReturnAssessmentsWithErrorWhenSaveFails() {
+    AssessmentDTO assessmentDto = new AssessmentDTO();
+    assessmentDto.setId(1L);
+    Assessment assessment = new Assessment();
+    assessment.setId(1L);
+    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDto);
+    when(assessmentMapperMock.toEntity(assessmentDto)).thenThrow(Exception.class);
+
+    List<AssessmentDTO> result = testObj.patchAssessments(assessmentDtos);
+    Assert.assertEquals(assessmentDto, result.get(0));
+    Assert.assertEquals(1, assessmentDto.getMessageList().size());
+  }
 }

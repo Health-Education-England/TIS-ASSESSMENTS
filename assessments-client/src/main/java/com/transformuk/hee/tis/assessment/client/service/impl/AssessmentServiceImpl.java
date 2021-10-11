@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.transformuk.hee.tis.assessment.api.dto.*;
 import com.transformuk.hee.tis.client.impl.AbstractClientService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class AssessmentServiceImpl extends AbstractClientService {
   private static final String API_TRAINEE_CREATE_ASSESSMENTS = "/api/trainee/"; //{traineeId}/assessments
   private static final String API_ASSESSMENTS_OUTCOME_ALL = "/api/outcomes/all";
   private static final String BASIC = "/basic";
-  private ObjectMapper objectMapper = new ObjectMapper();
-
+  @Autowired
+  private ObjectMapper objectMapper;
 
   private static final Map<Class, ParameterizedTypeReference> classToParamTypeRefMap;
 
@@ -70,6 +71,25 @@ public class AssessmentServiceImpl extends AbstractClientService {
   private ParameterizedTypeReference<List<JsonPatchDTO>> getJsonPatchDtoReference() {
     return new ParameterizedTypeReference<List<JsonPatchDTO>>() {
     };
+  }
+
+  public List<AssessmentDTO> findAssessmentByIds(Set<String> assessmentIds) {
+    String joinedIds = StringUtils.join(assessmentIds, ",");
+    return assessmentRestTemplate.exchange(
+        serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + "assessments/" + joinedIds,
+        HttpMethod.GET, null,
+        new ParameterizedTypeReference<List<AssessmentDTO>>() {
+        }).getBody();
+  }
+
+  public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<List<AssessmentDTO>> httpEntity = new HttpEntity<>(assessmentDtos, headers);
+    return assessmentRestTemplate
+        .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + "bulk-assessment",
+            HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<List<AssessmentDTO>>() {
+            })
+        .getBody();
   }
 
   public AssessmentDTO createTraineeAssessment(AssessmentDTO assessmentDTO, Long traineeId) {
@@ -163,6 +183,10 @@ public class AssessmentServiceImpl extends AbstractClientService {
   @Override
   public RestTemplate getRestTemplate() {
     return this.assessmentRestTemplate;
+  }
+
+  public void setAssessmentRestTemplate(RestTemplate assessmentRestTemplate) {
+    this.assessmentRestTemplate = assessmentRestTemplate;
   }
 
   @Override

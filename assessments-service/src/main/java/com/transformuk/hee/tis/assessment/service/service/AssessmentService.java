@@ -4,6 +4,7 @@ import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -66,6 +67,14 @@ public interface AssessmentService {
   List<AssessmentDTO> findAllForTrainee(Long traineeId, Sort sort);
 
   /**
+   * Get a list of Assessment for the set of Ids.
+   *
+   * @param assessmentIds the set of Assessment ids
+   * @return the list of Assessment DTOs
+   */
+  List<AssessmentDTO> findAssessmentsByIds(Set<Long> assessmentIds);
+
+  /**
    * delete an assessment with all associated links
    *
    * @param assessmentId the TIS id of the assessment
@@ -82,4 +91,12 @@ public interface AssessmentService {
    * @return true if the deletion was successful, otherwise false
    */
   boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId);
+
+  /**
+   * bulk update assessments.
+   *
+   * @param assessmentDtos the list of assessmentDTOs to update
+   * @return saved assessmentDTO list
+   */
+  List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos);
 }

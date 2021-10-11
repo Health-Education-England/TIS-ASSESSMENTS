@@ -1,5 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
+import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
@@ -550,4 +551,53 @@ public class AssessmentResourceIntTest {
     assertThat(assessmentDTO1).isNotEqualTo(assessmentDTO2);
   }
 
+  @Test
+  @Transactional
+  public void getAssessmentsByIds() throws Exception {
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
+    assessmentRepository.saveAndFlush(assessment);
+
+    restAssessmentMockMvc.perform(get("/api/trainee/assessments/{ids}", assessment.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.*.id").value(hasItem(assessment.getId().intValue())));
+  }
+
+  @Test
+  @Transactional
+  public void bulkUpdateAssessment() throws Exception {
+    // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
+    assessmentRepository.saveAndFlush(assessment);
+    int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
+
+    // Update the assessment
+    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    updatedAssessment
+        .reviewDate(UPDATED_START_DATE)
+        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
+        .programmeName(UPDATED_PROGRAMME_NAME);
+    updatedAssessment.getDetail()
+        .curriculumId(UPDATED_CURRICULUM_ID)
+        .curriculumName(UPDATED_CURRICULUM_NAME);
+
+    AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
+
+    restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(Lists.newArrayList(assessmentDTO))))
+        .andExpect(status().isOk());
+
+    // Validate the Assessment in the database
+    List<Assessment> assessmentList = assessmentRepository.findAll();
+    assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
+    Assessment testAssessment = assessmentRepository.findOne(assessment.getId());
+    assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
+    assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
+    assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
+    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
+    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
+  }
 }

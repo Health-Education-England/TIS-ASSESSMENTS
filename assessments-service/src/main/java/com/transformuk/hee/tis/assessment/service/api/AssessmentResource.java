@@ -19,6 +19,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,5 +277,52 @@ public class AssessmentResource {
     boolean success =  assessmentService.softDeleteTraineeAssessment(assessmentId, traineeId);
 
     return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * GET /assessments/{assessmentIds} : get assessments By Ids.
+   *
+   * @param assessmentIds assessment IDs
+   * @return the ResponseEntity with status 200 (OK) and the list of assessmentDtos in body
+   */
+  @GetMapping("/assessments/{assessmentIds}")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:view:entities')")
+  public ResponseEntity<List<AssessmentDTO>> getAssessmentsByIds(
+      @PathVariable String assessmentIds) {
+    log.debug("REST request to get several Assessments");
+    List<AssessmentDTO> resp = new ArrayList<>();
+    if (assessmentIds != null && !assessmentIds.isEmpty()) {
+      Set<Long> idSet = Arrays.stream(assessmentIds.split(",")).map(Long::valueOf).collect(
+          Collectors.toSet());
+      if (!idSet.isEmpty()) {
+        resp = assessmentService.findAssessmentsByIds(idSet);
+      }
+    }
+    return new ResponseEntity<>(resp, HttpStatus.OK);
+  }
+
+  /**
+   * PUT /bulk-assessment : bulk update assessments.
+   *
+   * @param assessmentDtos the list of assessmentDtos
+   * @return the ResponseEntity with status 200 (OK) and the list of assessmentDtos saved
+   *     or assessmentDto list with error message
+   */
+  @PutMapping("/bulk-assessment")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
+  public ResponseEntity<List<AssessmentDTO>> patchAssessment(
+      @RequestBody List<AssessmentDTO> assessmentDtos) {
+    log.debug("REST request to patch Assessments with ids: {}",
+        assessmentDtos.stream().map(AssessmentDTO::getId).collect(Collectors.toList()));
+
+    List<AssessmentDTO> result = assessmentService.patchAssessments(assessmentDtos);
+    final List<String> ids = result.stream().map(dto -> dto.getId().toString())
+        .collect(Collectors.toList());
+
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, StringUtils.join(ids, ",")))
+        .body(result);
   }
 }
