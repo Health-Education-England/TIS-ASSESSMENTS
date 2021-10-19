@@ -451,7 +451,6 @@ public class AssessmentServiceImplTest {
     assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName2"));
   }
 
-
   @Test
   public void advancedSearchShouldSearchUsingSpecifications() {
     Assessment assessment1 = new Assessment();
@@ -534,7 +533,7 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void patchAssessmentShouldReturnEmptyListWhenRequestListIsEmpty() {
-    List<AssessmentDTO> emptyList = new ArrayList<>();
+    List<AssessmentDTO> emptyList = Collections.emptyList();
     List<AssessmentDTO> result = testObj.patchAssessments(emptyList);
     Assert.assertTrue(result.isEmpty());
   }

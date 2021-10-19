@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
-import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
@@ -13,6 +12,7 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import java.util.Collections;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,13 +111,13 @@ public class AssessmentResourceIntTest {
 
   private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
   private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
-  
+
   private static final String DEFAULT_GMC_NUMBER = "GMCNUMBER-AAAAA";
   private static final String UPDATED_GMC_NUMBER = "GMCNUMBER-BBBBB";
-  
+
   private static final String DEFAULT_GDC_NUMBER = "GDCNUMBER-AAAAA";
   private static final String UPDATED_GDC_NUMBER = "GDCNUMBER-BBBBB";
-  
+
   private static final String DEFAULT_PH_NUMBER = "PHNUMBER-AAAAA";
   private static final String UPDATED_PH_NUMBER = "PHNUMBER-BBBBB";
 
@@ -365,7 +365,7 @@ public class AssessmentResourceIntTest {
         .programmeName(UPDATED_PROGRAMME_NAME);
     assessmentRepository.saveAndFlush(otherAssessment);
 
-   
+
 
     // Get assessmentList with query
     restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
@@ -587,7 +587,7 @@ public class AssessmentResourceIntTest {
 
     restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(Lists.newArrayList(assessmentDTO))))
+            .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
         .andExpect(status().isOk());
 
     // Validate the Assessment in the database

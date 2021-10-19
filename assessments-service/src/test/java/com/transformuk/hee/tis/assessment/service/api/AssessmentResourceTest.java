@@ -7,7 +7,7 @@ import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.hamcrest.CoreMatchers;
@@ -546,11 +546,10 @@ public class AssessmentResourceTest {
     assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
         .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
 
-    Set<Long> ids = new HashSet<>();
-    ids.add(ASSESSMENT_ID_1);
+    Set<Long> ids = Collections.singleton(ASSESSMENT_ID_1);
 
     when(assessmentServiceMock.findAssessmentsByIds(ids)).thenReturn(
-        Lists.newArrayList(assessmentDTO1));
+        Collections.singletonList(assessmentDTO1));
 
     mockMvc.perform(get("/api/trainee/assessments/{ids}", ASSESSMENT_ID_1))
         .andExpect(status().isOk())
@@ -572,7 +571,7 @@ public class AssessmentResourceTest {
     assessmentToUpdate.setProgrammeNumber(PROGRAMME_NUMBER);
     assessmentToUpdate.setProgrammeName(PROGRAMME_NAME);
     assessmentToUpdate.setType(TYPE);
-    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentToUpdate);
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentToUpdate);
 
     when(assessmentServiceMock.patchAssessments(assessmentDtos)).thenReturn(assessmentDtos);
 

@@ -82,7 +82,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     Preconditions.checkNotNull(assessmentDTO);
 
     log.debug("Request to save Assessment : {}",
-        assessmentDTO.toString().replaceAll("[\n\r\t]", "_"));
+        StringConverter.getConverter(assessmentDTO.toString()));
     assessmentDTO.setDetail(null);
     assessmentDTO.setOutcome(null);
     assessmentDTO.setRevalidation(null);
@@ -290,7 +290,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     if (assessmentDtos == null || assessmentDtos.isEmpty()) {
       return assessmentDtos;
     }
-    log.debug("Request to bulk update Assessments");
+    log.debug("Request to bulk update {} Assessments", assessmentDtos.size());
     List<AssessmentDTO> returnDtoList = new ArrayList<>();
     AssessmentDTO returnDto = null;
     for (AssessmentDTO assessmentDto : assessmentDtos) {

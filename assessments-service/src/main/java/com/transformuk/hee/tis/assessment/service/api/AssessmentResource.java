@@ -290,11 +290,12 @@ public class AssessmentResource {
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<List<AssessmentDTO>> getAssessmentsByIds(
       @PathVariable String assessmentIds) {
-    log.debug("REST request to get several Assessments");
+
     List<AssessmentDTO> resp = new ArrayList<>();
     if (assessmentIds != null && !assessmentIds.isEmpty()) {
       Set<Long> idSet = Arrays.stream(assessmentIds.split(",")).map(Long::valueOf).collect(
           Collectors.toSet());
+      log.debug("REST request to get Assessments for Ids: {}", idSet);
       if (!idSet.isEmpty()) {
         resp = assessmentService.findAssessmentsByIds(idSet);
       }
