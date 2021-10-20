@@ -12,6 +12,7 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import java.util.Collections;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,13 +111,13 @@ public class AssessmentResourceIntTest {
 
   private static final String DEFAULT_LAST_NAME = "lastname-AAAAA";
   private static final String UPDATED_LAST_NAME = "lastname-BBBBB";
-  
+
   private static final String DEFAULT_GMC_NUMBER = "GMCNUMBER-AAAAA";
   private static final String UPDATED_GMC_NUMBER = "GMCNUMBER-BBBBB";
-  
+
   private static final String DEFAULT_GDC_NUMBER = "GDCNUMBER-AAAAA";
   private static final String UPDATED_GDC_NUMBER = "GDCNUMBER-BBBBB";
-  
+
   private static final String DEFAULT_PH_NUMBER = "PHNUMBER-AAAAA";
   private static final String UPDATED_PH_NUMBER = "PHNUMBER-BBBBB";
 
@@ -364,7 +365,7 @@ public class AssessmentResourceIntTest {
         .programmeName(UPDATED_PROGRAMME_NAME);
     assessmentRepository.saveAndFlush(otherAssessment);
 
-   
+
 
     // Get assessmentList with query
     restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
@@ -550,4 +551,53 @@ public class AssessmentResourceIntTest {
     assertThat(assessmentDTO1).isNotEqualTo(assessmentDTO2);
   }
 
+  @Test
+  @Transactional
+  public void getAssessmentsByIds() throws Exception {
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
+    assessmentRepository.saveAndFlush(assessment);
+
+    restAssessmentMockMvc.perform(get("/api/trainee/assessments/{ids}", assessment.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.*.id").value(hasItem(assessment.getId().intValue())));
+  }
+
+  @Test
+  @Transactional
+  public void bulkUpdateAssessment() throws Exception {
+    // Initialize the database
+    assessment = createEntity(em);
+    assessmentDetailRepository.saveAndFlush(assessment.getDetail());
+    assessmentRepository.saveAndFlush(assessment);
+    int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
+
+    // Update the assessment
+    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    updatedAssessment
+        .reviewDate(UPDATED_START_DATE)
+        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
+        .programmeName(UPDATED_PROGRAMME_NAME);
+    updatedAssessment.getDetail()
+        .curriculumId(UPDATED_CURRICULUM_ID)
+        .curriculumName(UPDATED_CURRICULUM_NAME);
+
+    AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
+
+    restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
+        .andExpect(status().isOk());
+
+    // Validate the Assessment in the database
+    List<Assessment> assessmentList = assessmentRepository.findAll();
+    assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
+    Assessment testAssessment = assessmentRepository.findOne(assessment.getId());
+    assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
+    assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
+    assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
+    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
+    assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
+  }
 }

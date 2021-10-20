@@ -4,6 +4,8 @@ package com.transformuk.hee.tis.assessment.api.dto;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMin;
@@ -82,6 +84,16 @@ public class AssessmentDTO implements Serializable {
 
   @ApiModelProperty(value = "Version number used for optimistic locking")
   private LocalDateTime amendedDate;
+
+  public List<String> getMessageList() {
+    return messageList;
+  }
+
+  private List<String> messageList = new ArrayList<>();
+
+  public void addMessage(String message) {
+    messageList.add(message);
+  }
 
   public Long getId() {
     return id;

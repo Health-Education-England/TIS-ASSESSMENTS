@@ -5,11 +5,17 @@ import static com.transformuk.hee.tis.assessment.service.service.impl.Specificat
 
 import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
+import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
 import java.util.ArrayList;
@@ -17,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +36,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.nhs.tis.StringConverter;
 
 /**
  * Service Implementation for managing Assessment.
@@ -36,6 +44,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AssessmentServiceImpl implements AssessmentService {
+
+  private static final String ASSESSMENT_UPDATE_FAILED =
+      "Assessment %s updating failed, please try again.";
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
@@ -47,13 +58,23 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private final AssessmentListMapper assessmentListMapper;
 
+  private AssessmentDetailService assessmentDetailService;
+
+  private AssessmentOutcomeService assessmentOutcomeService;
+
+  private RevalidationService revalidationService;
+
   AssessmentServiceImpl(AssessmentRepository assessmentRepository,
       AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
-      PermissionService permissionService) {
+      PermissionService permissionService, AssessmentDetailService assessmentDetailService,
+      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentMapper = assessmentMapper;
     this.assessmentListMapper = assessmentListMapper;
     this.permissionService = permissionService;
+    this.assessmentDetailService = assessmentDetailService;
+    this.assessmentOutcomeService = assessmentOutcomeService;
+    this.revalidationService = revalidationService;
   }
 
   /**
@@ -66,7 +87,8 @@ public class AssessmentServiceImpl implements AssessmentService {
   public AssessmentDTO save(AssessmentDTO assessmentDTO) {
     Preconditions.checkNotNull(assessmentDTO);
 
-    log.debug("Request to save Assessment : {}", assessmentDTO);
+    log.debug("Request to save Assessment : {}",
+        StringConverter.getConverter(assessmentDTO.toString()));
     assessmentDTO.setDetail(null);
     assessmentDTO.setOutcome(null);
     assessmentDTO.setRevalidation(null);
@@ -193,6 +215,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
+  public List<AssessmentDTO> findAssessmentsByIds(Set<Long> assessmentIds) {
+    List<Assessment> assessments = assessmentRepository.findByIdIn(assessmentIds);
+    return assessmentMapper.toDto(assessments);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public List<AssessmentDTO> findAllForTrainee(Long traineeId, Sort sort) {
     Preconditions.checkNotNull(traineeId);
 
@@ -259,5 +288,47 @@ public class AssessmentServiceImpl implements AssessmentService {
       return true;
     }
     return false;
+  }
+
+  @Override
+  @Transactional
+  public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
+    if (assessmentDtos == null || assessmentDtos.isEmpty()) {
+      return assessmentDtos;
+    }
+    log.debug("Request to bulk update {} Assessments", assessmentDtos.size());
+    List<AssessmentDTO> returnDtoList = new ArrayList<>();
+    AssessmentDTO returnDto = null;
+    for (AssessmentDTO assessmentDto : assessmentDtos) {
+      try {
+        Assessment assessment = assessmentMapper.toEntity(assessmentDto);
+        AssessmentDetailDTO assessmentDetailDto = null;
+        AssessmentOutcomeDTO assessmentOutcomeDto = null;
+        RevalidationDTO revalidationDto = null;
+        if (assessmentDto.getDetail() != null && assessmentDto.getDetail().getId() != null) {
+          assessmentDetailDto =
+              assessmentDetailService.save(assessment, assessmentDto.getDetail());
+        }
+        if (assessmentDto.getOutcome() != null && assessmentDto.getOutcome().getId() != null) {
+          assessmentOutcomeDto =
+              assessmentOutcomeService.save(assessment, assessmentDto.getOutcome());
+        }
+        if (assessmentDto.getRevalidation() != null
+            && assessmentDto.getRevalidation().getId() != null) {
+          revalidationDto =
+              revalidationService.save(assessment, assessmentDto.getRevalidation());
+        }
+        AssessmentDTO savedAssessmentDto = save(assessmentDto);
+        savedAssessmentDto.setDetail(assessmentDetailDto);
+        savedAssessmentDto.setOutcome(assessmentOutcomeDto);
+        savedAssessmentDto.setRevalidation(revalidationDto);
+        returnDto = savedAssessmentDto;
+      } catch (Exception e) {
+        returnDto = assessmentDto;
+        returnDto.addMessage(String.format(ASSESSMENT_UPDATE_FAILED, assessmentDto.getId()));
+      }
+      returnDtoList.add(returnDto);
+    }
+    return returnDtoList;
   }
 }

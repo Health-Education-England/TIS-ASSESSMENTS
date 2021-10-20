@@ -7,6 +7,8 @@ import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
+import java.util.Collections;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.IsNull;
@@ -535,5 +537,49 @@ public class AssessmentResourceTest {
 
       String str = stringArgumentCaptor.getValue();
       Assert.assertThat("should sanitize param", str, CoreMatchers.equalTo("King\\'s College Dental institute - ACF (NIHR)"));
+  }
+
+  @Test
+  public void shouldGetAssessmentsByIds() throws Exception {
+
+    AssessmentDTO assessmentDTO1 = new AssessmentDTO();
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
+        .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+
+    Set<Long> ids = Collections.singleton(ASSESSMENT_ID_1);
+
+    when(assessmentServiceMock.findAssessmentsByIds(ids)).thenReturn(
+        Collections.singletonList(assessmentDTO1));
+
+    mockMvc.perform(get("/api/trainee/assessments/{ids}", ASSESSMENT_ID_1))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.*").isArray())
+        .andExpect(jsonPath("$.[*].id", hasItems(1)))
+        .andExpect(jsonPath("$.[*].firstName", hasItems(FIRST_NAME)))
+        .andExpect(jsonPath("$.[*].lastName", hasItems(LAST_NAME)))
+        .andExpect(jsonPath("$.[*].programmeMembershipId",
+            hasItems(Long.valueOf(PROGRAMME_MEMBERSHIP_ID).intValue())));
+  }
+
+  @Test
+  public void shouldBulkUpdateAssessments() throws Exception {
+    AssessmentDTO assessmentToUpdate = new AssessmentDTO();
+    assessmentToUpdate.setId(ASSESSMENT_ID_1);
+    assessmentToUpdate.setTraineeId(TRAINEE_ID);
+    assessmentToUpdate.setFirstName(FIRST_NAME);
+    assessmentToUpdate.setLastName(LAST_NAME);
+    assessmentToUpdate.setProgrammeNumber(PROGRAMME_NUMBER);
+    assessmentToUpdate.setProgrammeName(PROGRAMME_NAME);
+    assessmentToUpdate.setType(TYPE);
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentToUpdate);
+
+    when(assessmentServiceMock.patchAssessments(assessmentDtos)).thenReturn(assessmentDtos);
+
+    mockMvc.perform(put("/api/trainee/bulk-assessment")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assessmentDtos)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.*.programmeNumber").value(hasItems(PROGRAMME_NUMBER)))
+        .andExpect(jsonPath("$.*.type").value(hasItems(TYPE)));
   }
 }
