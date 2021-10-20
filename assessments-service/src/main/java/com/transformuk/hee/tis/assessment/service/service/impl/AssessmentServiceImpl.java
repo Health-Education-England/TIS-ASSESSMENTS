@@ -1,5 +1,8 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
+
 import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
@@ -9,7 +12,11 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepositor
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,17 +30,6 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.isNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * Service Implementation for managing Assessment.
  */
@@ -43,18 +39,22 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
-  @Autowired
-  private PermissionService permissionService;
+  private final PermissionService permissionService;
 
-  @Autowired
-  private AssessmentRepository assessmentRepository;
+  private final AssessmentRepository assessmentRepository;
 
-  @Autowired
-  private AssessmentMapper assessmentMapper;
+  private final AssessmentMapper assessmentMapper;
 
-  @Autowired
-  private AssessmentListMapper assessmentListMapper;
+  private final AssessmentListMapper assessmentListMapper;
 
+  AssessmentServiceImpl(AssessmentRepository assessmentRepository,
+      AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
+      PermissionService permissionService) {
+    this.assessmentRepository = assessmentRepository;
+    this.assessmentMapper = assessmentMapper;
+    this.assessmentListMapper = assessmentListMapper;
+    this.permissionService = permissionService;
+  }
 
   /**
    * Save a assessment.
@@ -88,7 +88,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     log.debug("Request to get all Assessments Lists");
 
-    return assessmentRepository.findAllBySoftDeletedDate(null, pageable).map(assessmentListMapper::toDto);
+    return assessmentRepository.findAllBySoftDeletedDate(null, pageable)
+        .map(assessmentListMapper::toDto);
   }
 
   /**
@@ -109,17 +110,20 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Page<AssessmentListDTO> advancedSearch(String searchString, List<ColumnFilter> columnFilters,
+  public Page<AssessmentListDTO> advancedSearch(String searchString,
+      List<ColumnFilter> columnFilters,
       Pageable pageable) {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
+    Specifications notDeleted = Specifications
+        .where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // add the text search criteria
     if (StringUtils.isNotEmpty(searchString)) {
-      Specifications whereClause = Specifications.where(containsLike("detail.curriculumName", searchString))
+      Specifications whereClause = Specifications
+          .where(containsLike("detail.curriculumName", searchString))
           .or(containsLike("firstName", searchString)).or(containsLike("lastName", searchString))
           .or(containsLike("type", searchString))
           .or(SpecificationFactory.equal("gmcNumber", searchString))
@@ -134,8 +138,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     // limit assessments that belong to specific programmes
     if (permissionService.isProgrammeObserver()) {
-      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      Collection<Object> set = Collections
+          .unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specifications inProgrammes = Specifications
+          .where(SpecificationFactory.in("programmeId", set));
       specs.add(inProgrammes);
     }
 
@@ -192,16 +198,20 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     List<Specification<Assessment>> specs = new ArrayList<>();
 
-    Specifications whereClause = Specifications.where(SpecificationFactory.equal("traineeId", traineeId));
+    Specifications whereClause = Specifications
+        .where(SpecificationFactory.equal("traineeId", traineeId));
     specs.add(whereClause);
 
-    Specifications notDeleted = Specifications.where(SpecificationFactory.isNull("softDeletedDate"));
+    Specifications notDeleted = Specifications
+        .where(SpecificationFactory.isNull("softDeletedDate"));
     specs.add(notDeleted);
 
     // limit assessments that belong to specific programmes
     if (permissionService.isProgrammeObserver()) {
-      Collection<Object> set = Collections.unmodifiableSet(permissionService.getUsersProgrammeIds());
-      Specifications inProgrammes = Specifications.where(SpecificationFactory.in("programmeId", set));
+      Collection<Object> set = Collections
+          .unmodifiableSet(permissionService.getUsersProgrammeIds());
+      Specifications inProgrammes = Specifications
+          .where(SpecificationFactory.in("programmeId", set));
       specs.add(inProgrammes);
     }
 

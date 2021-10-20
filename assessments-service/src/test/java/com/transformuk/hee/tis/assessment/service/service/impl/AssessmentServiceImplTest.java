@@ -1,31 +1,10 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
-import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
-import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
-import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
-import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import org.apache.commons.lang.StringUtils;
-import org.assertj.core.util.Lists;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specifications;
-
-import java.util.List;
-import java.util.Optional;
-
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -35,26 +14,54 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
+import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
+import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapperImpl;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapperImpl;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapperImpl;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapper;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapperImpl;
+import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeReasonMapperImpl;
+import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapperImpl;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.test.util.ReflectionTestUtils;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentServiceImplTest {
 
   private static final Long TRAINEE_ID = 11111L;
   private static final Long ASSESSMENT_ID = 1L;
-  @InjectMocks
+
   private AssessmentServiceImpl testObj;
-  @Mock
-  private AssessmentRepository assessmentRepositoryMock;
-  @Mock
-  private AssessmentMapper assessmentMapperMock;
-  @Mock
-  private AssessmentListMapper assessmentListMapperMock;
 
   @Mock
-  private AssessmentDTO assessmentDTOMock, savedAssessmentDTOMock, assessmentDTOMock1, assessmentDTOMock2, assessmentDTOMock3;
-  @Mock
-  private Assessment assessmentMock, assessmentMock1, assessmentMock2, assessmentMock3;
-  @Mock
-  private AssessmentListDTO assessmentListDTOMock1, assessmentListDTOMock2, assessmentListDTOMock3;
+  private AssessmentRepository assessmentRepositoryMock;
 
   @Captor
   private ArgumentCaptor<Example<Assessment>> assessmentCaptor;
@@ -64,23 +71,47 @@ public class AssessmentServiceImplTest {
   @Mock
   private PermissionService permissionServiceMock;
 
+  @Before
+  public void setUpBefore() {
+    AssessmentOutcomeMapper assessmentOutcomeMapper = new AssessmentOutcomeMapperImpl();
+    ReflectionTestUtils.setField(assessmentOutcomeMapper, "assessmentOutcomeReasonMapper",
+        new AssessmentOutcomeReasonMapperImpl());
+
+    AssessmentMapper assessmentMapper = new AssessmentMapperImpl();
+    ReflectionTestUtils
+        .setField(assessmentMapper, "assessmentDetailMapper", new AssessmentDetailMapperImpl());
+    ReflectionTestUtils
+        .setField(assessmentMapper, "assessmentOutcomeMapper", assessmentOutcomeMapper);
+    ReflectionTestUtils
+        .setField(assessmentMapper, "revalidationMapper", new RevalidationMapperImpl());
+
+    testObj = new AssessmentServiceImpl(assessmentRepositoryMock, assessmentMapper,
+        new AssessmentListMapperImpl(), permissionServiceMock);
+  }
+
   @Test
   public void saveShouldSaveAssessment() {
-    when(assessmentMapperMock.toEntity(assessmentDTOMock)).thenReturn(assessmentMock);
-    when(assessmentRepositoryMock.saveAndFlush(assessmentMock)).thenReturn(assessmentMock);
-    when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(savedAssessmentDTOMock);
+    AssessmentDTO assessmentDto = new AssessmentDTO();
+    assessmentDto.setFirstName("firstName");
+    assessmentDto.setLastName("lastName");
+    assessmentDto.setDetail(new AssessmentDetailDTO());
+    assessmentDto.setOutcome(new AssessmentOutcomeDTO());
+    assessmentDto.setRevalidation(new RevalidationDTO());
 
-    AssessmentDTO result = testObj.save(assessmentDTOMock);
+    when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class))).thenAnswer(i -> {
+      Assessment arg = (Assessment) i.getArguments()[0];
+      arg.setId(ASSESSMENT_ID);
+      return arg;
+    });
 
-    Assert.assertEquals(savedAssessmentDTOMock, result);
+    AssessmentDTO result = testObj.save(assessmentDto);
 
-    verify(assessmentDTOMock).setDetail(null);
-    verify(assessmentDTOMock).setOutcome(null);
-    verify(assessmentDTOMock).setRevalidation(null);
-
-    verify(assessmentMapperMock).toEntity(assessmentDTOMock);
-    verify(assessmentRepositoryMock).saveAndFlush(assessmentMock);
-    verify(assessmentMapperMock).toDto(assessmentMock);
+    assertThat("Unexpected ID.", result.getId(), is(ASSESSMENT_ID));
+    assertThat("Unexpected first name.", result.getFirstName(), is("firstName"));
+    assertThat("Unexpected last name.", result.getLastName(), is("lastName"));
+    assertThat("Unexpected detail.", result.getDetail(), nullValue());
+    assertThat("Unexpected outcome.", result.getOutcome(), nullValue());
+    assertThat("Unexpected revalidation.", result.getRevalidation(), nullValue());
   }
 
   @Test(expected = NullPointerException.class)
@@ -88,30 +119,44 @@ public class AssessmentServiceImplTest {
     try {
       testObj.save(null);
     } catch (Exception e) {
-      verify(assessmentMapperMock, never()).toEntity(any(AssessmentDTO.class));
       verify(assessmentRepositoryMock, never()).save(any(Assessment.class));
-      verify(assessmentMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
 
   @Test
   public void findAllShouldSearchAsPerPageable() {
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setFirstName("firstName1");
+    Assessment assessment2 = new Assessment();
+    assessment2.setId(2L);
+    assessment2.setFirstName("firstName2");
+    Assessment assessment3 = new Assessment();
+    assessment3.setId(3L);
+    assessment3.setFirstName("firstName3");
+
+    List<Assessment> assessments = Arrays.asList(assessment1, assessment2, assessment3);
     Pageable pageableMock = mock(Pageable.class);
-    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
-    when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock)).thenReturn(pagedAssessments);
-    when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
-    when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
-    when(assessmentListMapperMock.toDto(assessmentMock3)).thenReturn(assessmentListDTOMock3);
+    when(assessmentRepositoryMock.findAllBySoftDeletedDate(null, pageableMock))
+        .thenReturn(pagedAssessments);
 
     Page<AssessmentListDTO> result = testObj.findAll(pageableMock);
 
     List<AssessmentListDTO> content = result.getContent();
-    Assert.assertEquals(assessmentListDTOMock1, content.get(0));
-    Assert.assertEquals(assessmentListDTOMock2, content.get(1));
-    Assert.assertEquals(assessmentListDTOMock3, content.get(2));
+    AssessmentListDTO assessmentListDto = content.get(0);
+    assertThat("Unexpected ID.", assessmentListDto.getId(), is(1L));
+    assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName1"));
+
+    assessmentListDto = content.get(1);
+    assertThat("Unexpected ID.", assessmentListDto.getId(), is(2L));
+    assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName2"));
+
+    assessmentListDto = content.get(2);
+    assertThat("Unexpected ID.", assessmentListDto.getId(), is(3L));
+    assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName3"));
   }
 
   @Test(expected = NullPointerException.class)
@@ -120,7 +165,6 @@ public class AssessmentServiceImplTest {
       testObj.findAll(null);
     } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findAll(any(Pageable.class));
-      verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
@@ -131,7 +175,6 @@ public class AssessmentServiceImplTest {
       testObj.findOne(null);
     } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(anyLong());
-      verify(assessmentListMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
@@ -139,22 +182,34 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findOneShouldReturnAssessmentDTO() {
-    when(assessmentRepositoryMock.findOne(1L)).thenReturn(assessmentMock);
-    when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
+    Assessment assessment = new Assessment();
+    assessment.setId(ASSESSMENT_ID);
+    assessment.setFirstName("firstName");
+    assessment.setLastName("lastName");
+
+    when(assessmentRepositoryMock.findOne(1L)).thenReturn(assessment);
 
     AssessmentDTO result = testObj.findOne(1L);
 
-    Assert.assertEquals(assessmentDTOMock, result);
+    assertThat("Unexpected ID.", result.getId(), is(ASSESSMENT_ID));
+    assertThat("Unexpected first name.", result.getFirstName(), is("firstName"));
+    assertThat("Unexpected last name.", result.getLastName(), is("lastName"));
   }
 
   @Test
   public void findTraineeAssessmentShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    Assessment assessment = new Assessment();
+    assessment.setId(ASSESSMENT_ID);
+    assessment.setTraineeId(TRAINEE_ID);
+    assessment.setFirstName("firstName");
+    assessment.setLastName("lastName");
+
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
 
     Optional<Assessment> result = testObj.findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
 
     assertTrue(result.isPresent());
-    assertEquals(assessmentMock, result.get());
+    assertEquals(assessment, result.get());
 
     Example<Assessment> capturedValue = assessmentCaptor.getValue();
     Assessment probedAssessment = capturedValue.getProbe();
@@ -198,24 +253,33 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnAssessment() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
-    when(assessmentMapperMock.toDto(assessmentMock)).thenReturn(assessmentDTOMock);
+    Assessment assessment = new Assessment();
+    assessment.setId(ASSESSMENT_ID);
+    assessment.setTraineeId(TRAINEE_ID);
+    assessment.setFirstName("firstName");
+    assessment.setLastName("lastName");
+
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
 
     assertTrue(result.isPresent());
-    assertEquals(assessmentDTOMock, result.get());
 
     Example<Assessment> capturedValue = assessmentCaptor.getValue();
     Assessment probedAssessment = capturedValue.getProbe();
     assertEquals(TRAINEE_ID, probedAssessment.getTraineeId());
     assertEquals(ASSESSMENT_ID, probedAssessment.getId());
+
+    AssessmentDTO assessmentDto = result.get();
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(ASSESSMENT_ID));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName"));
+    assertThat("Unexpected last name.", assessmentDto.getLastName(), is("lastName"));
   }
 
   @Test
   public void findTraineeAssessmentDTOShouldReturnEmptyAssessment() {
     when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(null);
-    when(assessmentMapperMock.toDto((Assessment) null)).thenReturn(null);
 
     Optional<AssessmentDTO> result = testObj.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -233,7 +297,6 @@ public class AssessmentServiceImplTest {
       testObj.findTraineeAssessmentDTO(null, ASSESSMENT_ID);
     } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
-      verify(assessmentMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
@@ -244,28 +307,49 @@ public class AssessmentServiceImplTest {
       testObj.findTraineeAssessmentDTO(TRAINEE_ID, null);
     } catch (Exception e) {
       verify(assessmentRepositoryMock, never()).findOne(any(Example.class));
-      verify(assessmentMapperMock, never()).toDto(any(Assessment.class));
       throw e;
     }
   }
 
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsByPage() {
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setTraineeId(10L);
+    assessment1.setFirstName("firstName1");
+    Assessment assessment2 = new Assessment();
+    assessment2.setId(2L);
+    assessment2.setTraineeId(20L);
+    assessment2.setFirstName("firstName2");
+    Assessment assessment3 = new Assessment();
+    assessment3.setId(3L);
+    assessment3.setTraineeId(30L);
+    assessment3.setFirstName("firstName3");
+
     Pageable pageableMock = mock(Pageable.class);
-    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2, assessmentMock3);
+    List<Assessment> assessments = Arrays.asList(assessment1, assessment2, assessment3);
     Page<Assessment> pagedAssessments = new PageImpl<>(assessments, pageableMock, 3);
 
-    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), Matchers.eq(pageableMock))).thenReturn(pagedAssessments);
-    when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
-    when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
-    when(assessmentMapperMock.toDto(assessmentMock3)).thenReturn(assessmentDTOMock3);
+    when(assessmentRepositoryMock.findAll(assessmentCaptor.capture(), Matchers.eq(pageableMock)))
+        .thenReturn(pagedAssessments);
 
     Page<AssessmentDTO> result = testObj.findForTrainee(TRAINEE_ID, pageableMock);
 
     List<AssessmentDTO> content = result.getContent();
-    Assert.assertEquals(assessmentDTOMock1, content.get(0));
-    Assert.assertEquals(assessmentDTOMock2, content.get(1));
-    Assert.assertEquals(assessmentDTOMock3, content.get(2));
+    AssessmentDTO assessmentDto = content.get(0);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(1L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(10L));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName1"));
+
+    assessmentDto = content.get(1);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(2L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(20L));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName2"));
+
+    assessmentDto = content.get(2);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(3L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(30L));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName3"));
   }
 
 
@@ -319,11 +403,15 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void deleteTraineeAssessementShouldReturnTrueWhenAssessmentIsDeleted() {
-    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessmentMock);
+    Assessment assessment = new Assessment();
+    assessment.setId(ASSESSMENT_ID);
+    assessment.setTraineeId(TRAINEE_ID);
+
+    when(assessmentRepositoryMock.findOne(assessmentCaptor.capture())).thenReturn(assessment);
 
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
-    verify(assessmentRepositoryMock).delete(assessmentMock);
+    verify(assessmentRepositoryMock).delete(assessment);
     Assert.assertTrue(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
@@ -334,45 +422,71 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsForATrainee() {
-    List<Assessment> traineeAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
-    List<AssessmentDTO> traineeAssessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setTraineeId(TRAINEE_ID);
+    assessment1.setFirstName("firstName1");
+    Assessment assessment2 = new Assessment();
+    assessment2.setId(2L);
+    assessment2.setTraineeId(TRAINEE_ID);
+    assessment2.setFirstName("firstName2");
+
+    List<Assessment> traineeAssessments = Arrays.asList(assessment1, assessment2);
 
     Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "reviewDate"));
-    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort))).thenReturn(traineeAssessments);
-    when(assessmentMapperMock.toDto(traineeAssessments)).thenReturn(traineeAssessmentDtos);
-    when(assessmentMapperMock.toDto(assessmentMock1)).thenReturn(assessmentDTOMock1);
-    when(assessmentMapperMock.toDto(assessmentMock2)).thenReturn(assessmentDTOMock2);
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(sort)))
+        .thenReturn(traineeAssessments);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
     List<AssessmentDTO> result = testObj.findAllForTrainee(TRAINEE_ID, sort);
 
-    Assert.assertEquals(2, result.size());
-    Assert.assertTrue(result.contains(assessmentDTOMock1));
-    Assert.assertTrue(result.contains(assessmentDTOMock2));
+    AssessmentDTO assessmentDto = result.get(0);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(1L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName1"));
 
-    Assert.assertEquals(assessmentDTOMock1, result.get(0));
-    Assert.assertEquals(assessmentDTOMock2, result.get(1));
+    assessmentDto = result.get(1);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(2L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName2"));
   }
-  
+
 
   @Test
   public void advancedSearchShouldSearchUsingSpecifications() {
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setTraineeId(TRAINEE_ID);
+    assessment1.setFirstName("firstName1");
+    Assessment assessment2 = new Assessment();
+    assessment2.setId(2L);
+    assessment2.setTraineeId(TRAINEE_ID);
+    assessment2.setFirstName("firstName2");
+
     List<ColumnFilter> columnFilters = Lists.newArrayList();
     Pageable pageable = new PageRequest(0, 20);
     String searchQuery = "search query";
 
-    List<Assessment> foundAssessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
+    List<Assessment> foundAssessments = Lists.newArrayList(assessment1, assessment2);
     Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
 
-    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable))).thenReturn(pagedFoundAssessments);
-    when(assessmentListMapperMock.toDto(assessmentMock1)).thenReturn(assessmentListDTOMock1);
-    when(assessmentListMapperMock.toDto(assessmentMock2)).thenReturn(assessmentListDTOMock2);
+    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable)))
+        .thenReturn(pagedFoundAssessments);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 
     Page<AssessmentListDTO> result = testObj.advancedSearch(searchQuery, columnFilters, pageable);
 
-    Assert.assertEquals(2, result.getTotalElements());
-    Assert.assertTrue(result.getContent().contains(assessmentListDTOMock1));
-    Assert.assertTrue(result.getContent().contains(assessmentListDTOMock2));
+    assertThat("Unexpected result count.", result.getTotalElements(), is(2L));
+
+    List<AssessmentListDTO> content = result.getContent();
+    AssessmentListDTO assessmentListDto = content.get(0);
+    assertThat("Unexpected ID.", assessmentListDto.getId(), is(1L));
+    assertThat("Unexpected trainee ID.", assessmentListDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName1"));
+
+    assessmentListDto = content.get(1);
+    assertThat("Unexpected ID.", assessmentListDto.getId(), is(2L));
+    assertThat("Unexpected trainee ID.", assessmentListDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName2"));
   }
 }
