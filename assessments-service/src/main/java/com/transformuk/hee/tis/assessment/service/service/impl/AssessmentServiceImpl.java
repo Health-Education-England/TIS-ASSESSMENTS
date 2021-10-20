@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.nhs.tis.StringConverter;
 
 /**
  * Service Implementation for managing Assessment.
@@ -56,20 +58,24 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private final AssessmentListMapper assessmentListMapper;
 
+  private AssessmentDetailService assessmentDetailService;
+
+  private AssessmentOutcomeService assessmentOutcomeService;
+
+  private RevalidationService revalidationService;
+
   AssessmentServiceImpl(AssessmentRepository assessmentRepository,
       AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
-      PermissionService permissionService) {
+      PermissionService permissionService, AssessmentDetailService assessmentDetailService,
+      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentMapper = assessmentMapper;
     this.assessmentListMapper = assessmentListMapper;
     this.permissionService = permissionService;
+    this.assessmentDetailService = assessmentDetailService;
+    this.assessmentOutcomeService = assessmentOutcomeService;
+    this.revalidationService = revalidationService;
   }
-
-  @Autowired
-  private AssessmentOutcomeService assessmentOutcomeService;
-
-  @Autowired
-  private RevalidationService revalidationService;
 
   /**
    * Save a assessment.

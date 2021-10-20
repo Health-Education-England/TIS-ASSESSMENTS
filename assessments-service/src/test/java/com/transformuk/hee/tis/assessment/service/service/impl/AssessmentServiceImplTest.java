@@ -22,6 +22,9 @@ import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
+import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
+import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
@@ -31,8 +34,11 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutco
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeReasonMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapperImpl;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
@@ -71,6 +77,15 @@ public class AssessmentServiceImplTest {
   @Mock
   private PermissionService permissionServiceMock;
 
+  @Mock
+  private AssessmentDetailService assessmentDetailServiceMock;
+
+  @Mock
+  private AssessmentOutcomeService assessmentOutcomeServiceMock;
+
+  @Mock
+  private RevalidationService revalidationServiceMock;
+
   @Before
   public void setUpBefore() {
     AssessmentOutcomeMapper assessmentOutcomeMapper = new AssessmentOutcomeMapperImpl();
@@ -86,7 +101,8 @@ public class AssessmentServiceImplTest {
         .setField(assessmentMapper, "revalidationMapper", new RevalidationMapperImpl());
 
     testObj = new AssessmentServiceImpl(assessmentRepositoryMock, assessmentMapper,
-        new AssessmentListMapperImpl(), permissionServiceMock);
+        new AssessmentListMapperImpl(), permissionServiceMock, assessmentDetailServiceMock,
+        assessmentOutcomeServiceMock, revalidationServiceMock);
   }
 
   @Test
@@ -491,18 +507,33 @@ public class AssessmentServiceImplTest {
 
   @Test
   public void findByIdsShouldReturnAssessmentsList() {
-    List<Assessment> assessments = Lists.newArrayList(assessmentMock1, assessmentMock2);
-    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDTOMock1, assessmentDTOMock2);
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setTraineeId(TRAINEE_ID);
+    assessment1.setFirstName("firstName1");
+    Assessment assessment2 = new Assessment();
+    assessment2.setId(2L);
+    assessment2.setTraineeId(TRAINEE_ID);
+    assessment2.setFirstName("firstName2");
+
+    List<Assessment> assessments = Lists.newArrayList(assessment1, assessment2);
     Set<Long> ids = new HashSet<>();
     ids.add(1L);
     ids.add(2L);
 
     when(assessmentRepositoryMock.findByIdIn(ids)).thenReturn(assessments);
-    when(assessmentMapperMock.toDto(assessments)).thenReturn(assessmentDtos);
 
     List<AssessmentDTO> result = testObj.findAssessmentsByIds(ids);
-    Assert.assertEquals(assessmentDTOMock1, result.get(0));
-    Assert.assertEquals(assessmentDTOMock2, result.get(1));
+
+    AssessmentDTO assessmentDto = result.get(0);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(1L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName1"));
+
+    assessmentDto = result.get(1);
+    assertThat("Unexpected ID.", assessmentDto.getId(), is(2L));
+    assertThat("Unexpected trainee ID.", assessmentDto.getTraineeId(), is(TRAINEE_ID));
+    assertThat("Unexpected first name.", assessmentDto.getFirstName(), is("firstName2"));
   }
 
   @Test
@@ -511,41 +542,53 @@ public class AssessmentServiceImplTest {
     AssessmentDetailDTO assessmentDetailDto = new AssessmentDetailDTO();
     AssessmentOutcomeDTO assessmentOutcomeDto = new AssessmentOutcomeDTO();
     RevalidationDTO revalidationDto = new RevalidationDTO();
-    assessmentDto.id(1L).detail(assessmentDetailDto).outcome(assessmentOutcomeDto)
+    assessmentDetailDto.id(ASSESSMENT_ID);
+    assessmentOutcomeDto.id(ASSESSMENT_ID);
+    revalidationDto.id(ASSESSMENT_ID);
+    assessmentDto.id(ASSESSMENT_ID).detail(assessmentDetailDto).outcome(assessmentOutcomeDto)
         .revalidation(revalidationDto);
 
-    Assessment assessment = new Assessment();
-    assessment.setId(1L);
-    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDto);
-    when(assessmentMapperMock.toEntity(assessmentDto)).thenReturn(assessment);
-    when(assessmentRepositoryMock.saveAndFlush(assessment)).thenReturn(assessment);
-    when(assessmentMapperMock.toDto(assessment)).thenReturn(assessmentDto);
-    when(assessmentDetailServiceMock.save(assessment, assessmentDetailDto)).thenReturn(
-        assessmentDetailDto);
-    when(assessmentOutcomeServiceMock.save(assessment, assessmentOutcomeDto)).thenReturn(
-        assessmentOutcomeDto);
-    when(revalidationServiceMock.save(assessment, revalidationDto)).thenReturn(revalidationDto);
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
+    when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class))).thenAnswer(i -> {
+      return i.getArguments()[0];
+    });
+
+    when(assessmentDetailServiceMock.save(any(Assessment.class),
+        any(AssessmentDetailDTO.class))).thenAnswer(i -> {
+      return i.getArguments()[1];
+    });
+    when(assessmentOutcomeServiceMock.save(any(Assessment.class),
+        any(AssessmentOutcomeDTO.class))).thenAnswer(i -> {
+      return i.getArguments()[1];
+    });
+    when(
+        revalidationServiceMock.save(any(Assessment.class), any(RevalidationDTO.class))).thenAnswer(
+        i -> {
+          return i.getArguments()[1];
+        });
 
     AssessmentDTO result = testObj.patchAssessments(assessmentDtos).get(0);
-    Assert.assertEquals(assessmentDto, result);
-    Assert.assertTrue(result.getMessageList().isEmpty());
+
+    assertThat("Unexpected ID.", result.getId(), is(1L));
+    assertThat("Unexpected detail ID.", result.getDetail().getId(), is(ASSESSMENT_ID));
+    assertThat("Unexpected outcome ID.", result.getOutcome().getId(), is(ASSESSMENT_ID));
+    assertThat("Unexpected revalidation ID.", result.getRevalidation().getId(), is(ASSESSMENT_ID));
+    assertTrue(result.getMessageList().isEmpty());
   }
 
   @Test
   public void patchAssessmentShouldReturnEmptyListWhenRequestListIsEmpty() {
-    List<AssessmentDTO> emptyList = Collections.emptyList();
-    List<AssessmentDTO> result = testObj.patchAssessments(emptyList);
-    Assert.assertTrue(result.isEmpty());
+    List<AssessmentDTO> result = testObj.patchAssessments(Collections.emptyList());
+    assertTrue(result.isEmpty());
   }
 
   @Test
   public void patchAssessmentShouldReturnAssessmentsWithErrorWhenSaveFails() {
     AssessmentDTO assessmentDto = new AssessmentDTO();
     assessmentDto.setId(1L);
-    Assessment assessment = new Assessment();
-    assessment.setId(1L);
-    List<AssessmentDTO> assessmentDtos = Lists.newArrayList(assessmentDto);
-    when(assessmentMapperMock.toEntity(assessmentDto)).thenThrow(Exception.class);
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
+
+    when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class))).thenThrow(Exception.class);
 
     List<AssessmentDTO> result = testObj.patchAssessments(assessmentDtos);
     Assert.assertEquals(assessmentDto, result.get(0));
