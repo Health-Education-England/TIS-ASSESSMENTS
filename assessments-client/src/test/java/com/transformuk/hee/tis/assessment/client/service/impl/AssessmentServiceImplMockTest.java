@@ -97,7 +97,7 @@ public class AssessmentServiceImplMockTest {
         ParameterizedTypeReference.class))).thenReturn(response);
 
     // When.
-    testObj.deleteAssessment(1L);
+    testObj.deleteAssessment(ASSESSMENT_ID);
 
     // Then.
     verify(restTemplateMock).exchange(eq(ASSESSMENT_URL + "/api/trainee/assessments/" + ASSESSMENT_ID),
