@@ -87,4 +87,21 @@ public class AssessmentServiceImplMockTest {
             ParameterizedTypeReference.class));
     assertThat("Unexpected patched DTOs.", returnDtos.get(0), is(dto));
   }
+
+  @Test
+  public void shouldDeleteAssessments() {
+    Long ASSESSMENT_ID = 1L;
+    // Given.
+    ResponseEntity<Void> response = ResponseEntity.ok().build();
+    when(restTemplateMock.exchange(anyString(), eq(HttpMethod.DELETE), any(HttpEntity.class), any(
+        ParameterizedTypeReference.class))).thenReturn(response);
+
+    // When.
+    testObj.deleteAssessment(1L);
+
+    // Then.
+    verify(restTemplateMock).exchange(eq(ASSESSMENT_URL + "/api/trainee/assessments/" + ASSESSMENT_ID),
+        eq(HttpMethod.DELETE), any(HttpEntity.class), any(
+            ParameterizedTypeReference.class));
+  }
 }

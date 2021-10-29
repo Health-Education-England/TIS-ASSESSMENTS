@@ -31,6 +31,7 @@ public class AssessmentServiceImpl extends AbstractClientService {
   private static final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
   private static final String API_TRAINEE_CREATE_ASSESSMENTS = "/api/trainee/"; //{traineeId}/assessments
+  public static final String API_TRAINEE_ASSESSMENTS = "/api/trainee/assessments/";
   private static final String API_ASSESSMENTS_OUTCOME_ALL = "/api/outcomes/all";
   private static final String BASIC = "/basic";
   @Autowired
@@ -88,6 +89,16 @@ public class AssessmentServiceImpl extends AbstractClientService {
     return assessmentRestTemplate
         .exchange(serviceUrl + API_TRAINEE_CREATE_ASSESSMENTS + "bulk-assessment",
             HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<List<AssessmentDTO>>() {
+            })
+        .getBody();
+  }
+
+  public Void deleteAssessment(Long id) {
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<Long> httpEntity = new HttpEntity(id, headers);
+    return assessmentRestTemplate
+        .exchange(serviceUrl + API_TRAINEE_ASSESSMENTS + id,
+            HttpMethod.DELETE, httpEntity, new ParameterizedTypeReference<Void>() {
             })
         .getBody();
   }
