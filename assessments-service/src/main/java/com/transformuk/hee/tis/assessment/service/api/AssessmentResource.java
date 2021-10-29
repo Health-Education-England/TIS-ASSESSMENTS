@@ -263,10 +263,11 @@ public class AssessmentResource {
   @DeleteMapping("/assessments/{assessmentId}")
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
-  public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) throws URISyntaxException {
+  public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) {
     assessmentService.deleteAssessment(assessmentId);
     return ResponseEntity.ok()
-        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, assessmentId.toString())).build();
+        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, assessmentId.toString()))
+        .build();
   }
 
   //Kept to allow compatibility with audit service

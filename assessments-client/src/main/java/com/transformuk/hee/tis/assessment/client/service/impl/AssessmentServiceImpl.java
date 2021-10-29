@@ -93,9 +93,14 @@ public class AssessmentServiceImpl extends AbstractClientService {
         .getBody();
   }
 
+  /**
+   * Delete one assessment by id.
+   *
+   * @param id the id of the assessment
+   */
   public Void deleteAssessment(Long id) {
     HttpHeaders headers = new HttpHeaders();
-    HttpEntity<Long> httpEntity = new HttpEntity(id, headers);
+    HttpEntity<Long> httpEntity = new HttpEntity<>(id, headers);
     return assessmentRestTemplate
         .exchange(serviceUrl + API_TRAINEE_ASSESSMENTS + id,
             HttpMethod.DELETE, httpEntity, new ParameterizedTypeReference<Void>() {
