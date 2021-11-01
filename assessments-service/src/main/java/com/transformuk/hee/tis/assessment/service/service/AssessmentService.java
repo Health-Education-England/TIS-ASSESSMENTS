@@ -93,6 +93,14 @@ public interface AssessmentService {
   boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId);
 
   /**
+   * delete an assessment with all associated links.
+   *
+   * @param assessmentId the TIS id of the assessment
+   * @return true if the deletion was successful, otherwise false
+   */
+  boolean deleteAssessment(Long assessmentId);
+
+  /**
    * bulk update assessments.
    *
    * @param assessmentDtos the list of assessmentDTOs to update
