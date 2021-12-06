@@ -5,18 +5,16 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
 import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
 import com.transformuk.hee.tis.assessment.service.model.Revalidation;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
-
+import java.lang.reflect.Field;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Contains convenience pieces used to build specifications as query building blocks.
@@ -120,26 +118,30 @@ public final class SpecificationFactory {
     return (root, query, cb) -> cb.between(root.get(attribute), min, max);
   }
 
-  public static Specification<Assessment> getAssessmentSpecFromColumnFilter(ColumnFilter cf) {
-    Specification<Assessment> spec = null;
+  /**
+   * Returns a specification for an assessment using the provided column filter.
+   * Correctly handles LocalDate fields and dot-notated sub entity fields.
+   *
+   * @param cf The column filter to use
+   * @return an Assessment Specification lambda
+   */
+  public static Map<String, List<Object>> getAssessmentSpecFromColumnFilter(ColumnFilter cf) {
+    Map<String, List<Object>> specMap = null;
     try {
-      String[] subEntity = cf.getName().split("\\.");
-      Field field = null;
+      String[] subEntity = StringUtils.split(cf.getName(), DOT);
+      Field field;
       if (subEntity.length == 1) {
         field = Assessment.class.getDeclaredField(subEntity[0]);
       } else {
         switch (subEntity[0].toLowerCase()) {
           case "revalidation":
-            field =
-                Revalidation.class.getDeclaredField(subEntity[1]);
+            field = Revalidation.class.getDeclaredField(subEntity[1]);
             break;
           case "outcome":
-            field =
-                AssessmentOutcome.class.getDeclaredField(subEntity[1]);
+            field = AssessmentOutcome.class.getDeclaredField(subEntity[1]);
             break;
           case "detail":
-            field =
-                AssessmentDetail.class.getDeclaredField(subEntity[1]);
+            field = AssessmentDetail.class.getDeclaredField(subEntity[1]);
             break;
           default:
             throw new NoSuchFieldException(subEntity[0]);
@@ -150,13 +152,13 @@ public final class SpecificationFactory {
         List<Object> localDates = cf.getValues().stream()
             .map(c -> LocalDate.parse(c.toString()))
             .collect(Collectors.toList());
-        spec = in(cf.getName(), localDates);
+        specMap = Collections.singletonMap(cf.getName(), localDates);
       } else {
-        spec = in(cf.getName(), cf.getValues());
+        specMap = Collections.singletonMap(cf.getName(), cf.getValues());
       }
     } catch (NoSuchFieldException | DateTimeParseException ignored) {
       //ignore this columnFilter
     }
-    return spec;
+    return specMap;
   }
 }

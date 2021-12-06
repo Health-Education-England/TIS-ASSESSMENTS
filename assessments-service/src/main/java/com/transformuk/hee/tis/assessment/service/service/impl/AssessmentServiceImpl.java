@@ -1,6 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
+import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
 
 import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
@@ -17,12 +18,9 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -162,14 +160,17 @@ public class AssessmentServiceImpl implements AssessmentService {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
       Specifications inProgrammes = Specifications
-          .where(SpecificationFactory.in("programmeId", set));
+          .where(in("programmeId", set));
       specs.add(inProgrammes);
     }
 
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> {
-        specs.add(SpecificationFactory.getAssessmentSpecFromColumnFilter(cf));
+          Map<String, List<Object>> specMap = SpecificationFactory.getAssessmentSpecFromColumnFilter(cf);
+          for ( String key : specMap.keySet() ) {
+            specs.add(in(key, specMap.get(key)));
+          }
       });
     }
 
@@ -241,7 +242,7 @@ public class AssessmentServiceImpl implements AssessmentService {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
       Specifications inProgrammes = Specifications
-          .where(SpecificationFactory.in("programmeId", set));
+          .where(in("programmeId", set));
       specs.add(inProgrammes);
     }
 
