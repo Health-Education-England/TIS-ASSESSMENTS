@@ -1,7 +1,6 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
 import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.containsLike;
-import static com.transformuk.hee.tis.assessment.service.service.impl.SpecificationFactory.in;
 
 import com.google.common.base.Preconditions;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
@@ -10,10 +9,7 @@ import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
-import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
-import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentOutcomeService;
@@ -21,16 +17,12 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -177,41 +169,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> {
-        try {
-          String[] qualifiedFieldParts = cf.getName().split("\\.");
-          Field field = null;
-          if (qualifiedFieldParts.length == 1) {
-            field = Assessment.class.getDeclaredField(qualifiedFieldParts[0]);
-          } else {
-            switch (qualifiedFieldParts[0].toLowerCase()) {
-              case "revalidation":
-                field =
-                    Revalidation.class.getDeclaredField(qualifiedFieldParts[1]);
-                break;
-              case "outcome":
-                field =
-                    AssessmentOutcome.class.getDeclaredField(qualifiedFieldParts[1]);
-                break;
-              case "detail":
-                field =
-                    AssessmentDetail.class.getDeclaredField(qualifiedFieldParts[1]);
-                break;
-              default:
-                throw new NoSuchFieldException(qualifiedFieldParts[0]);
-            }
-          }
-          if (field.getType().equals(LocalDate.class)) {
-            //dates need to be handled differently to strings / numbers
-            List<Object> localDates = cf.getValues().stream()
-                .map(c -> LocalDate.parse(c.toString()))
-                .collect(Collectors.toList());
-            specs.add(in(cf.getName(), localDates));
-          } else {
-            specs.add(in(cf.getName(), cf.getValues()));
-          }
-        } catch (NoSuchFieldException | DateTimeParseException ignored) {
-          //ignore this columnFilter
-        }
+        specs.add(SpecificationFactory.getAssessmentSpecFromColumnFilter(cf));
       });
     }
 

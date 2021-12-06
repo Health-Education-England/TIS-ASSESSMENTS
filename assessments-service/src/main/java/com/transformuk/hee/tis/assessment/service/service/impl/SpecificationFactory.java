@@ -1,12 +1,22 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
+import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains convenience pieces used to build specifications as query building blocks.
@@ -108,5 +118,45 @@ public final class SpecificationFactory {
 
   public static Specification isBetween(String attribute, double min, double max) {
     return (root, query, cb) -> cb.between(root.get(attribute), min, max);
+  }
+
+  public static Specification<Assessment> getAssessmentSpecFromColumnFilter(ColumnFilter cf) {
+    Specification<Assessment> spec = null;
+    try {
+      String[] subEntity = cf.getName().split("\\.");
+      Field field = null;
+      if (subEntity.length == 1) {
+        field = Assessment.class.getDeclaredField(subEntity[0]);
+      } else {
+        switch (subEntity[0].toLowerCase()) {
+          case "revalidation":
+            field =
+                Revalidation.class.getDeclaredField(subEntity[1]);
+            break;
+          case "outcome":
+            field =
+                AssessmentOutcome.class.getDeclaredField(subEntity[1]);
+            break;
+          case "detail":
+            field =
+                AssessmentDetail.class.getDeclaredField(subEntity[1]);
+            break;
+          default:
+            throw new NoSuchFieldException(subEntity[0]);
+        }
+      }
+      if (field.getType().equals(LocalDate.class)) {
+        //dates need to be handled differently to strings / numbers
+        List<Object> localDates = cf.getValues().stream()
+            .map(c -> LocalDate.parse(c.toString()))
+            .collect(Collectors.toList());
+        spec = in(cf.getName(), localDates);
+      } else {
+        spec = in(cf.getName(), cf.getValues());
+      }
+    } catch (NoSuchFieldException | DateTimeParseException ignored) {
+      //ignore this columnFilter
+    }
+    return spec;
   }
 }
