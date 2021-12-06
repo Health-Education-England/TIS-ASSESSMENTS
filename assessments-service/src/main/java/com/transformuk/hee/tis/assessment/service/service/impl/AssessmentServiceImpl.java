@@ -174,31 +174,41 @@ public class AssessmentServiceImpl implements AssessmentService {
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> {
-          try {
-            String[] qualifiedFieldParts = cf.getName().split("\\.");
-            Field field = null;
-            if (qualifiedFieldParts.length == 1) {
-              field = Assessment.class.getDeclaredField(qualifiedFieldParts[0]);
-            } else {
-              switch (qualifiedFieldParts[0].toLowerCase()) {
-                case "revalidation" : field = Revalidation.class.getDeclaredField(qualifiedFieldParts[1]); break;
-                case "outcome"      : field = AssessmentOutcome.class.getDeclaredField(qualifiedFieldParts[1]); break;
-                case "detail"       : field = AssessmentDetail.class.getDeclaredField(qualifiedFieldParts[1]); break;
-                default             : throw new NoSuchFieldException(qualifiedFieldParts[0]);
-              }
+        try {
+          String[] qualifiedFieldParts = cf.getName().split("\\.");
+          Field field = null;
+          if (qualifiedFieldParts.length == 1) {
+            field = Assessment.class.getDeclaredField(qualifiedFieldParts[0]);
+          } else {
+            switch (qualifiedFieldParts[0].toLowerCase()) {
+              case "revalidation":
+                field =
+                    Revalidation.class.getDeclaredField(qualifiedFieldParts[1]);
+                break;
+              case "outcome":
+                field =
+                    AssessmentOutcome.class.getDeclaredField(qualifiedFieldParts[1]);
+                break;
+              case "detail":
+                field =
+                    AssessmentDetail.class.getDeclaredField(qualifiedFieldParts[1]);
+                break;
+              default:
+                throw new NoSuchFieldException(qualifiedFieldParts[0]);
             }
-            if (field.getType().equals(LocalDate.class)) {
-              //dates need to be handled differently to strings / numbers
-              List<Object> localDates = cf.getValues().stream()
-                  .map(c -> LocalDate.parse(c.toString()))
-                  .collect(Collectors.toList());
-              specs.add(in(cf.getName(), localDates));
-            } else {
-              specs.add(in(cf.getName(), cf.getValues()));
-            }
-          } catch (NoSuchFieldException | DateTimeParseException ignored) {
-            //ignore this columnFilter
           }
+          if (field.getType().equals(LocalDate.class)) {
+            //dates need to be handled differently to strings / numbers
+            List<Object> localDates = cf.getValues().stream()
+                .map(c -> LocalDate.parse(c.toString()))
+                .collect(Collectors.toList());
+            specs.add(in(cf.getName(), localDates));
+          } else {
+            specs.add(in(cf.getName(), cf.getValues()));
+          }
+        } catch (NoSuchFieldException | DateTimeParseException ignored) {
+          //ignore this columnFilter
+        }
       });
     }
 

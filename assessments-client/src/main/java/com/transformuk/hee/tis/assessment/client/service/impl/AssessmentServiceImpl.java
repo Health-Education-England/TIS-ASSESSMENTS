@@ -88,10 +88,11 @@ public class AssessmentServiceImpl extends AbstractClientService {
    * Finds assessments that match the supplied criteria.
    * The criteria should uniquely identify an assessment: if there are multiple matches these would
    * be considered duplicates.
-   * @param traineeId The trainee id
+   *
+   * @param traineeId             The trainee id
    * @param programmeMembershipId The programme membership id, derived from programme and curriculum
-   * @param reviewDate The review date
-   * @param outcome The assessment outcome value
+   * @param reviewDate            The review date
+   * @param outcome               The assessment outcome value
    * @return A list of matching AssessmentDTOs
    */
   public List<AssessmentDTO> findAssessments(Long traineeId, Long programmeMembershipId,
