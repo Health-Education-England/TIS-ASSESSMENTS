@@ -1,12 +1,21 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
-
+import com.transformuk.hee.tis.assessment.service.model.Assessment;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentDetail;
+import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
+import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
+import com.transformuk.hee.tis.assessment.service.model.Revalidation;
+import java.lang.reflect.Field;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Contains convenience pieces used to build specifications as query building blocks.
@@ -108,5 +117,50 @@ public final class SpecificationFactory {
 
   public static Specification isBetween(String attribute, double min, double max) {
     return (root, query, cb) -> cb.between(root.get(attribute), min, max);
+  }
+
+  /**
+   * Returns a list of values from the provided column filter.
+   * Correctly handles assessment LocalDate fields, including dot-notated sub entity fields.
+   *
+   * @param cf The column filter to use
+   * @return A list of values
+   */
+  public static List<Object> getDateAwareValuesFromColumnFilter(ColumnFilter cf) {
+    List<Object> valuesList;
+    try {
+      String[] subEntity = StringUtils.split(cf.getName(), DOT);
+      Field field;
+      if (subEntity.length == 1) {
+        field = Assessment.class.getDeclaredField(subEntity[0]);
+      } else {
+        switch (subEntity[0].toLowerCase()) {
+          case "revalidation":
+            field = Revalidation.class.getDeclaredField(subEntity[1]);
+            break;
+          case "outcome":
+            field = AssessmentOutcome.class.getDeclaredField(subEntity[1]);
+            break;
+          case "detail":
+            field = AssessmentDetail.class.getDeclaredField(subEntity[1]);
+            break;
+          default:
+            throw new NoSuchFieldException(subEntity[0]);
+        }
+      }
+      if (field.getType().equals(LocalDate.class)) {
+        //dates need to be handled differently to strings / numbers
+        valuesList = cf.getValues().stream()
+            .map(c -> LocalDate.parse(c.toString()))
+            .collect(Collectors.toList());
+      } else {
+        valuesList = cf.getValues();
+      }
+    } catch (NoSuchFieldException e) {
+      valuesList = cf.getValues(); //allow calling function to handle this
+    } catch (DateTimeParseException e) {
+      valuesList = null; //query will thus ignore invalid date values
+    }
+    return valuesList;
   }
 }
