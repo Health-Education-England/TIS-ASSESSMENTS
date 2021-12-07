@@ -89,9 +89,6 @@ public class AssessmentServiceImplTest {
   @Mock
   private RevalidationService revalidationServiceMock;
 
-  @Autowired
-  private SpecificationFactory specificationFactory;
-
   @Before
   public void setUpBefore() {
     AssessmentOutcomeMapper assessmentOutcomeMapper = new AssessmentOutcomeMapperImpl();
