@@ -45,7 +45,6 @@ public class SpecificationFactoryTest {
         valuesList.get(0) instanceof String, is(true));
   }
 
-
   @Test
   public void shouldGetSubItemSpecificationMapCorrectly() {
     //given

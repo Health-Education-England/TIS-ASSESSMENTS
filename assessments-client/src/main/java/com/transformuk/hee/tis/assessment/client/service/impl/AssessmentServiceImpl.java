@@ -92,9 +92,9 @@ public class AssessmentServiceImpl extends AbstractClientService {
    * @param programmeMembershipId The programme membership id, derived from programme and curriculum
    * @param reviewDate            The review date
    * @param outcome               The assessment outcome value
-   * @return A list of matching AssessmentDTOs
+   * @return A list of matching AssessmentListDTOs
    */
-  public List<AssessmentDTO> findAssessments(Long traineeId, Long programmeMembershipId,
+  public List<AssessmentListDTO> findAssessments(Long traineeId, Long programmeMembershipId,
                                              LocalDate reviewDate, String outcome) {
 
     String columnFiltersJson;
@@ -111,7 +111,7 @@ public class AssessmentServiceImpl extends AbstractClientService {
     return assessmentRestTemplate.exchange(
         serviceUrl + API_TRAINEE_ASSESSMENTS + "?columnFilters={columnFiltersJson}",
         HttpMethod.GET, null,
-        new ParameterizedTypeReference<List<AssessmentDTO>>() {
+        new ParameterizedTypeReference<List<AssessmentListDTO>>() {
         }, columnFiltersJson).getBody();
   }
 
