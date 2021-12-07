@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(JUnit4.class)
 public class SpecificationFactoryTest {
@@ -23,15 +22,12 @@ public class SpecificationFactoryTest {
         Lists.newArrayList("2021-01-01"));
 
     //when
-    Map<String, List<Object>> specMap = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilter);
+    List<Object> valuesList = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilter);
 
     //then
-    for ( String key : specMap.keySet() ) {
-      List<Object> criterion = specMap.get(key);
-      assertThat("Specification map has incorrect date class",
-          criterion.get(0) instanceof LocalDate, is(true));
-    }
+    assertThat("Values list has incorrect date class",
+        valuesList.get(0) instanceof LocalDate, is(true));
   }
 
   @Test
@@ -41,15 +37,12 @@ public class SpecificationFactoryTest {
         Lists.newArrayList("text"));
 
     //when
-    Map<String, List<Object>> specMap = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilter);
+    List<Object> valuesList = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilter);
 
     //then
-    for ( String key : specMap.keySet() ) {
-      List<Object> criterion = specMap.get(key);
-      assertThat("Specification map has incorrect string class",
-          criterion.get(0) instanceof String, is(true));
-    }
+    assertThat("Values list has incorrect string class",
+        valuesList.get(0) instanceof String, is(true));
   }
 
 
@@ -64,42 +57,56 @@ public class SpecificationFactoryTest {
         Lists.newArrayList("1a"));
 
     //when
-    Map<String, List<Object>> specMapOutcome = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilterOutcome);
-    Map<String, List<Object>> specMapDetail = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilterDetail);
-    Map<String, List<Object>> specMapRevalidation = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilterRevalidation);
+    List<Object> valuesListOutcome = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilterOutcome);
+    List<Object> valuesListDetail = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilterDetail);
+    List<Object> valuesListRevalidation = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilterRevalidation);
 
     //then
-    for ( String key : specMapOutcome.keySet() ) {
-      List<Object> criterion = specMapOutcome.get(key);
-      assertThat("Specification map has incorrect date class",
-          criterion.get(0) instanceof LocalDate, is(true));
-    }
-    for ( String key : specMapDetail.keySet() ) {
-      List<Object> criterion = specMapDetail.get(key);
-      assertThat("Specification map has incorrect string class",
-          criterion.get(0) instanceof String, is(true));
-    }
-    for ( String key : specMapRevalidation.keySet() ) {
-      List<Object> criterion = specMapRevalidation.get(key);
-      assertThat("Specification map has incorrect string class",
-          criterion.get(0) instanceof String, is(true));
-    }
+    assertThat("Values list has incorrect date class",
+        valuesListOutcome.get(0) instanceof LocalDate, is(true));
+
+    assertThat("Values list has incorrect string class",
+        valuesListDetail.get(0) instanceof String, is(true));
+
+    assertThat("Values list has incorrect string class",
+        valuesListRevalidation.get(0) instanceof String, is(true));
   }
 
   @Test
-  public void shouldGetNullSpecificationMapOnError() {
+  public void shouldGetExistingValuesForUnknownField() {
     //given
-    ColumnFilter columnFilter = new ColumnFilter("invalid key",
+    ColumnFilter columnFilter = new ColumnFilter("unknown",
         Lists.newArrayList("any value"));
+    ColumnFilter columnFilterDotted = new ColumnFilter("unknown.value",
+        Lists.newArrayList("another value"));
 
     //when
-    Map<String, List<Object>> specMap = SpecificationFactory
-        .getAssessmentSpecFromColumnFilter(columnFilter);
+    List<Object> valuesList = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilter);
+    List<Object> valuesListDotted = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilterDotted);
 
     //then
-    assertNull(specMap);
+    assertThat("Unknown field values list has incorrect value",
+        valuesList.get(0), is("any value"));
+    assertThat("Unknown dotted field values list has incorrect value",
+        valuesListDotted.get(0), is("another value"));
+  }
+
+  @Test
+  public void shouldGetNullForInvalidDates() {
+    //given
+    ColumnFilter columnFilter = new ColumnFilter("reviewDate",
+        Lists.newArrayList("2021-01-01", "bad date"));
+
+    //when
+    List<Object> valuesList = SpecificationFactory
+        .getDateAwareValuesFromColumnFilter(columnFilter);
+
+    //then
+    assertNull(valuesList);
   }
 }

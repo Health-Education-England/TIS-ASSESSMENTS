@@ -18,9 +18,12 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentListMapper;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -167,10 +170,8 @@ public class AssessmentServiceImpl implements AssessmentService {
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
       columnFilters.forEach(cf -> {
-          Map<String, List<Object>> specMap = SpecificationFactory.getAssessmentSpecFromColumnFilter(cf);
-          for ( String key : specMap.keySet() ) {
-            specs.add(in(key, specMap.get(key)));
-          }
+        List<Object> valuesList = SpecificationFactory.getDateAwareValuesFromColumnFilter(cf);
+        specs.add(in(cf.getName(), valuesList));
       });
     }
 

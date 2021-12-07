@@ -8,7 +8,8 @@ import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import java.lang.reflect.Field;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
@@ -119,14 +120,14 @@ public final class SpecificationFactory {
   }
 
   /**
-   * Returns a specification for an assessment using the provided column filter.
-   * Correctly handles LocalDate fields and dot-notated sub entity fields.
+   * Returns a list of values from the provided column filter.
+   * Correctly handles assessment LocalDate fields, including dot-notated sub entity fields.
    *
    * @param cf The column filter to use
-   * @return an Assessment Specification lambda
+   * @return A list of values
    */
-  public static Map<String, List<Object>> getAssessmentSpecFromColumnFilter(ColumnFilter cf) {
-    Map<String, List<Object>> specMap = null;
+  public static List<Object> getDateAwareValuesFromColumnFilter(ColumnFilter cf) {
+    List<Object> valuesList;
     try {
       String[] subEntity = StringUtils.split(cf.getName(), DOT);
       Field field;
@@ -152,13 +153,15 @@ public final class SpecificationFactory {
         List<Object> localDates = cf.getValues().stream()
             .map(c -> LocalDate.parse(c.toString()))
             .collect(Collectors.toList());
-        specMap = Collections.singletonMap(cf.getName(), localDates);
+        valuesList = localDates;
       } else {
-        specMap = Collections.singletonMap(cf.getName(), cf.getValues());
+        valuesList = cf.getValues();
       }
-    } catch (NoSuchFieldException | DateTimeParseException ignored) {
-      //ignore this columnFilter
+    } catch (NoSuchFieldException e) {
+      valuesList = cf.getValues(); //allow calling function to handle this
+    } catch (DateTimeParseException e) {
+      valuesList = null; //query will thus ignore invalid date values
     }
-    return specMap;
+    return valuesList;
   }
 }
