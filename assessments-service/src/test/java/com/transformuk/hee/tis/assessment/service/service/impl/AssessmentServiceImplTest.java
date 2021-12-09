@@ -57,6 +57,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -552,7 +553,7 @@ public class AssessmentServiceImplTest {
     List<Assessment> foundAssessments = Lists.newArrayList(assessment1);
     Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
 
-    when(assessmentRepositoryMock.findAll(specificationsArgumentCaptor.capture(), eq(pageable)))
+    when(assessmentRepositoryMock.findAll(any(Specification.class), eq(pageable)))
         .thenReturn(pagedFoundAssessments);
     when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
 

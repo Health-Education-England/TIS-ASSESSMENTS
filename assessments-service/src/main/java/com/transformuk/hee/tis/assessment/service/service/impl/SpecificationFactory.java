@@ -15,6 +15,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -22,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
  * For more info please {@see https://jverhoelen.github.io/spring-data-queries-jpa-criteria-api/}
  */
 public final class SpecificationFactory {
+  private static final Logger log = LoggerFactory.getLogger(SpecificationFactory.class);
 
   private static final String DOT = ".";
   private static final String TRUE = "true";
@@ -145,7 +148,7 @@ public final class SpecificationFactory {
             field = AssessmentDetail.class.getDeclaredField(subEntity[1]);
             break;
           default:
-            throw new NoSuchFieldException(subEntity[0]);
+            throw new ClassNotFoundException(subEntity[0]);
         }
       }
       if (field.getType().equals(LocalDate.class)) {
@@ -156,8 +159,9 @@ public final class SpecificationFactory {
       } else {
         valuesList = cf.getValues();
       }
-    } catch (NoSuchFieldException e) {
+    } catch (NoSuchFieldException | ClassNotFoundException e) {
       valuesList = cf.getValues(); //allow calling function to handle this
+      log.debug("Assessment field or subEntity {} not found", e.getMessage());
     } catch (DateTimeParseException e) {
       valuesList = null; //query will thus ignore invalid date values
     }

@@ -169,10 +169,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
-      columnFilters.forEach(cf -> {
-        List<Object> valuesList = SpecificationFactory.getDateAwareValuesFromColumnFilter(cf);
-        specs.add(in(cf.getName(), valuesList));
-      });
+      columnFilters.forEach(cf -> specs.add(
+          in(cf.getName(), SpecificationFactory.getDateAwareValuesFromColumnFilter(cf))));
     }
 
     Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));

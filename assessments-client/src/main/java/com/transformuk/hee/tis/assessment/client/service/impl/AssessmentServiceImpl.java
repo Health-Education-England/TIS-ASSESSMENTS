@@ -98,15 +98,11 @@ public class AssessmentServiceImpl extends AbstractClientService {
                                              LocalDate reviewDate, String outcome) {
 
     String columnFiltersJson;
-    try {
-      columnFiltersJson = URLEncoder.encode("{\"traineeId\": [\"" + traineeId + "\"]"
+    columnFiltersJson = urlEncode("{\"traineeId\": [\"" + traineeId + "\"]"
           + ", \"programmeMembershipId\": [\"" + programmeMembershipId + "\"]"
           + ", \"reviewDate\": [\"" + reviewDate + "\"]"
           + ", \"outcome.outcome\": [\"" + outcome + "\"]"
-          + "}", "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new AssertionError("UTF-8 is unknown");
-    }
+          + "}");
 
     return assessmentRestTemplate.exchange(
         serviceUrl + API_TRAINEE_ASSESSMENTS + "?columnFilters={columnFiltersJson}",
