@@ -33,6 +33,8 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutco
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeReasonMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapperImpl;
+
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -55,6 +57,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -532,6 +535,32 @@ public class AssessmentServiceImplTest {
     assertThat("Unexpected ID.", assessmentListDto.getId(), is(2L));
     assertThat("Unexpected trainee ID.", assessmentListDto.getTraineeId(), is(TRAINEE_ID));
     assertThat("Unexpected first name.", assessmentListDto.getFirstName(), is("firstName2"));
+  }
+
+  @Test
+  public void advancedSearchShouldSearchWithColumnFilters() {
+    String reviewDateString = "2021-01-01";
+    Assessment assessment1 = new Assessment();
+    assessment1.setId(1L);
+    assessment1.setTraineeId(TRAINEE_ID);
+    assessment1.setReviewDate(LocalDate.parse(reviewDateString));
+
+    ColumnFilter columnFilter = new ColumnFilter("reviewDate",
+        Lists.newArrayList(reviewDateString));
+    List<ColumnFilter> columnFilters = Lists.newArrayList(columnFilter);
+    Pageable pageable = new PageRequest(0, 20);
+
+    List<Assessment> foundAssessments = Lists.newArrayList(assessment1);
+    Page<Assessment> pagedFoundAssessments = new PageImpl<>(foundAssessments);
+
+    when(assessmentRepositoryMock.findAll(any(Specification.class), eq(pageable)))
+        .thenReturn(pagedFoundAssessments);
+    when(permissionServiceMock.isProgrammeObserver()).thenReturn(false);
+
+    Page<AssessmentListDTO> result
+        = testObj.advancedSearch(null, columnFilters, pageable);
+
+    assertThat("Unexpected result count.", result.getTotalElements(), is(1L));
   }
 
   @Test

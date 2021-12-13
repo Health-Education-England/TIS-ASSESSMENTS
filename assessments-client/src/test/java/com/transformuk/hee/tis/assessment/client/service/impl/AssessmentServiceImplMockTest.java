@@ -11,6 +11,10 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentListDTO;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +68,48 @@ public class AssessmentServiceImplMockTest {
         eq(ASSESSMENT_URL + "/api/trainee/assessments/" + StringUtils.join(ids, ",")),
         eq(HttpMethod.GET), eq(null), any(
             ParameterizedTypeReference.class));
+    assertThat("Unexpected DTOs.", returnDtos.get(0), is(dto));
+  }
+
+  @Test
+  public void shouldFindAssessments() {
+    // Given.
+    AssessmentListDTO dto = new AssessmentListDTO();
+    dto.setId(1L);
+    dto.setType("type");
+
+    String columnFiltersJson;
+    Long traineeId = 1L;
+    Long programmeMembershipId = 1L;
+    LocalDate reviewDate = LocalDate.parse("2021-01-01");
+    String outcome = "1";
+    try {
+      columnFiltersJson = URLEncoder.encode("{\"traineeId\": [\"" + traineeId + "\"]"
+          + ", \"programmeMembershipId\": [\"" + programmeMembershipId + "\"]"
+          + ", \"reviewDate\": [\"" + reviewDate + "\"]"
+          + ", \"outcome.outcome\": [\"" + outcome + "\"]"
+          + "}", "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new AssertionError("UTF-8 is unknown");
+    }
+    ParameterizedTypeReference<List<AssessmentListDTO>> ptr
+        = new ParameterizedTypeReference<List<AssessmentListDTO>>() {};
+    ResponseEntity<List<AssessmentListDTO>> response = ResponseEntity.ok(Lists.newArrayList(dto));
+    when(restTemplateMock.exchange(anyString(),
+        eq(HttpMethod.GET),
+        eq(null),
+        eq(ptr),
+        eq(columnFiltersJson))).thenReturn(response);
+
+    // When.
+    List<AssessmentListDTO> returnDtos =
+        testObj.findAssessments(traineeId, programmeMembershipId, reviewDate, outcome);
+
+    // Then.
+    verify(restTemplateMock).exchange(
+        ASSESSMENT_URL + "/api/trainee/assessments/?columnFilters={columnFiltersJson}",
+        HttpMethod.GET, null,
+        ptr, columnFiltersJson);
     assertThat("Unexpected DTOs.", returnDtos.get(0), is(dto));
   }
 

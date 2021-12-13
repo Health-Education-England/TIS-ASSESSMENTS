@@ -163,13 +163,14 @@ public class AssessmentServiceImpl implements AssessmentService {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
       Specifications inProgrammes = Specifications
-          .where(SpecificationFactory.in("programmeId", set));
+          .where(in("programmeId", set));
       specs.add(inProgrammes);
     }
 
     // add the column filters criteria
     if (columnFilters != null && !columnFilters.isEmpty()) {
-      columnFilters.forEach(cf -> specs.add(in(cf.getName(), cf.getValues())));
+      columnFilters.forEach(cf -> specs.add(
+          in(cf.getName(), SpecificationFactory.getDateAwareValuesFromColumnFilter(cf))));
     }
 
     Specifications<Assessment> fullSpec = Specifications.where(specs.get(0));
@@ -240,7 +241,7 @@ public class AssessmentServiceImpl implements AssessmentService {
       Collection<Object> set = Collections
           .unmodifiableSet(permissionService.getUsersProgrammeIds());
       Specifications inProgrammes = Specifications
-          .where(SpecificationFactory.in("programmeId", set));
+          .where(in("programmeId", set));
       specs.add(inProgrammes);
     }
 
