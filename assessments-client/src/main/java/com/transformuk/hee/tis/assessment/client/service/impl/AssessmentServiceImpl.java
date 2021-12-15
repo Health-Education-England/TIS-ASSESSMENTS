@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -84,9 +85,37 @@ public class AssessmentServiceImpl extends AbstractClientService {
   }
 
   /**
+   * Helper function to build the Json columnFilters query string from the supplied parameters.
+   *
+   * @param traineeId             The trainee id
+   * @param programmeMembershipId The programme membership id, derived from programme and curriculum
+   * @param reviewDate            The review date
+   * @param outcome               The assessment outcome value
+   * @return The Json columnFilters string
+   */
+  public String getFindAssessmentsJson(Long traineeId, Long programmeMembershipId,
+                                       LocalDate reviewDate, String outcome) {
+    String traineeIdClause = (traineeId == null ? ""
+        : "\"traineeId\": [\"" + traineeId + "\"]");
+    String programmeMembershipClause = (programmeMembershipId == null ? ""
+        : "\"programmeMembershipId\": [\"" + programmeMembershipId + "\"]");
+    String reviewDateClause = (reviewDate == null ? ""
+        : "\"reviewDate\": [\"" + reviewDate + "\"]");
+    String outcomeClause = (outcome == null ? ""
+        : "\"outcome.outcome\": [\"" + outcome + "\"]");
+
+    String joinedClauses =
+        Stream.of(traineeIdClause, programmeMembershipClause, reviewDateClause, outcomeClause)
+            .filter(s -> !s.isEmpty())
+            .collect(Collectors.joining(", "));
+
+    return "{" + joinedClauses + "}";
+  }
+
+  /**
    * Finds assessments that match the supplied criteria.
-   * The criteria should uniquely identify an assessment: if there are multiple matches these would
-   * be considered duplicates.
+   * If all criteria are not null, they should uniquely identify an assessment: if there are
+   * multiple matches these would be considered duplicates.
    *
    * @param traineeId             The trainee id
    * @param programmeMembershipId The programme membership id, derived from programme and curriculum
@@ -97,12 +126,8 @@ public class AssessmentServiceImpl extends AbstractClientService {
   public List<AssessmentListDTO> findAssessments(Long traineeId, Long programmeMembershipId,
                                              LocalDate reviewDate, String outcome) {
 
-    String columnFiltersJson;
-    columnFiltersJson = urlEncode("{\"traineeId\": [\"" + traineeId + "\"]"
-          + ", \"programmeMembershipId\": [\"" + programmeMembershipId + "\"]"
-          + ", \"reviewDate\": [\"" + reviewDate + "\"]"
-          + ", \"outcome.outcome\": [\"" + outcome + "\"]"
-          + "}");
+    String columnFiltersJson = urlEncode(
+        getFindAssessmentsJson(traineeId, programmeMembershipId, reviewDate, outcome));
 
     return assessmentRestTemplate.exchange(
         serviceUrl + API_TRAINEE_ASSESSMENTS + "?columnFilters={columnFiltersJson}",
