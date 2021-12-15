@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,6 +112,21 @@ public class AssessmentServiceImplMockTest {
         HttpMethod.GET, null,
         ptr, columnFiltersJson);
     assertThat("Unexpected DTOs.", returnDtos.get(0), is(dto));
+  }
+
+  @Test
+  public void getFindAssessmentsJsonShouldHandleNulls() {
+    Long traineeId = 1L;
+    Long programmeMembershipId = null;
+    LocalDate reviewDate = LocalDate.parse("2021-01-01");
+    String outcome = null;
+    String correctJson = "{\"traineeId\": [\"" + traineeId + "\"], " +
+        "\"reviewDate\": [\"" + reviewDate + "\"]}";
+
+    String columnFiltersJson = testObj.getFindAssessmentsJson(traineeId, programmeMembershipId,
+        reviewDate, outcome);
+
+    Assert.assertThat("Unexpected columnFilters Json.", columnFiltersJson, is(correctJson));
   }
 
   @Test
