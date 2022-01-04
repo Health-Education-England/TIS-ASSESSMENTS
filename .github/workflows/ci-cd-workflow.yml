@@ -3,7 +3,7 @@ name: PR Analysis Workflow
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
