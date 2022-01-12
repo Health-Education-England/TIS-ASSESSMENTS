@@ -12,7 +12,7 @@
 
   <groupId>com.transformuk.hee.tis</groupId>
   <artifactId>assessments-service</artifactId>
-  <version>1.14.0</version>
+  <version>1.14.1</version>
   <packaging>war</packaging>
 
   <properties>
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>com.transformuk.hee</groupId>
       <artifactId>tis-parent-client</artifactId>
-      <version>4.1.2</version>
+      <version>5.1.4</version>
     </dependency>
     <dependency>
       <groupId>com.transformuk.hee.tis</groupId>
