@@ -264,10 +264,10 @@ public class AssessmentResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) {
-    assessmentService.deleteAssessment(assessmentId);
-    return ResponseEntity.ok()
-        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, assessmentId.toString()))
-        .build();
+
+    boolean success =  assessmentService.deleteAssessment(assessmentId);
+
+    return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
   }
 
   //Kept to allow compatibility with audit service
