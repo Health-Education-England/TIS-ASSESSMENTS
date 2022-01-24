@@ -454,7 +454,7 @@ public class AssessmentResourceTest {
 
   @Test
   public void deleteAssessmentShouldReturnOK() throws Exception {
-    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(true);
+    when(assessmentServiceMock.deleteAssessment(ASSESSMENT_ID)).thenReturn(true);
     mockMvc.perform(delete("/api/trainee/assessments/{assessmentId}", ASSESSMENT_ID))
         .andExpect(status().isOk());
   }
