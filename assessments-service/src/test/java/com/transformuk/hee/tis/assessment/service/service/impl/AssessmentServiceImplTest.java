@@ -439,35 +439,6 @@ public class AssessmentServiceImplTest {
     Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
   }
 
-  @Test(expected = NullPointerException.class)
-  public void deleteAssessementShouldThrowExceptionWhenAssessmentIdIsNull() {
-    testObj.deleteAssessment(null);
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
-  }
-
-  @Test
-  public void deleteAssessmentShouldReturnFalseWhenAssessmentCannotBeFound() {
-    when(assessmentRepositoryMock.exists(ASSESSMENT_ID)).thenReturn(false);
-
-    boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
-
-    verify(assessmentRepositoryMock, never()).delete(anyLong());
-    Assert.assertFalse(result);
-  }
-
-  @Test
-  public void deleteAssessementShouldReturnTrueWhenAssessmentIsDeleted() {
-    Assessment assessment = new Assessment();
-    assessment.setId(ASSESSMENT_ID);
-
-    when(assessmentRepositoryMock.exists(ASSESSMENT_ID)).thenReturn(true);
-
-    boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
-
-    verify(assessmentRepositoryMock).delete(ASSESSMENT_ID);
-    Assert.assertTrue(result);
-  }
-
   @Test
   public void findAllForTraineeShouldReturnAllAssessmentsForATrainee() {
     Assessment assessment1 = new Assessment();
