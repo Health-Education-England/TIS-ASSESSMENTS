@@ -274,25 +274,6 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional
-  public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
-    Preconditions.checkNotNull(traineeId);
-    Preconditions.checkNotNull(assessmentId);
-
-    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
-    if (traineeAssessment.isPresent()) {
-      Assessment assessment = traineeAssessment.get();
-
-      // set softDeletedDate timestamp
-      assessment.setSoftDeletedDate(java.time.LocalDate.now());
-      assessmentRepository.save(assessment);
-
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  @Transactional
   public boolean deleteAssessment(Long assessmentId) {
     Preconditions.checkNotNull(assessmentId);
 
