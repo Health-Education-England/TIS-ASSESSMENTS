@@ -274,20 +274,6 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional
-  public boolean deleteAssessment(Long assessmentId) {
-    Preconditions.checkNotNull(assessmentId);
-
-    if (assessmentRepository.exists(assessmentId)) {
-      // cascade delete is enabled on the relating entities so don't need to delete
-      // those manually
-      assessmentRepository.delete(assessmentId);
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  @Transactional
   public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
     if (assessmentDtos == null || assessmentDtos.isEmpty()) {
       return assessmentDtos;
