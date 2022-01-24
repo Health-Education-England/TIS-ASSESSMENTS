@@ -453,6 +453,13 @@ public class AssessmentResourceTest {
   }
 
   @Test
+  public void deleteAssessmentShouldReturnOK() throws Exception {
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(true);
+    mockMvc.perform(delete("/api/trainee/assessments/{assessmentId}", ASSESSMENT_ID))
+        .andExpect(status().isOk());
+  }
+
+  @Test
   public void getAllAssessmentsShouldReturnAllAssessmentsPaginatedWhenNoSearchQueryProvided() throws Exception {
     AssessmentListDTO assessmentListDTO = new AssessmentListDTO();
     assessmentListDTO.setId(1L);

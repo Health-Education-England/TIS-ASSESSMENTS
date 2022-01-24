@@ -254,6 +254,22 @@ public class AssessmentResource {
     return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * DELETE  /assessments/:assessmentId : delete a specific assessment.
+   *
+   * @param assessmentId the id of the assessment to delete
+   * @return the ResponseEntity with status 200 (OK)
+   */
+  @DeleteMapping("/assessments/{assessmentId}")
+  @Timed
+  @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
+  public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) {
+
+    boolean success =  assessmentService.deleteAssessment(assessmentId);
+
+    return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+  }
+
   //Kept to allow compatibility with audit service
   private ResponseEntity<AssessmentDTO> getAssessment(Long assessmentId) {
     AssessmentDTO assessmentDTO = assessmentService.findOne(assessmentId);
