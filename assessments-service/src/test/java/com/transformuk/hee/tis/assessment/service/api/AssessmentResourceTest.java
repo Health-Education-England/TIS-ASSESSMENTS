@@ -98,6 +98,20 @@ public class AssessmentResourceTest {
   }
 
   @Test
+  public void deleteTraineeAssessmentShouldReturnBadRequestWhenAssessmentForTraineeNotFound() throws Exception {
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(false);
+    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void deleteTraineeAssessmentShouldReturnOKWhenAssessmentForTraineeIsFound() throws Exception {
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID)).thenReturn(true);
+    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID))
+        .andExpect(status().isOk());
+  }
+
+  @Test
   public void getTraineeAssessmentsShouldReturnAssessmentForATraineePaginated() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
     assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
@@ -453,11 +467,45 @@ public class AssessmentResourceTest {
   }
 
   @Test
+  public void deleteTraineeAssessmentShouldReturnBadRequestWhenDeletionFails() throws Exception {
+
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID)).thenReturn(false);
+
+    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
+        .andExpect(status().isBadRequest());
+
+  }
+
+  @Test
+  public void deleteTraineeAssessmentShouldReturnOkAfterSuccessfulDeletion() throws Exception {
+
+    when(assessmentServiceMock.deleteTraineeAssessment(ASSESSMENT_ID_1, TRAINEE_ID)).thenReturn(true);
+
+    mockMvc.perform(delete("/api/trainee/{traineeId}/assessments/{assessmentId}", TRAINEE_ID, ASSESSMENT_ID_1))
+        .andExpect(status().isOk());
+
+  }
+
+  @Test
   public void deleteAssessmentShouldReturnOK() throws Exception {
     when(assessmentServiceMock.deleteAssessment(ASSESSMENT_ID)).thenReturn(true);
     mockMvc.perform(delete("/api/trainee/assessments/{assessmentId}", ASSESSMENT_ID))
         .andExpect(status().isOk());
   }
+
+  @Test
+  public void deleteAssessmentShouldReturnBadRequestWhenAssessmentForTraineeNotFound() throws Exception {
+    when(assessmentServiceMock.deleteAssessment(ASSESSMENT_ID)).thenReturn(false);
+    mockMvc.perform(delete("/api/trainee/assessments/{assessmentId}", ASSESSMENT_ID))
+        .andExpect(status().isBadRequest());
+  }
+
+//  @Test
+//  public void deleteAssessmentShouldReturnError() throws Exception {
+//    when(assessmentServiceMock.deleteAssessment(ASSESSMENT_ID)).thenReturn(true);
+//    mockMvc.perform(delete("/api/trainee/assessments/{assessmentId}", ASSESSMENT_ID))
+//        .andExpect(status().);
+//  }
 
   @Test
   public void getAllAssessmentsShouldReturnAllAssessmentsPaginatedWhenNoSearchQueryProvided() throws Exception {
