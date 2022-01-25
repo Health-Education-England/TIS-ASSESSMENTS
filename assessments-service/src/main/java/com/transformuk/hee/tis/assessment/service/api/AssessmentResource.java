@@ -264,35 +264,16 @@ public class AssessmentResource {
   @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) {
-    assessmentService.deleteAssessment(assessmentId);
-    return ResponseEntity.ok()
-        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, assessmentId.toString()))
-        .build();
+
+    boolean success =  assessmentService.deleteAssessment(assessmentId);
+
+    return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
   }
 
   //Kept to allow compatibility with audit service
   private ResponseEntity<AssessmentDTO> getAssessment(Long assessmentId) {
     AssessmentDTO assessmentDTO = assessmentService.findOne(assessmentId);
     return ResponseUtil.wrapOrNotFound(Optional.ofNullable(assessmentDTO));
-  }
-
-  /**
-   * PUT  /:traineeId/assessments/:assessmentId : get the an assessment thats linked to a trainee.
-   *
-   * @param traineeId     the assessmentId of the trainee
-   * @param assessmentId  the assessmentId of the assessmentDTO to retrieve
-   * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
-   */
-  @PutMapping("/{traineeId}/assessments/{assessmentId}/delete")
-  @Timed
-  @PreAuthorize("hasAuthority('assessment:view:entities')")
-  public ResponseEntity<AssessmentDTO> softDeleteTraineeAssessment(
-    @PathVariable Long traineeId,
-    @PathVariable Long assessmentId) throws URISyntaxException {
-
-    boolean success =  assessmentService.softDeleteTraineeAssessment(assessmentId, traineeId);
-
-    return new ResponseEntity<>(success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
   }
 
   /**

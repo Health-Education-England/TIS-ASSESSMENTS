@@ -257,6 +257,20 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   @Override
   @Transactional
+  public boolean deleteAssessment(Long assessmentId) {
+    Preconditions.checkNotNull(assessmentId);
+
+    if (assessmentRepository.exists(assessmentId)) {
+      // cascade delete is enabled on the relating entities so don't need to delete
+      // those manually
+      assessmentRepository.delete(assessmentId);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
   public boolean deleteTraineeAssessment(Long assessmentId, Long traineeId) {
     Preconditions.checkNotNull(traineeId);
     Preconditions.checkNotNull(assessmentId);
@@ -267,39 +281,6 @@ public class AssessmentServiceImpl implements AssessmentService {
       // cascade delete is enabled on the relating entities so dont need to delete
       // those manually
       assessmentRepository.delete(assessment);
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  @Transactional
-  public boolean softDeleteTraineeAssessment(Long assessmentId, Long traineeId) {
-    Preconditions.checkNotNull(traineeId);
-    Preconditions.checkNotNull(assessmentId);
-
-    Optional<Assessment> traineeAssessment = findTraineeAssessment(traineeId, assessmentId);
-    if (traineeAssessment.isPresent()) {
-      Assessment assessment = traineeAssessment.get();
-
-      // set softDeletedDate timestamp
-      assessment.setSoftDeletedDate(java.time.LocalDate.now());
-      assessmentRepository.save(assessment);
-
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  @Transactional
-  public boolean deleteAssessment(Long assessmentId) {
-    Preconditions.checkNotNull(assessmentId);
-
-    if (assessmentRepository.exists(assessmentId)) {
-      // cascade delete is enabled on the relating entities so don't need to delete
-      // those manually
-      assessmentRepository.delete(assessmentId);
       return true;
     }
     return false;
