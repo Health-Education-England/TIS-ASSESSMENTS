@@ -611,7 +611,6 @@ public class AssessmentResourceIntTest {
   public void bulkUpdateAssessmentShouldCreateNestedDTOsWhenIdIsNull() throws Exception {
     // Initialize the database
     assessment = new Assessment()
-        .id(DEFAULT_ID)
         .traineeId(DEFAULT_PERSON_ID)
         .firstName(DEFAULT_FIRST_NAME)
         .lastName(DEFAULT_LAST_NAME)
@@ -627,9 +626,10 @@ public class AssessmentResourceIntTest {
         .softDeletedDate(null);
     assessmentRepository.saveAndFlush(assessment);
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
+    Long assessmentId = assessment.getId();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findOne(assessmentId);
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -656,22 +656,22 @@ public class AssessmentResourceIntTest {
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(DEFAULT_ID);
+    Assessment testAssessment = assessmentRepository.findOne(assessmentId);
 
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
 
     assertThat(testAssessment.getDetail()).isNotNull();
-    assertThat(testAssessment.getDetail().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getDetail().getId()).isEqualTo(assessmentId);
     assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
 
     assertThat(testAssessment.getOutcome()).isNotNull();
-    assertThat(testAssessment.getOutcome().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getOutcome().getId()).isEqualTo(assessmentId);
     assertThat(testAssessment.getOutcome().getOutcome()).isEqualTo(DEFAULT_OUTCOME);
 
     assertThat(testAssessment.getRevalidation()).isNotNull();
-    assertThat(testAssessment.getRevalidation().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getRevalidation().getId()).isEqualTo(assessmentId);
     assertThat(testAssessment.getRevalidation().getKnownConcerns())
         .isEqualTo(DEFAULT_KNOWN_CONCERNS);
   }
