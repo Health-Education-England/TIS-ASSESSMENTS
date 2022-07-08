@@ -286,6 +286,37 @@ public class AssessmentServiceImpl implements AssessmentService {
     return false;
   }
 
+  private AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
+    Assessment assessment = assessmentMapper.toEntity(assessmentDto);
+    AssessmentDetailDTO assessmentDetailDto = null;
+    AssessmentOutcomeDTO assessmentOutcomeDto = null;
+    RevalidationDTO revalidationDto = null;
+
+    if (assessmentDto.getDetail() != null) {
+      assessmentDetailDto = assessmentDto.getDetail().getId() != null
+          ? assessmentDetailService.save(assessment, assessmentDto.getDetail())
+          : assessmentDetailService.create(assessment, assessmentDto.getDetail());
+    }
+
+    if (assessmentDto.getOutcome() != null) {
+      assessmentOutcomeDto = assessmentDto.getOutcome().getId() != null
+          ? assessmentOutcomeService.save(assessment, assessmentDto.getOutcome())
+          : assessmentOutcomeService.create(assessment, assessmentDto.getOutcome());
+    }
+
+    if (assessmentDto.getRevalidation() != null) {
+      revalidationDto = assessmentDto.getRevalidation().getId() != null
+          ? revalidationService.save(assessment, assessmentDto.getRevalidation())
+          : revalidationService.create(assessment, assessmentDto.getRevalidation());
+    }
+
+    AssessmentDTO savedAssessmentDto = save(assessmentDto);
+    savedAssessmentDto.setDetail(assessmentDetailDto);
+    savedAssessmentDto.setOutcome(assessmentOutcomeDto);
+    savedAssessmentDto.setRevalidation(revalidationDto);
+    return savedAssessmentDto;
+  }
+
   @Override
   @Transactional
   public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
@@ -297,28 +328,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     AssessmentDTO returnDto = null;
     for (AssessmentDTO assessmentDto : assessmentDtos) {
       try {
-        Assessment assessment = assessmentMapper.toEntity(assessmentDto);
-        AssessmentDetailDTO assessmentDetailDto = null;
-        AssessmentOutcomeDTO assessmentOutcomeDto = null;
-        RevalidationDTO revalidationDto = null;
-        if (assessmentDto.getDetail() != null && assessmentDto.getDetail().getId() != null) {
-          assessmentDetailDto =
-              assessmentDetailService.save(assessment, assessmentDto.getDetail());
-        }
-        if (assessmentDto.getOutcome() != null && assessmentDto.getOutcome().getId() != null) {
-          assessmentOutcomeDto =
-              assessmentOutcomeService.save(assessment, assessmentDto.getOutcome());
-        }
-        if (assessmentDto.getRevalidation() != null
-            && assessmentDto.getRevalidation().getId() != null) {
-          revalidationDto =
-              revalidationService.save(assessment, assessmentDto.getRevalidation());
-        }
-        AssessmentDTO savedAssessmentDto = save(assessmentDto);
-        savedAssessmentDto.setDetail(assessmentDetailDto);
-        savedAssessmentDto.setOutcome(assessmentOutcomeDto);
-        savedAssessmentDto.setRevalidation(revalidationDto);
-        returnDto = savedAssessmentDto;
+        returnDto = updateAssessmentWithNestedDtos(assessmentDto);
       } catch (Exception e) {
         returnDto = assessmentDto;
         returnDto.addMessage(String.format(ASSESSMENT_UPDATE_FAILED, assessmentDto.getId()));
