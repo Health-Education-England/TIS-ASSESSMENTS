@@ -293,33 +293,21 @@ public class AssessmentServiceImpl implements AssessmentService {
     RevalidationDTO revalidationDto = null;
 
     if (assessmentDto.getDetail() != null) {
-      if (assessmentDto.getDetail().getId() != null) {
-        assessmentDetailDto = assessmentDetailService.save(assessment,
-            assessmentDto.getDetail());
-      } else {
-        assessmentDetailDto = assessmentDetailService.create(assessment,
-            assessmentDto.getDetail());
-      }
+      assessmentDetailDto = assessmentDto.getDetail().getId() != null
+          ? assessmentDetailService.save(assessment, assessmentDto.getDetail())
+          : assessmentDetailService.create(assessment, assessmentDto.getDetail());
     }
 
     if (assessmentDto.getOutcome() != null) {
-      if (assessmentDto.getOutcome().getId() != null) {
-        assessmentOutcomeDto =
-            assessmentOutcomeService.save(assessment, assessmentDto.getOutcome());
-      } else {
-        assessmentOutcomeDto =
-            assessmentOutcomeService.create(assessment, assessmentDto.getOutcome());
-      }
+      assessmentOutcomeDto = assessmentDto.getOutcome().getId() != null
+          ? assessmentOutcomeService.save(assessment, assessmentDto.getOutcome())
+          : assessmentOutcomeService.create(assessment, assessmentDto.getOutcome());
     }
 
     if (assessmentDto.getRevalidation() != null) {
-      if (assessmentDto.getRevalidation().getId() != null) {
-        revalidationDto =
-            revalidationService.save(assessment, assessmentDto.getRevalidation());
-      } else {
-        revalidationDto =
-            revalidationService.create(assessment, assessmentDto.getRevalidation());
-      }
+      revalidationDto = assessmentDto.getRevalidation().getId() != null
+          ? revalidationService.save(assessment, assessmentDto.getRevalidation())
+          : revalidationService.create(assessment, assessmentDto.getRevalidation());
     }
 
     AssessmentDTO savedAssessmentDto = save(assessmentDto);
