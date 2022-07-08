@@ -2,6 +2,8 @@ package com.transformuk.hee.tis.assessment.service.api;
 
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDTO;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
+import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
+import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.Application;
 import com.transformuk.hee.tis.assessment.service.TestUtil;
 import com.transformuk.hee.tis.assessment.service.exception.ExceptionTranslator;
@@ -13,6 +15,7 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
 import java.util.Collections;
+import org.assertj.core.util.Lists;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -138,7 +141,10 @@ public class AssessmentResourceIntTest {
 
   private static final String DEFAULT_ASSESSMENT_TYPE = "ARCP";
   private static final String DEFAULT_INTREPID_ID = "1234567";
-  public static final long DEFAULT_ID = 1L;
+  private static final long DEFAULT_ID = 1L;
+
+  private static final String DEFAULT_OUTCOME = "1";
+  private static final Boolean DEFAULT_KNOWN_CONCERNS = Boolean.FALSE;
 
   @Autowired
   private AssessmentRepository assessmentRepository;
@@ -599,5 +605,74 @@ public class AssessmentResourceIntTest {
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
     assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(UPDATED_CURRICULUM_ID);
     assertThat(testAssessment.getDetail().getCurriculumName()).isEqualTo(UPDATED_CURRICULUM_NAME);
+  }
+
+  @Test
+  public void bulkUpdateAssessmentShouldCreateNestedDTOsWhenIdIsNull() throws Exception {
+    // Initialize the database
+    assessment = new Assessment()
+        .id(DEFAULT_ID)
+        .traineeId(DEFAULT_PERSON_ID)
+        .firstName(DEFAULT_FIRST_NAME)
+        .lastName(DEFAULT_LAST_NAME)
+        .gmcNumber(DEFAULT_GMC_NUMBER)
+        .gdcNumber(DEFAULT_GDC_NUMBER)
+        .publicHealthNumber(DEFAULT_PH_NUMBER)
+        .reviewDate(DEFAULT_START_DATE)
+        .programmeNumber(DEFAULT_PROGRAMME_NUMBER)
+        .programmeName(DEFAULT_PROGRAMME_NAME)
+        .programmeId(DEFAULT_PROGRAMME_ID)
+        .type(DEFAULT_ASSESSMENT_TYPE)
+        .intrepidId(DEFAULT_INTREPID_ID)
+        .softDeletedDate(null);
+    assessmentRepository.saveAndFlush(assessment);
+    int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
+
+    // Update the assessment
+    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    updatedAssessment
+        .reviewDate(UPDATED_START_DATE)
+        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
+        .programmeName(UPDATED_PROGRAMME_NAME);
+    AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
+
+    // Nested detail, outcome and revalidation doesn't have ID
+    AssessmentDetailDTO assessmentDetailDto = new AssessmentDetailDTO()
+        .curriculumId(DEFAULT_CURRICULUM_ID);
+    AssessmentOutcomeDTO assessmentOutcomeDto = new AssessmentOutcomeDTO()
+        .outcome(DEFAULT_OUTCOME);
+    assessmentOutcomeDto.setReasons(Lists.emptyList());
+    RevalidationDTO revalidationDto = new RevalidationDTO()
+        .knownConcerns(DEFAULT_KNOWN_CONCERNS);
+    assessmentDTO.setDetail(assessmentDetailDto);
+    assessmentDTO.setOutcome(assessmentOutcomeDto);
+    assessmentDTO.setRevalidation(revalidationDto);
+
+    restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
+        .andExpect(status().isOk());
+
+    // Validate the Assessment in the database
+    List<Assessment> assessmentList = assessmentRepository.findAll();
+    assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
+    Assessment testAssessment = assessmentRepository.findOne(DEFAULT_ID);
+
+    assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
+    assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
+    assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
+
+    assertThat(testAssessment.getDetail()).isNotNull();
+    assertThat(testAssessment.getDetail().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getDetail().getCurriculumId()).isEqualTo(DEFAULT_CURRICULUM_ID);
+
+    assertThat(testAssessment.getOutcome()).isNotNull();
+    assertThat(testAssessment.getOutcome().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getOutcome().getOutcome()).isEqualTo(DEFAULT_OUTCOME);
+
+    assertThat(testAssessment.getRevalidation()).isNotNull();
+    assertThat(testAssessment.getRevalidation().getId()).isEqualTo(DEFAULT_ID);
+    assertThat(testAssessment.getRevalidation().getKnownConcerns())
+        .isEqualTo(DEFAULT_KNOWN_CONCERNS);
   }
 }

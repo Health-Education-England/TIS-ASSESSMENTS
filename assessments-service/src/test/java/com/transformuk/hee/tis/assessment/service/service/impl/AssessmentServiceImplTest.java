@@ -652,4 +652,27 @@ public class AssessmentServiceImplTest {
     Assert.assertEquals(assessmentDto, result.get(0));
     Assert.assertEquals(1, assessmentDto.getMessageList().size());
   }
+
+  @Test
+  public void patchAssessmentShouldCreateNestedDTOsWhenIdIsNull() {
+    AssessmentDTO assessmentDto = new AssessmentDTO();
+    AssessmentDetailDTO assessmentDetailDto = new AssessmentDetailDTO();
+    AssessmentOutcomeDTO assessmentOutcomeDto = new AssessmentOutcomeDTO();
+    RevalidationDTO revalidationDto = new RevalidationDTO();
+    assessmentDetailDto.curriculumName("curriculumName");
+    assessmentOutcomeDto.outcome("1");
+    revalidationDto.knownConcerns(Boolean.FALSE);
+    assessmentDto.id(ASSESSMENT_ID).detail(assessmentDetailDto).outcome(assessmentOutcomeDto)
+        .revalidation(revalidationDto);
+
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
+
+    AssessmentDTO result = testObj.patchAssessments(assessmentDtos).get(0);
+
+    verify(assessmentDetailServiceMock).create(any(Assessment.class),
+        any(AssessmentDetailDTO.class));
+    verify(assessmentOutcomeServiceMock).create(any(Assessment.class),
+        any(AssessmentOutcomeDTO.class));
+    verify(revalidationServiceMock).create(any(Assessment.class), any(RevalidationDTO.class));
+  }
 }

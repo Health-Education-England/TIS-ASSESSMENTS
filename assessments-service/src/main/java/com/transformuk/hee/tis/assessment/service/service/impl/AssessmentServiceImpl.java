@@ -286,6 +286,49 @@ public class AssessmentServiceImpl implements AssessmentService {
     return false;
   }
 
+  private AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
+    Assessment assessment = assessmentMapper.toEntity(assessmentDto);
+    AssessmentDetailDTO assessmentDetailDto = null;
+    AssessmentOutcomeDTO assessmentOutcomeDto = null;
+    RevalidationDTO revalidationDto = null;
+
+    if (assessmentDto.getDetail() != null) {
+      if (assessmentDto.getDetail().getId() != null) {
+        assessmentDetailDto = assessmentDetailService.save(assessment,
+            assessmentDto.getDetail());
+      } else {
+        assessmentDetailDto = assessmentDetailService.create(assessment,
+            assessmentDto.getDetail());
+      }
+    }
+
+    if (assessmentDto.getOutcome() != null) {
+      if (assessmentDto.getOutcome().getId() != null) {
+        assessmentOutcomeDto =
+            assessmentOutcomeService.save(assessment, assessmentDto.getOutcome());
+      } else {
+        assessmentOutcomeDto =
+            assessmentOutcomeService.create(assessment, assessmentDto.getOutcome());
+      }
+    }
+
+    if (assessmentDto.getRevalidation() != null) {
+      if (assessmentDto.getRevalidation().getId() != null) {
+        revalidationDto =
+            revalidationService.save(assessment, assessmentDto.getRevalidation());
+      } else {
+        revalidationDto =
+            revalidationService.create(assessment, assessmentDto.getRevalidation());
+      }
+    }
+
+    AssessmentDTO savedAssessmentDto = save(assessmentDto);
+    savedAssessmentDto.setDetail(assessmentDetailDto);
+    savedAssessmentDto.setOutcome(assessmentOutcomeDto);
+    savedAssessmentDto.setRevalidation(revalidationDto);
+    return savedAssessmentDto;
+  }
+
   @Override
   @Transactional
   public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
@@ -297,28 +340,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     AssessmentDTO returnDto = null;
     for (AssessmentDTO assessmentDto : assessmentDtos) {
       try {
-        Assessment assessment = assessmentMapper.toEntity(assessmentDto);
-        AssessmentDetailDTO assessmentDetailDto = null;
-        AssessmentOutcomeDTO assessmentOutcomeDto = null;
-        RevalidationDTO revalidationDto = null;
-        if (assessmentDto.getDetail() != null && assessmentDto.getDetail().getId() != null) {
-          assessmentDetailDto =
-              assessmentDetailService.save(assessment, assessmentDto.getDetail());
-        }
-        if (assessmentDto.getOutcome() != null && assessmentDto.getOutcome().getId() != null) {
-          assessmentOutcomeDto =
-              assessmentOutcomeService.save(assessment, assessmentDto.getOutcome());
-        }
-        if (assessmentDto.getRevalidation() != null
-            && assessmentDto.getRevalidation().getId() != null) {
-          revalidationDto =
-              revalidationService.save(assessment, assessmentDto.getRevalidation());
-        }
-        AssessmentDTO savedAssessmentDto = save(assessmentDto);
-        savedAssessmentDto.setDetail(assessmentDetailDto);
-        savedAssessmentDto.setOutcome(assessmentOutcomeDto);
-        savedAssessmentDto.setRevalidation(revalidationDto);
-        returnDto = savedAssessmentDto;
+        returnDto = updateAssessmentWithNestedDtos(assessmentDto);
       } catch (Exception e) {
         returnDto = assessmentDto;
         returnDto.addMessage(String.format(ASSESSMENT_UPDATE_FAILED, assessmentDto.getId()));
