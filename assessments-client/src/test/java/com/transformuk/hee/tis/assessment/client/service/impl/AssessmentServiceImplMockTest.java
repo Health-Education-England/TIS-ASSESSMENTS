@@ -81,12 +81,12 @@ public class AssessmentServiceImplMockTest {
 
     String columnFiltersJson;
     Long traineeId = 1L;
-    Long programmeMembershipId = 1L;
+    Long curriculumMembershipId = 1L;
     LocalDate reviewDate = LocalDate.parse("2021-01-01");
     String outcome = "1";
     try {
       columnFiltersJson = URLEncoder.encode("{\"traineeId\": [\"" + traineeId + "\"]"
-          + ", \"programmeMembershipId\": [\"" + programmeMembershipId + "\"]"
+          + ", \"curriculumMembershipId\": [\"" + curriculumMembershipId + "\"]"
           + ", \"reviewDate\": [\"" + reviewDate + "\"]"
           + ", \"outcome.outcome\": [\"" + outcome + "\"]"
           + "}", "UTF-8");
@@ -104,7 +104,7 @@ public class AssessmentServiceImplMockTest {
 
     // When.
     List<AssessmentListDTO> returnDtos =
-        testObj.findAssessments(traineeId, programmeMembershipId, reviewDate, outcome);
+        testObj.findAssessments(traineeId, curriculumMembershipId, reviewDate, outcome);
 
     // Then.
     verify(restTemplateMock).exchange(
