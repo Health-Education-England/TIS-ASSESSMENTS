@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-jar
-          path: assessments-*/target/*.war
+          path: assessments-*/target/*.jar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
