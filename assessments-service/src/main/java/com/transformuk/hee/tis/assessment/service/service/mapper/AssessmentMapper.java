@@ -5,8 +5,6 @@ import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import org.mapstruct.Mapper;
 
 import java.util.List;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 /**
  * Mapper for the entity Assessment and its DTO AssessmentDTO.
@@ -17,12 +15,10 @@ import org.mapstruct.Mappings;
     })
 public interface AssessmentMapper {
 
-  @Mappings(@Mapping(source = "curriculumMembershipId", target = "programmeMembershipId"))
   AssessmentDTO toDto(Assessment assessment);
 
   List<AssessmentDTO> toDto(List<Assessment> assessment);
 
-  @Mappings(@Mapping(source = "programmeMembershipId", target = "curriculumMembershipId"))
   Assessment toEntity(AssessmentDTO assessmentDTO);
 
   List<Assessment> toEntity(List<AssessmentDTO> assessmentDTO);

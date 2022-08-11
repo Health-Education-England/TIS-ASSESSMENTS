@@ -62,7 +62,7 @@ public class AssessmentResourceTest {
   private static final Long TRAINEE_ID = 2222L;
   private static final String FIRST_NAME = "first name";
   private static final String LAST_NAME = "last name";
-  private static final long PROGRAMME_MEMBERSHIP_ID = 888L;
+  private static final long CURRICULUM_MEMBERSHIP_ID = 888L;
   @InjectMocks
   private AssessmentResource testObj;
   @Mock
@@ -114,8 +114,8 @@ public class AssessmentResourceTest {
   @Test
   public void getTraineeAssessmentsShouldReturnAssessmentForATraineePaginated() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
     Page<AssessmentDTO> page = new PageImpl<>(assessments);
@@ -130,16 +130,16 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
         .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
         .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
-        .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
-        .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
+        .andExpect(jsonPath("$.[0].curriculumMembershipId").value(CURRICULUM_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.[1].curriculumMembershipId").value(IsNull.nullValue()))
     ;
   }
 
   @Test
   public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATrainee() throws Exception {
     AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+    assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
+    assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(null);
 
     List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
@@ -153,8 +153,8 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
         .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
         .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
-        .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
-        .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
+        .andExpect(jsonPath("$.[0].curriculumMembershipId").value(CURRICULUM_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.[1].curriculumMembershipId").value(IsNull.nullValue()))
     ;
       Sort capturedValue = sortArgumentCaptor.getValue();
       Sort.Order reviewDateOrder = capturedValue.getOrderFor("reviewDate");
@@ -165,8 +165,8 @@ public class AssessmentResourceTest {
     @Test
     public void getAllTraineeAssessmentsShouldReturnAllAssessmentForATraineeInTheDefinedSortOrder() throws Exception {
         AssessmentDTO assessmentDTO1 = new AssessmentDTO(), assessmentDTO2 = new AssessmentDTO();
-        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
-        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).programmeMembershipId(null);
+        assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
+        assessmentDTO2.id(ASSESSMENT_ID_2).firstName(FIRST_NAME).lastName(LAST_NAME).curriculumMembershipId(null);
 
         List<AssessmentDTO> assessments = Lists.newArrayList(assessmentDTO1, assessmentDTO2);
 
@@ -180,8 +180,8 @@ public class AssessmentResourceTest {
             .andExpect(jsonPath("$.[1].firstName").value(FIRST_NAME))
             .andExpect(jsonPath("$.[0].lastName").value(LAST_NAME))
             .andExpect(jsonPath("$.[1].lastName").value(LAST_NAME))
-            .andExpect(jsonPath("$.[0].programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
-            .andExpect(jsonPath("$.[1].programmeMembershipId").value(IsNull.nullValue()))
+            .andExpect(jsonPath("$.[0].curriculumMembershipId").value(CURRICULUM_MEMBERSHIP_ID))
+            .andExpect(jsonPath("$.[1].curriculumMembershipId").value(IsNull.nullValue()))
         ;
 
         Sort capturedValue = sortArgumentCaptor.getValue();
@@ -236,7 +236,7 @@ public class AssessmentResourceTest {
     createdAssessment.setProgrammeName(PROGRAMME_NAME);
     createdAssessment.setType(TYPE);
     createdAssessment.setTraineeId(TRAINEE_ID);
-    createdAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    createdAssessment.setCurriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
 
     when(assessmentServiceMock.save(assessmentDTOArgumentCaptor.capture())).thenReturn(createdAssessment);
 
@@ -247,14 +247,14 @@ public class AssessmentResourceTest {
     assessmentToCreate.setProgrammeName(PROGRAMME_NAME);
     assessmentToCreate.setType(TYPE);
     assessmentToCreate.setTraineeId(TRAINEE_ID);
-    assessmentToCreate.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    assessmentToCreate.setCurriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
 
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments", TRAINEE_ID)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(assessmentToCreate)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(NEW_ASSESSMENT_ID))
-        .andExpect(jsonPath("$.programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.curriculumMembershipId").value(CURRICULUM_MEMBERSHIP_ID))
     ;
 
 
@@ -348,7 +348,7 @@ public class AssessmentResourceTest {
     foundAssessment.setProgrammeNumber(PROGRAMME_NUMBER);
     foundAssessment.setProgrammeName(PROGRAMME_NAME);
     foundAssessment.setType(TYPE);
-    foundAssessment.setProgrammeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+    foundAssessment.setCurriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
 
     when(assessmentServiceMock.findTraineeAssessmentDTO(TRAINEE_ID, ASSESSMENT_ID_1)).thenReturn(Optional.of(foundAssessment));
 
@@ -360,7 +360,7 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.programmeNumber").value(PROGRAMME_NUMBER))
         .andExpect(jsonPath("$.programmeName").value(PROGRAMME_NAME))
         .andExpect(jsonPath("$.type").value(TYPE))
-        .andExpect(jsonPath("$.programmeMembershipId").value(PROGRAMME_MEMBERSHIP_ID))
+        .andExpect(jsonPath("$.curriculumMembershipId").value(CURRICULUM_MEMBERSHIP_ID))
     ;
 
   }
@@ -558,7 +558,7 @@ public class AssessmentResourceTest {
 
     AssessmentDTO assessmentDTO1 = new AssessmentDTO();
     assessmentDTO1.id(ASSESSMENT_ID_1).firstName(FIRST_NAME).lastName(LAST_NAME)
-        .programmeMembershipId(PROGRAMME_MEMBERSHIP_ID);
+        .curriculumMembershipId(CURRICULUM_MEMBERSHIP_ID);
 
     Set<Long> ids = Collections.singleton(ASSESSMENT_ID_1);
 
@@ -571,8 +571,8 @@ public class AssessmentResourceTest {
         .andExpect(jsonPath("$.[*].id", hasItems(1)))
         .andExpect(jsonPath("$.[*].firstName", hasItems(FIRST_NAME)))
         .andExpect(jsonPath("$.[*].lastName", hasItems(LAST_NAME)))
-        .andExpect(jsonPath("$.[*].programmeMembershipId",
-            hasItems(Long.valueOf(PROGRAMME_MEMBERSHIP_ID).intValue())));
+        .andExpect(jsonPath("$.[*].curriculumMembershipId",
+            hasItems(Long.valueOf(CURRICULUM_MEMBERSHIP_ID).intValue())));
   }
 
   @Test

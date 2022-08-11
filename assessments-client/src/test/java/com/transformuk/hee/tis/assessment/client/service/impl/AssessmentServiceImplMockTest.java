@@ -117,13 +117,13 @@ public class AssessmentServiceImplMockTest {
   @Test
   public void getFindAssessmentsJsonShouldHandleNulls() {
     Long traineeId = 1L;
-    Long programmeMembershipId = null;
+    Long curriculumMembershipId = null;
     LocalDate reviewDate = LocalDate.parse("2021-01-01");
     String outcome = null;
     String correctJson = "{\"traineeId\": [\"" + traineeId + "\"], " +
         "\"reviewDate\": [\"" + reviewDate + "\"]}";
 
-    String columnFiltersJson = testObj.getFindAssessmentsJson(traineeId, programmeMembershipId,
+    String columnFiltersJson = testObj.getFindAssessmentsJson(traineeId, curriculumMembershipId,
         reviewDate, outcome);
 
     Assert.assertThat("Unexpected columnFilters Json.", columnFiltersJson, is(correctJson));
