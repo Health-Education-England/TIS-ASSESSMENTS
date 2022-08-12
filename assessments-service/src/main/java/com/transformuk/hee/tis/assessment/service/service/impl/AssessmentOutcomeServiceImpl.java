@@ -89,12 +89,17 @@ public class AssessmentOutcomeServiceImpl implements AssessmentOutcomeService {
   }
 
   private void updateReasons(AssessmentOutcome assessmentOutcome, AssessmentOutcome originalAssessmentOutcome) {
-    //delete any reasons that have been removed from the list
+    // delete any reasons that have been removed from the list
     List<AssessmentOutcomeReason> reasonsToSave = assessmentOutcome.getReasons();
+
+    if (reasonsToSave == null) {
+      reasonsToSave = Lists.newArrayList();
+    }
+
     List<Long> reasonsIdsToSave = reasonsToSave.stream().map(AssessmentOutcomeReason::getId).collect(Collectors.toList());
 
     List<AssessmentOutcomeReason> originalReasons = Lists.newArrayList();
-    if(originalAssessmentOutcome != null) {
+    if (originalAssessmentOutcome != null && originalAssessmentOutcome.getReasons() != null) {
       originalReasons = originalAssessmentOutcome.getReasons();
     }
 
