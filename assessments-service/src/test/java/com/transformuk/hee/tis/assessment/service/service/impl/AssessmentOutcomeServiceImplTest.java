@@ -68,6 +68,38 @@ public class AssessmentOutcomeServiceImplTest {
     Assert.assertEquals(ASSESSMENT_ID, result.getId());
   }
 
+  @Test
+  public void saveShouldSaveOutcomeWhenReasonIsNull() {
+    AssessmentOutcome originalAssessmentOutcome = new AssessmentOutcome();
+    originalAssessmentOutcome.setId(ASSESSMENT_ID);
+    originalAssessmentOutcome.setReasons(Lists.newArrayList());
+
+    when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
+    when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
+    when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
+    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+    when(assessmentOutcomeMock.getReasons()).thenReturn(null);
+
+    AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
+
+    Assert.assertEquals(ASSESSMENT_ID, result.getId());
+  }
+
+  @Test
+  public void saveShouldSaveOutcomeWhenOriginalReasonsIsNull() {
+    AssessmentOutcome originalAssessmentOutcome = new AssessmentOutcome();
+    originalAssessmentOutcome.setId(ASSESSMENT_ID);
+
+    when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
+    when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
+    when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
+    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+
+    AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
+
+    Assert.assertEquals(ASSESSMENT_ID, result.getId());
+  }
+
   @Test(expected = NullPointerException.class)
   public void saveShouldThrowExceptionWhenAssessmentIsNull() {
     try {

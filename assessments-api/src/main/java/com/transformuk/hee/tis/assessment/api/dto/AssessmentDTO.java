@@ -39,11 +39,11 @@ public class AssessmentDTO implements Serializable {
   @Length(min = 1, groups = {Create.class, Update.class}, message = "last name should be at least 1 character long")
   @ApiModelProperty(required = true, value = "The last name of the trainee")
   private String lastName;
-  
+
   private String gmcNumber;
-  
+
   private String gdcNumber;
-  
+
   private String publicHealthNumber;
 
   @ApiModelProperty(required = true, value = "The review date of the assessment event")
@@ -60,8 +60,8 @@ public class AssessmentDTO implements Serializable {
   @ApiModelProperty(required = true, value = "The programme name for this trainee's assessment")
   private String programmeName;
 
-  @ApiModelProperty(required = true, value = "The programme membership id")
-  private Long programmeMembershipId;
+  @ApiModelProperty(required = true, value = "The curriculum membership id")
+  private Long curriculumMembershipId;
 
   @ApiModelProperty(value = "The current eventStatus of the assessment event")
   private EventStatus eventStatus;
@@ -154,7 +154,7 @@ public class AssessmentDTO implements Serializable {
   public void setGmcNumber(String gmcNumber) {
     this.gmcNumber = gmcNumber;
   }
-  
+
   public AssessmentDTO gmcNumber(String gmcNumber) {
     this.gmcNumber = gmcNumber;
     return this;
@@ -167,7 +167,7 @@ public class AssessmentDTO implements Serializable {
   public void setGdcNumber(String gdcNumber) {
     this.gdcNumber = gdcNumber;
   }
-  
+
   public AssessmentDTO gdcNumber(String gdcNumber) {
     this.gdcNumber = gdcNumber;
     return this;
@@ -180,7 +180,7 @@ public class AssessmentDTO implements Serializable {
   public void setPublicHealthNumber(String publicHealthNumber) {
     this.publicHealthNumber = publicHealthNumber;
   }
-  
+
   public AssessmentDTO publicHealthNumber(String publicHealthNumber) {
     this.publicHealthNumber = publicHealthNumber;
     return this;
@@ -225,16 +225,16 @@ public class AssessmentDTO implements Serializable {
     return this;
   }
 
-  public Long getProgrammeMembershipId() {
-    return programmeMembershipId;
+  public Long getCurriculumMembershipId() {
+    return curriculumMembershipId;
   }
 
-  public void setProgrammeMembershipId(Long programmeMembershipId) {
-    this.programmeMembershipId = programmeMembershipId;
+  public void setCurriculumMembershipId(Long curriculumMembershipId) {
+    this.curriculumMembershipId = curriculumMembershipId;
   }
 
-  public AssessmentDTO programmeMembershipId(Long programmeMembershipId) {
-    this.programmeMembershipId = programmeMembershipId;
+  public AssessmentDTO curriculumMembershipId(Long curriculumMembershipId) {
+    this.curriculumMembershipId = curriculumMembershipId;
     return this;
   }
 
@@ -369,7 +369,7 @@ public class AssessmentDTO implements Serializable {
         ", gdcNumber='" + getGdcNumber() + "'" +
         ", publicHealthNumber='" + getPublicHealthNumber() + "'" +
         ", reviewDate='" + getReviewDate() + "'" +
-        ", programmeMembershipId='" + getProgrammeMembershipId() + "'" +
+        ", curriculumMembershipId='" + getCurriculumMembershipId() + "'" +
         ", programmeNumber='" + getProgrammeNumber() + "'" +
         ", programmeName='" + getProgrammeName() + "'" +
         ", programmeId='" + getProgrammeId() + "'" +
