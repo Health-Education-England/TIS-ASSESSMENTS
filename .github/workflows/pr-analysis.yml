@@ -3,6 +3,7 @@ name: PR Analysis
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 on:
   pull_request:
