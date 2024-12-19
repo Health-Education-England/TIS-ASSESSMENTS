@@ -42,11 +42,12 @@ import uk.nhs.tis.StringConverter;
  * Service Implementation for managing Assessment.
  */
 @Service
-@Transactional
 public class AssessmentServiceImpl implements AssessmentService {
 
-  private static final String ASSESSMENT_UPDATE_FAILED =
-      "Assessment %s updating failed, please try again.";
+  protected static final String ASSESSMENT_UPDATE_FAILED_GENERAL =
+      "Failed to update Assessment %s. Please try again.";
+  protected static final String ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE =
+      "Failed to update Assessment %s. Please check if its outcome is in legacy state.";
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
@@ -84,6 +85,7 @@ public class AssessmentServiceImpl implements AssessmentService {
    * @return the persisted entity
    */
   @Override
+  @Transactional
   public AssessmentDTO save(AssessmentDTO assessmentDTO) {
     Preconditions.checkNotNull(assessmentDTO);
 
@@ -318,7 +320,6 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-  @Transactional
   public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
     if (assessmentDtos == null || assessmentDtos.isEmpty()) {
       return assessmentDtos;
@@ -329,9 +330,15 @@ public class AssessmentServiceImpl implements AssessmentService {
     for (AssessmentDTO assessmentDto : assessmentDtos) {
       try {
         returnDto = updateAssessmentWithNestedDtos(assessmentDto);
+      } catch (IllegalStateException ise) {
+        // When outcome is marked as legacy, assessmentOutcomeService.save() throws exception
+        returnDto = assessmentDto;
+        returnDto.addMessage(
+            String.format(ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE, assessmentDto.getId()));
       } catch (Exception e) {
         returnDto = assessmentDto;
-        returnDto.addMessage(String.format(ASSESSMENT_UPDATE_FAILED, assessmentDto.getId()));
+        returnDto.addMessage(
+            String.format(ASSESSMENT_UPDATE_FAILED_GENERAL, assessmentDto.getId()));
       }
       returnDtoList.add(returnDto);
     }

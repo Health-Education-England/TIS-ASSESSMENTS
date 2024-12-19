@@ -1,5 +1,7 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static com.transformuk.hee.tis.assessment.service.service.impl.AssessmentServiceImpl.ASSESSMENT_UPDATE_FAILED_GENERAL;
+import static com.transformuk.hee.tis.assessment.service.service.impl.AssessmentServiceImpl.ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -33,7 +35,6 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutco
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeReasonMapperImpl;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapperImpl;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -641,16 +642,42 @@ public class AssessmentServiceImplTest {
   }
 
   @Test
-  public void patchAssessmentShouldReturnAssessmentsWithErrorWhenSaveFails() {
+  public void patchAssessmentShouldReturnWithErrorWhenSaveFailsWithGeneralException() {
     AssessmentDTO assessmentDto = new AssessmentDTO();
-    assessmentDto.setId(1L);
+    assessmentDto.setId(ASSESSMENT_ID);
     List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
 
     when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class))).thenThrow(Exception.class);
 
     List<AssessmentDTO> result = testObj.patchAssessments(assessmentDtos);
-    Assert.assertEquals(assessmentDto, result.get(0));
-    Assert.assertEquals(1, assessmentDto.getMessageList().size());
+    assertEquals(assessmentDto, result.get(0));
+    List<String> msgList = assessmentDto.getMessageList();
+    assertEquals(1, msgList.size());
+    assertEquals(String.format(ASSESSMENT_UPDATE_FAILED_GENERAL, ASSESSMENT_ID),
+        msgList.get(0));
+  }
+
+  @Test
+  public void patchAssessmentShouldReturnWithErrorWhenSaveFailsWithIllegalStateException() {
+    AssessmentDTO assessmentDto = new AssessmentDTO();
+    assessmentDto.setId(ASSESSMENT_ID);
+
+    AssessmentOutcomeDTO assessmentOutcomeDto = new AssessmentOutcomeDTO();
+    assessmentOutcomeDto.setId(1L);
+    assessmentDto.setOutcome(assessmentOutcomeDto);
+
+    List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
+
+    when(assessmentOutcomeServiceMock.save(any(Assessment.class),
+        any(AssessmentOutcomeDTO.class))).thenThrow(
+        IllegalStateException.class);
+
+    List<AssessmentDTO> result = testObj.patchAssessments(assessmentDtos);
+    assertEquals(assessmentDto, result.get(0));
+    List<String> msgList = assessmentDto.getMessageList();
+    assertEquals(1, msgList.size());
+    assertEquals(String.format(ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE, ASSESSMENT_ID),
+        msgList.get(0));
   }
 
   @Test
