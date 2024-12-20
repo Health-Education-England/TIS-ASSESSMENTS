@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.util.Lists;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -415,12 +414,12 @@ public class AssessmentServiceImplTest {
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
     verify(assessmentRepositoryMock, never()).delete(anyLong());
-    Assert.assertFalse(result);
+    assertFalse(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
     Assessment probe = capturedExample.getProbe();
-    Assert.assertEquals(ASSESSMENT_ID, probe.getId());
-    Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
+    assertEquals(ASSESSMENT_ID, probe.getId());
+    assertEquals(TRAINEE_ID, probe.getTraineeId());
   }
 
   @Test
@@ -434,12 +433,12 @@ public class AssessmentServiceImplTest {
     boolean result = testObj.deleteTraineeAssessment(ASSESSMENT_ID, TRAINEE_ID);
 
     verify(assessmentRepositoryMock).delete(assessment);
-    Assert.assertTrue(result);
+    assertTrue(result);
 
     Example<Assessment> capturedExample = assessmentCaptor.getValue();
     Assessment probe = capturedExample.getProbe();
-    Assert.assertEquals(ASSESSMENT_ID, probe.getId());
-    Assert.assertEquals(TRAINEE_ID, probe.getTraineeId());
+    assertEquals(ASSESSMENT_ID, probe.getId());
+    assertEquals(TRAINEE_ID, probe.getTraineeId());
   }
 
   @Test(expected = NullPointerException.class)
@@ -455,7 +454,7 @@ public class AssessmentServiceImplTest {
     boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
 
     verify(assessmentRepositoryMock, never()).delete(anyLong());
-    Assert.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -468,7 +467,7 @@ public class AssessmentServiceImplTest {
     boolean result = testObj.deleteAssessment(ASSESSMENT_ID);
 
     verify(assessmentRepositoryMock).delete(ASSESSMENT_ID);
-    Assert.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
