@@ -98,4 +98,12 @@ public interface AssessmentService {
    * @return saved assessmentDTO list
    */
   List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos);
+
+  /**
+   * Update an AssessmentDto with nested dtos.
+   *
+   * @param assessmentDto the assessmentDto to update
+   * @return updated assessmentDto
+   */
+  AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto);
 }

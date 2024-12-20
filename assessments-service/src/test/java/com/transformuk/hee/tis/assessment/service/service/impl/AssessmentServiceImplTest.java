@@ -107,6 +107,8 @@ public class AssessmentServiceImplTest {
     testObj = new AssessmentServiceImpl(assessmentRepositoryMock, assessmentMapper,
         new AssessmentListMapperImpl(), permissionServiceMock, assessmentDetailServiceMock,
         assessmentOutcomeServiceMock, revalidationServiceMock);
+
+    ReflectionTestUtils.setField(testObj, "assessmentService", testObj);
   }
 
   @Test

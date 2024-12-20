@@ -28,6 +28,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +65,9 @@ public class AssessmentServiceImpl implements AssessmentService {
   private AssessmentOutcomeService assessmentOutcomeService;
 
   private RevalidationService revalidationService;
+
+  @Autowired
+  private AssessmentService assessmentService;
 
   AssessmentServiceImpl(AssessmentRepository assessmentRepository,
       AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
@@ -288,7 +292,14 @@ public class AssessmentServiceImpl implements AssessmentService {
     return false;
   }
 
-  private AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
+  /**
+   * Update an AssessmentDto with nested dtos.
+   *
+   * @param assessmentDto the assessmentDto to update
+   * @return updated assessmentDto
+   */
+  @Transactional
+  public AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
     Assessment assessment = assessmentMapper.toEntity(assessmentDto);
     AssessmentDetailDTO assessmentDetailDto = null;
     AssessmentOutcomeDTO assessmentOutcomeDto = null;
@@ -329,7 +340,10 @@ public class AssessmentServiceImpl implements AssessmentService {
     AssessmentDTO returnDto = null;
     for (AssessmentDTO assessmentDto : assessmentDtos) {
       try {
-        returnDto = updateAssessmentWithNestedDtos(assessmentDto);
+        // java:S6809 a method annotated with Spring’s @Async or @Transactional annotations will
+        // not work as expected if invoked directly from within its class.
+        // So, use a self injection object to call it.
+        returnDto = assessmentService.updateAssessmentWithNestedDtos(assessmentDto);
       } catch (IllegalStateException ise) {
         // When outcome is marked as legacy, assessmentOutcomeService.save() throws exception
         returnDto = assessmentDto;
