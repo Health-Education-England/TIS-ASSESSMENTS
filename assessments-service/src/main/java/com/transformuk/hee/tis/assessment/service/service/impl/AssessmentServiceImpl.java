@@ -28,6 +28,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,11 +43,12 @@ import uk.nhs.tis.StringConverter;
  * Service Implementation for managing Assessment.
  */
 @Service
-@Transactional
 public class AssessmentServiceImpl implements AssessmentService {
 
-  private static final String ASSESSMENT_UPDATE_FAILED =
-      "Assessment %s updating failed, please try again.";
+  protected static final String ASSESSMENT_UPDATE_FAILED_GENERAL =
+      "Failed to update Assessment %s. Please try again.";
+  protected static final String ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE =
+      "Failed to update Assessment %s. Please check if its outcome is in legacy state.";
 
   private final Logger log = LoggerFactory.getLogger(AssessmentServiceImpl.class);
 
@@ -64,10 +66,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private RevalidationService revalidationService;
 
+  private AssessmentService assessmentService;
+
   AssessmentServiceImpl(AssessmentRepository assessmentRepository,
       AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
       PermissionService permissionService, AssessmentDetailService assessmentDetailService,
-      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService) {
+      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService,
+      @Lazy AssessmentService assessmentService) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentMapper = assessmentMapper;
     this.assessmentListMapper = assessmentListMapper;
@@ -75,6 +80,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     this.assessmentDetailService = assessmentDetailService;
     this.assessmentOutcomeService = assessmentOutcomeService;
     this.revalidationService = revalidationService;
+    this.assessmentService = assessmentService;
   }
 
   /**
@@ -84,6 +90,7 @@ public class AssessmentServiceImpl implements AssessmentService {
    * @return the persisted entity
    */
   @Override
+  @Transactional
   public AssessmentDTO save(AssessmentDTO assessmentDTO) {
     Preconditions.checkNotNull(assessmentDTO);
 
@@ -286,7 +293,14 @@ public class AssessmentServiceImpl implements AssessmentService {
     return false;
   }
 
-  private AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
+  /**
+   * Update an AssessmentDto with nested dtos.
+   *
+   * @param assessmentDto the assessmentDto to update
+   * @return updated assessmentDto
+   */
+  @Transactional
+  public AssessmentDTO updateAssessmentWithNestedDtos(AssessmentDTO assessmentDto) {
     Assessment assessment = assessmentMapper.toEntity(assessmentDto);
     AssessmentDetailDTO assessmentDetailDto = null;
     AssessmentOutcomeDTO assessmentOutcomeDto = null;
@@ -310,7 +324,7 @@ public class AssessmentServiceImpl implements AssessmentService {
           : revalidationService.create(assessment, assessmentDto.getRevalidation());
     }
 
-    AssessmentDTO savedAssessmentDto = save(assessmentDto);
+    AssessmentDTO savedAssessmentDto = assessmentService.save(assessmentDto);
     savedAssessmentDto.setDetail(assessmentDetailDto);
     savedAssessmentDto.setOutcome(assessmentOutcomeDto);
     savedAssessmentDto.setRevalidation(revalidationDto);
@@ -318,7 +332,6 @@ public class AssessmentServiceImpl implements AssessmentService {
   }
 
   @Override
-  @Transactional
   public List<AssessmentDTO> patchAssessments(List<AssessmentDTO> assessmentDtos) {
     if (assessmentDtos == null || assessmentDtos.isEmpty()) {
       return assessmentDtos;
@@ -328,10 +341,19 @@ public class AssessmentServiceImpl implements AssessmentService {
     AssessmentDTO returnDto = null;
     for (AssessmentDTO assessmentDto : assessmentDtos) {
       try {
-        returnDto = updateAssessmentWithNestedDtos(assessmentDto);
+        // java:S6809 a method annotated with Spring’s @Async or @Transactional annotations will
+        // not work as expected if invoked directly from within its class.
+        // So, use a self injection object to call it.
+        returnDto = assessmentService.updateAssessmentWithNestedDtos(assessmentDto);
+      } catch (IllegalStateException ise) {
+        // When outcome is marked as legacy, assessmentOutcomeService.save() throws exception
+        returnDto = assessmentDto;
+        returnDto.addMessage(
+            String.format(ASSESSMENT_UPDATE_FAILED_ILLEGAL_STATE, assessmentDto.getId()));
       } catch (Exception e) {
         returnDto = assessmentDto;
-        returnDto.addMessage(String.format(ASSESSMENT_UPDATE_FAILED, assessmentDto.getId()));
+        returnDto.addMessage(
+            String.format(ASSESSMENT_UPDATE_FAILED_GENERAL, assessmentDto.getId()));
       }
       returnDtoList.add(returnDto);
     }
