@@ -28,7 +28,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,13 +66,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 
   private RevalidationService revalidationService;
 
-  @Autowired
   private AssessmentService assessmentService;
 
   AssessmentServiceImpl(AssessmentRepository assessmentRepository,
       AssessmentMapper assessmentMapper, AssessmentListMapper assessmentListMapper,
       PermissionService permissionService, AssessmentDetailService assessmentDetailService,
-      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService) {
+      AssessmentOutcomeService assessmentOutcomeService, RevalidationService revalidationService,
+      @Lazy AssessmentService assessmentService) {
     this.assessmentRepository = assessmentRepository;
     this.assessmentMapper = assessmentMapper;
     this.assessmentListMapper = assessmentListMapper;
@@ -80,6 +80,7 @@ public class AssessmentServiceImpl implements AssessmentService {
     this.assessmentDetailService = assessmentDetailService;
     this.assessmentOutcomeService = assessmentOutcomeService;
     this.revalidationService = revalidationService;
+    this.assessmentService = assessmentService;
   }
 
   /**
@@ -323,7 +324,7 @@ public class AssessmentServiceImpl implements AssessmentService {
           : revalidationService.create(assessment, assessmentDto.getRevalidation());
     }
 
-    AssessmentDTO savedAssessmentDto = save(assessmentDto);
+    AssessmentDTO savedAssessmentDto = assessmentService.save(assessmentDto);
     savedAssessmentDto.setDetail(assessmentDetailDto);
     savedAssessmentDto.setOutcome(assessmentOutcomeDto);
     savedAssessmentDto.setRevalidation(revalidationDto);

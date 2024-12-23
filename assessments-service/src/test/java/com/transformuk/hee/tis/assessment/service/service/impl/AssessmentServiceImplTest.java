@@ -105,7 +105,7 @@ public class AssessmentServiceImplTest {
 
     testObj = new AssessmentServiceImpl(assessmentRepositoryMock, assessmentMapper,
         new AssessmentListMapperImpl(), permissionServiceMock, assessmentDetailServiceMock,
-        assessmentOutcomeServiceMock, revalidationServiceMock);
+        assessmentOutcomeServiceMock, revalidationServiceMock, null);
 
     ReflectionTestUtils.setField(testObj, "assessmentService", testObj);
   }
@@ -695,7 +695,7 @@ public class AssessmentServiceImplTest {
 
     List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
 
-    AssessmentDTO result = testObj.patchAssessments(assessmentDtos).get(0);
+    testObj.patchAssessments(assessmentDtos).get(0);
 
     verify(assessmentDetailServiceMock).create(any(Assessment.class),
         any(AssessmentDetailDTO.class));
