@@ -1,17 +1,16 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import org.hibernate.annotations.Type;
 
 /**
  * A Revalidation.
@@ -38,6 +37,7 @@ public class Revalidation implements Serializable {
   private Assessment assessment;
 
   @Version
+  @Type(type = "com.transformuk.hee.tis.assessment.service.model.type.TruncatedLocalDateTimeType")
   private LocalDateTime amendedDate;
 
   public Long getId() {
