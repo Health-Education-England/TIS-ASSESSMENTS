@@ -25,8 +25,10 @@ import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.impl.PermissionService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentMapper;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.assertj.core.util.Lists;
 import org.hamcrest.Matchers;
@@ -649,12 +651,12 @@ public class AssessmentResourceIntTest {
     Long assessmentId = assessment.getId();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessmentId);
-    updatedAssessment
-        .reviewDate(UPDATED_START_DATE)
-        .programmeNumber(UPDATED_PROGRAMME_NUMBER)
-        .programmeName(UPDATED_PROGRAMME_NAME);
+    Assessment updatedAssessment = assessmentRepository.findById(assessmentId)
+        .orElseThrow(Exception::new);
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
+    assessmentDTO.setReviewDate(UPDATED_START_DATE);
+    assessmentDTO.setProgrammeNumber(UPDATED_PROGRAMME_NUMBER);
+    assessmentDTO.setProgrammeName(UPDATED_PROGRAMME_NAME);
 
     // Nested detail, outcome and revalidation doesn't have ID
     AssessmentDetailDTO assessmentDetailDto = new AssessmentDetailDTO()
@@ -669,14 +671,15 @@ public class AssessmentResourceIntTest {
     assessmentDTO.setRevalidation(revalidationDto);
 
     restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
         .andExpect(status().isOk());
 
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessmentId);
+    Assessment testAssessment = assessmentRepository.findById(assessmentId)
+        .orElseThrow(Exception::new);
 
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);

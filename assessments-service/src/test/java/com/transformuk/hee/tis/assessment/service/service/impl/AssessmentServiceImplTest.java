@@ -207,7 +207,7 @@ public class AssessmentServiceImplTest {
     assessment.setFirstName("firstName");
     assessment.setLastName("lastName");
 
-    when(assessmentRepositoryMock.findById(1L)).thenReturn(Optional.of(assessment));
+    when(assessmentRepositoryMock.getById(1L)).thenReturn(assessment);
 
     AssessmentDTO result = testObj.findOne(1L);
 
@@ -651,7 +651,8 @@ public class AssessmentServiceImplTest {
     assessmentDto.setId(ASSESSMENT_ID);
     List<AssessmentDTO> assessmentDtos = Collections.singletonList(assessmentDto);
 
-    when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class))).thenThrow(Exception.class);
+    when(assessmentRepositoryMock.saveAndFlush(any(Assessment.class)))
+        .thenThrow(RuntimeException.class);
 
     List<AssessmentDTO> result = testObj.patchAssessments(assessmentDtos);
     assertEquals(assessmentDto, result.get(0));
