@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
-import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
@@ -8,6 +7,7 @@ import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trainee")
@@ -43,7 +41,6 @@ public class AssessmentDetailResource {
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDetailDTO, or with status 404 (Not Found)
    */
   @GetMapping("/{traineeId}/assessments/{assessmentId}/details")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<AssessmentDetailDTO> getTraineeAssessmentDetails(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get AssessmentDetail");
@@ -59,7 +56,6 @@ public class AssessmentDetailResource {
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDetailDTO, or with status 404 (Not Found)
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/details")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDetailDTO> createTraineeAssessmentDetails(@RequestBody @Validated(Create.class) AssessmentDetailDTO assessmentDetailDTO,
                                                                             @PathVariable Long traineeId,
@@ -82,7 +78,6 @@ public class AssessmentDetailResource {
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDetailDTO, or with status 404 (Not Found)
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/details")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<AssessmentDetailDTO> updateTraineeAssessmentDetails(@RequestBody @Validated(Update.class) AssessmentDetailDTO assessmentDetailDTO,
                                                                             @PathVariable Long traineeId, @PathVariable Long assessmentId) {

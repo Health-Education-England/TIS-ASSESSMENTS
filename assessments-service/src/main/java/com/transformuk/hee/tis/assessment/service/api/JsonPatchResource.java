@@ -1,6 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
-import com.codahale.metrics.annotation.Timed;
 import com.transformuk.hee.tis.assessment.api.dto.JsonPatchDTO;
 import com.transformuk.hee.tis.assessment.service.api.util.HeaderUtil;
 import com.transformuk.hee.tis.assessment.service.api.util.PaginationUtil;
@@ -10,6 +9,12 @@ import com.transformuk.hee.tis.assessment.service.service.mapper.JsonPatchMapper
 import io.github.jhipster.web.util.ResponseUtil;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.ApiParam;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +31,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing JsonPatch.
@@ -59,7 +57,6 @@ public class JsonPatchResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PostMapping("/jsonPatches")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<JsonPatchDTO> createJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO) throws URISyntaxException {
     log.debug("REST request to save jsonPatch : {}", jsonPatchDTO);
@@ -84,7 +81,6 @@ public class JsonPatchResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PutMapping("/jsonPatches")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<JsonPatchDTO> updateJsonPatch(@Valid @RequestBody JsonPatchDTO jsonPatchDTO) throws URISyntaxException {
     log.debug("REST request to update jsonPatch : {}", jsonPatchDTO);
@@ -107,7 +103,6 @@ public class JsonPatchResource {
    * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
    */
   @GetMapping("/jsonPatches")
-  @Timed
   public ResponseEntity<List<JsonPatchDTO>> getAllJsonPatches(@ApiParam Pageable pageable) {
     log.debug("REST request to get a page of jsonPatches");
     Page<JsonPatch> page = jsonPatchRepository.findAll(pageable);
@@ -122,7 +117,6 @@ public class JsonPatchResource {
    * @return
    */
   @GetMapping("/jsonPatches/updateType/{tableDtoName}")
-  @Timed
   public ResponseEntity<List<JsonPatchDTO>> getJsonPatchesByUpdateTypeAndTableName(@PathVariable String tableDtoName) {
     log.debug("REST request to get a page of jsonPatches");
     List<JsonPatch> jsonPatches = jsonPatchRepository.findByTableDtoNameAndPatchIdIsNotNullOrderByDateAddedAsc(
@@ -138,7 +132,6 @@ public class JsonPatchResource {
    * @return the ResponseEntity with status 200 (OK) and with body the JsonPatchDTO, or with status 404 (Not Found)
    */
   @GetMapping("/jsonPatches/{id}")
-  @Timed
   public ResponseEntity<JsonPatchDTO> getJsonPatch(@PathVariable Long id) {
     log.debug("REST request to get JsonPatch : {}", id);
     JsonPatch jsonPatch = jsonPatchRepository.findOne(id);
@@ -153,7 +146,6 @@ public class JsonPatchResource {
    * @return the ResponseEntity with status 200 (OK)
    */
   @PutMapping("/jsonPatches/{id}")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:delete:entities')")
   public ResponseEntity<Void> deleteJsonPatch(@PathVariable Long id) {
     log.debug("REST request to delete JsonPatch : {}", id);
@@ -173,7 +165,6 @@ public class JsonPatchResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect
    */
   @PutMapping("/bulk-jsonPatches")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<List<JsonPatchDTO>> bulkDeleteJsonPatch(@Valid @RequestBody List<JsonPatchDTO> jsonPatchDTOs) throws URISyntaxException {
     log.debug("REST request to bulk update JsonPatchDTO : {}", jsonPatchDTOs);
