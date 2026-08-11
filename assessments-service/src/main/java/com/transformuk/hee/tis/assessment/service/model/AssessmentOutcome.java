@@ -1,10 +1,11 @@
 package com.transformuk.hee.tis.assessment.service.model;
 
 
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +15,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  * A AssessmentOutcome.
@@ -115,7 +115,7 @@ public class AssessmentOutcome implements Serializable {
   private String additionalCommentsFromPanel;
 
   @Version
-  @Column(name = "amendedDate")
+  @Type(type = "com.transformuk.hee.tis.assessment.service.model.type.TruncatedLocalDateTimeType")
   private LocalDateTime amendedDate;
 
   @Column(name = "legacy")
