@@ -2,6 +2,10 @@ package com.transformuk.hee.tis.assessment.service.model;
 
 
 import com.transformuk.hee.tis.assessment.api.dto.EventStatus;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,10 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import org.hibernate.annotations.Type;
 
 /**
  * A Assessment.
@@ -78,6 +79,7 @@ public class Assessment implements Serializable {
   private String publicHealthNumber;
 
   @Version
+  @Type(type = "com.transformuk.hee.tis.assessment.service.model.type.TruncatedLocalDateTimeType")
   private LocalDateTime amendedDate;
 
   @OneToOne(mappedBy = "assessment", cascade = CascadeType.REMOVE)

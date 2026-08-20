@@ -1,7 +1,5 @@
 package com.transformuk.hee.tis.assessment.service.api;
 
-import com.codahale.metrics.annotation.Timed;
-import com.transformuk.hee.tis.assessment.api.dto.AssessmentDetailDTO;
 import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Create;
 import com.transformuk.hee.tis.assessment.api.dto.validation.Update;
@@ -9,6 +7,7 @@ import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentService;
 import com.transformuk.hee.tis.assessment.service.service.RevalidationService;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trainee")
@@ -45,7 +42,6 @@ public class RevalidationResource {
    * @return the ResponseEntity with status 200 (OK) and with body the assessmentDTO, or with status 404 (Not Found)
    */
   @GetMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:view:entities')")
   public ResponseEntity<RevalidationDTO> getTraineeAssessmentRevalidation(@PathVariable Long traineeId, @PathVariable Long assessmentId) {
     log.debug("REST request to get Revalidation");
@@ -61,7 +57,6 @@ public class RevalidationResource {
    * @return the ResponseEntity with status 200 (OK) and with body the revalidation, or with status 404 (Not Found)
    */
   @PostMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<RevalidationDTO> createTraineeAssessmentRevalidation(@RequestBody @Validated(Create.class) RevalidationDTO revalidationDTO,
                                                                              @PathVariable Long traineeId,
@@ -84,7 +79,6 @@ public class RevalidationResource {
    * @return the ResponseEntity with status 200 (OK) and with body the revalidationDTO, or with status 404 (Not Found)
    */
   @PutMapping("/{traineeId}/assessments/{assessmentId}/revalidations")
-  @Timed
   @PreAuthorize("hasAuthority('assessment:add:modify:entities')")
   public ResponseEntity<RevalidationDTO> updateTraineeAssessmentRevalidation(@RequestBody @Validated(Update.class) RevalidationDTO revalidationDTO,
                                                                             @PathVariable Long traineeId, @PathVariable Long assessmentId) {
