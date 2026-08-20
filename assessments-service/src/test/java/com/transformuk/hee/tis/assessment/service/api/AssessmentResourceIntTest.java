@@ -453,7 +453,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findById(assessment.getId()).get();
     updatedAssessment
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
@@ -580,7 +580,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findById(assessment.getId()).get();
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -599,7 +599,7 @@ public class AssessmentResourceIntTest {
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment testAssessment = assessmentRepository.findById(assessment.getId()).get();
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
@@ -629,7 +629,7 @@ public class AssessmentResourceIntTest {
     Long assessmentId = assessment.getId();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessmentId);
+    Assessment updatedAssessment = assessmentRepository.findById(assessmentId).get();
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -656,7 +656,7 @@ public class AssessmentResourceIntTest {
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessmentId);
+    Assessment testAssessment = assessmentRepository.findById(assessmentId).get();
 
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);

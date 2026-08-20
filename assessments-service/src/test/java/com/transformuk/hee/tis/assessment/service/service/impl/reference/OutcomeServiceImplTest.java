@@ -44,7 +44,7 @@ public class OutcomeServiceImplTest {
 
   @Before
   public void setup() {
-    pageable = new PageRequest(PAGE, SIZE);
+    pageable = PageRequest.of(PAGE, SIZE);
   }
 
   @Test(expected = NullPointerException.class)

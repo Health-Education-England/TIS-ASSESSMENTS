@@ -52,7 +52,8 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnRevalidation() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture()))
+        .thenReturn(Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(revalidationMock);
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
 
@@ -70,7 +71,8 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findAssessmentRevalidationByShouldReturnEmptyOptionalWhenNoRevalidationFound() {
-    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(exampleArgumentCaptor.capture()))
+        .thenReturn(Optional.of(assessmentMock));
     when(assessmentMock.getRevalidation()).thenReturn(null);
     when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
 
@@ -188,7 +190,8 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findOneShouldReturnOutcomeWithId() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(revalidationMock);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(revalidationMock));
     when(revalidationMapperMock.toDto(revalidationMock)).thenReturn(revalidationDTOMock);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
@@ -201,8 +204,7 @@ public class RevalidationServiceImplTest {
 
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
-    when(revalidationRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
-    when(revalidationMapperMock.toDto((Revalidation) null)).thenReturn(null);
+    when(revalidationRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
 
     Optional<RevalidationDTO> result = testObj.findOne(ASSESSMENT_ID);
 

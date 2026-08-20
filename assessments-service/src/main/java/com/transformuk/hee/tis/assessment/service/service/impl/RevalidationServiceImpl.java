@@ -50,11 +50,9 @@ public class RevalidationServiceImpl implements RevalidationService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    RevalidationDTO revalidationDTO = revalidationMapper.toDto(foundAssessment.getRevalidation());
-    return Optional.ofNullable(revalidationDTO);
+    return assessmentRepository.findOne(Example.of(example))
+        .map(assessment -> revalidationMapper.toDto(assessment.getRevalidation()));
   }
-
 
   /**
    * Save a revalidation against an assessment.
@@ -99,9 +97,7 @@ public class RevalidationServiceImpl implements RevalidationService {
     Preconditions.checkNotNull(id);
 
     log.debug("Request to get revalidation : {}", id);
-    Revalidation revalidation = revalidationRepository.findOne(id);
-    RevalidationDTO revalidationDTO = revalidationMapper.toDto(revalidation);
-    return Optional.ofNullable(revalidationDTO);
+    return revalidationRepository.findById(id).map(revalidationMapper::toDto);
   }
 
 }
