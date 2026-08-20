@@ -1,30 +1,29 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.transformuk.hee.tis.assessment.api.dto.RevalidationDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
 import com.transformuk.hee.tis.assessment.service.model.Revalidation;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.repository.RevalidationRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.RevalidationMapper;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Example;
-
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RevalidationServiceImplTest {
@@ -130,7 +129,6 @@ public class RevalidationServiceImplTest {
 
   @Test(expected = IllegalStateException.class)
   public void createShouldThrowExceptionIfRevalidationHasId() {
-    when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
     try {
@@ -166,7 +164,6 @@ public class RevalidationServiceImplTest {
     Assessment assessment = new Assessment().id(ASSESSMENT_ID);
     RevalidationDTO revalidationDTO = new RevalidationDTO();
 
-    when(revalidationMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(revalidationMapperMock.toEntity(revalidationDTO)).thenReturn(revalidationMock);
     when(revalidationRepositoryMock.saveAndFlush(revalidationMock)).thenReturn(revalidationMock);

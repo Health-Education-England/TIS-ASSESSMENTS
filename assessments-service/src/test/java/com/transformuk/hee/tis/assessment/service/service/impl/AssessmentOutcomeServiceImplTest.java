@@ -1,5 +1,10 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
@@ -7,6 +12,7 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeReasonRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapper;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,14 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Optional;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentOutcomeServiceImplTest {
@@ -49,7 +48,6 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(resultAssessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
-    when(savedAssessmentOutcomeMock.getId()).thenReturn(ASSESSMENT_ID);
   }
 
   @Test
