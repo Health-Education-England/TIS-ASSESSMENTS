@@ -73,7 +73,7 @@ public class ReasonResource {
   })
   public ResponseEntity<Reason> getReason(@PathVariable Long id) {
     log.debug("REST request to get Reason with id: [{}]", id);
-    Optional<Reason> reason = Optional.ofNullable(reasonRepository.findOne(id));
+    Optional<Reason> reason = reasonRepository.findById(id);
     return ResponseUtil.wrapOrNotFound(reason);
   }
 
@@ -160,13 +160,7 @@ public class ReasonResource {
   public ResponseEntity<Set<Reason>> getOutcomeReasons(@PathVariable Long id) {
     log.debug("REST request to get Reasons with for Outcome id: [{}]", id);
 
-    Outcome outcome = outcomeRepository.findOne(id);
-    Set<Reason> reasons;
-    if (outcome != null) {
-      reasons = reasonRepository.findByOutcome(outcome);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    return ResponseEntity.ok(reasons);
+    return ResponseEntity.of(outcomeRepository.findById(id)
+        .map(reasonRepository::findByOutcome));
   }
 }

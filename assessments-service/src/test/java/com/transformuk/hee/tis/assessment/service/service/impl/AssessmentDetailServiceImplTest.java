@@ -69,7 +69,8 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findAssessmentDetailByShouldReturnPopulatedOptionalDataAvailable() {
-    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(assessmentMock);
+    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture()))
+        .thenReturn(Optional.of(assessmentMock));
     when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
 
     Optional<AssessmentDetailDTO> result = testObj.findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
@@ -87,7 +88,8 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findAssessmentDetailByShouldReturnEmptyOptionalNoData() {
-    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture())).thenReturn(null);
+    when(assessmentRepositoryMock.findOne(assessmentExampleCaptor.capture()))
+        .thenReturn(Optional.empty());
 
     Optional<AssessmentDetailDTO> result = testObj.findAssessmentDetailBy(TRAINEE_ID, ASSESSMENT_ID);
 
@@ -166,8 +168,10 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findOneShouldReturnDtoOfDetail() {
-    when(assessmentDetailRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(assessmentDetailMock);
-    when(assessmentDetailMapperMock.toDto(assessmentDetailMock)).thenReturn(assessmentDetailDTOMock);
+    when(assessmentDetailRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(assessmentDetailMock));
+    when(assessmentDetailMapperMock.toDto(assessmentDetailMock))
+        .thenReturn(assessmentDetailDTOMock);
 
     Optional<AssessmentDetailDTO> result = testObj.findOne(ASSESSMENT_ID);
 
@@ -177,7 +181,7 @@ public class AssessmentDetailServiceImplTest {
 
   @Test
   public void findOneShouldReturnEmptyDTOWhenNoDetailMatches() {
-    when(assessmentDetailRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
+    when(assessmentDetailRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
 
     Optional<AssessmentDetailDTO> result = testObj.findOne(ASSESSMENT_ID);
 
