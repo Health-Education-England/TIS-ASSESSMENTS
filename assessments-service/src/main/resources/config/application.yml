@@ -15,14 +15,17 @@
 # ===================================================================
 
 management:
+  endpoints:
+    web:
+      base-path: /management
+  # Compatibility key still consumed by older JHipster SwaggerConfiguration beans.
+  context-path: ${management.endpoints.web.base-path}
   security:
     enabled: false
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
   add-application-context-header: false
-  server:
-    base-path: /management
 
 spring:
   application:
