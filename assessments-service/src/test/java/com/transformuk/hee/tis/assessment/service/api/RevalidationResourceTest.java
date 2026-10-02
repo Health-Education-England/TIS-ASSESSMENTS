@@ -122,7 +122,7 @@ public class RevalidationResourceTest {
 
     byte[] createPayload = TestUtil.convertObjectToJsonBytes(revalidationToCreateDTO);
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments/{assessmentId}/revalidations", TRAINEE_ID, ASSESSMENT_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(createPayload))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID))
@@ -149,7 +149,7 @@ public class RevalidationResourceTest {
 
     byte[] createPayload = TestUtil.convertObjectToJsonBytes(revalidationToCreateDTO);
     mockMvc.perform(post("/api/trainee/{traineeId}/assessments/{assessmentId}/revalidations", TRAINEE_ID, ASSESSMENT_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(createPayload))
         .andExpect(status().isNotFound());
 
@@ -165,7 +165,7 @@ public class RevalidationResourceTest {
 
     byte[] updatePayload = TestUtil.convertObjectToJsonBytes(revalidationToCreateDTO);
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}/revalidations", TRAINEE_ID, ASSESSMENT_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(updatePayload))
         .andExpect(status().isNotFound());
 
@@ -182,7 +182,7 @@ public class RevalidationResourceTest {
 
     byte[] updatePayload = TestUtil.convertObjectToJsonBytes(revalidationToUpdateDTO);
     mockMvc.perform(put("/api/trainee/{traineeId}/assessments/{assessmentId}/revalidations", TRAINEE_ID, ASSESSMENT_ID)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(updatePayload))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID))

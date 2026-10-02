@@ -1,5 +1,10 @@
 package com.transformuk.hee.tis.assessment.service.service.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
 import com.transformuk.hee.tis.assessment.api.dto.AssessmentOutcomeDTO;
 import com.transformuk.hee.tis.assessment.service.model.Assessment;
@@ -7,6 +12,7 @@ import com.transformuk.hee.tis.assessment.service.model.AssessmentOutcome;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeReasonRepository;
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentOutcomeRepository;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentOutcomeMapper;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,14 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Optional;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssessmentOutcomeServiceImplTest {
@@ -49,7 +48,6 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentMock.getId()).thenReturn(ASSESSMENT_ID);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
     when(resultAssessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
-    when(savedAssessmentOutcomeMock.getId()).thenReturn(ASSESSMENT_ID);
   }
 
   @Test
@@ -61,7 +59,8 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(originalAssessmentOutcome));
 
     AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
 
@@ -77,7 +76,8 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(originalAssessmentOutcome));
     when(assessmentOutcomeMock.getReasons()).thenReturn(null);
 
     AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
@@ -93,7 +93,8 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentOutcomeMapperMock.toEntity(assessmentOutcomeDTOMock)).thenReturn(assessmentOutcomeMock);
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(resultAssessmentOutcomeDTOMock);
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(originalAssessmentOutcome));
 
     AssessmentOutcomeDTO result = testObj.save(assessmentMock, assessmentOutcomeDTOMock);
 
@@ -140,7 +141,8 @@ public class AssessmentOutcomeServiceImplTest {
   @Test(expected = IllegalStateException.class)
   public void saveShouldThrowExceptionWhenOutcomeIsLegacy() {
     AssessmentOutcome assessmentOutcome = new AssessmentOutcome().legacy(true);
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(assessmentOutcome);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(assessmentOutcome));
     try {
       testObj.save(assessmentMock, assessmentOutcomeDTOMock);
     } catch (Exception e) {
@@ -166,7 +168,8 @@ public class AssessmentOutcomeServiceImplTest {
     when(assessmentOutcomeRepositoryMock.saveAndFlush(assessmentOutcomeMock)).thenReturn(savedAssessmentOutcomeMock);
     when(assessmentOutcomeMapperMock.toDto(savedAssessmentOutcomeMock)).thenReturn(assessmentOutcomeDTOMock);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(originalAssessmentOutcome);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(originalAssessmentOutcome));
 
     AssessmentOutcomeDTO result = testObj.create(assessment, assessmentOutcomeDTO);
 
@@ -197,8 +200,10 @@ public class AssessmentOutcomeServiceImplTest {
 
   @Test
   public void findOneShouldReturnOutcomeWithId() {
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(assessmentOutcomeMock);
-    when(assessmentOutcomeMapperMock.toDto(assessmentOutcomeMock)).thenReturn(assessmentOutcomeDTOMock);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID))
+        .thenReturn(Optional.of(assessmentOutcomeMock));
+    when(assessmentOutcomeMapperMock.toDto(assessmentOutcomeMock))
+        .thenReturn(assessmentOutcomeDTOMock);
     when(assessmentOutcomeDTOMock.getId()).thenReturn(ASSESSMENT_ID);
 
     Optional<AssessmentOutcomeDTO> result = testObj.findOne(ASSESSMENT_ID);
@@ -210,8 +215,7 @@ public class AssessmentOutcomeServiceImplTest {
 
   @Test
   public void findOneShouldReturnEmptyOptionalWhenOutcomeDoesntExist() {
-    when(assessmentOutcomeRepositoryMock.findOne(ASSESSMENT_ID)).thenReturn(null);
-    when(assessmentOutcomeMapperMock.toDto((AssessmentOutcome) null)).thenReturn(null);
+    when(assessmentOutcomeRepositoryMock.findById(ASSESSMENT_ID)).thenReturn(Optional.empty());
 
     Optional<AssessmentOutcomeDTO> result = testObj.findOne(ASSESSMENT_ID);
 
