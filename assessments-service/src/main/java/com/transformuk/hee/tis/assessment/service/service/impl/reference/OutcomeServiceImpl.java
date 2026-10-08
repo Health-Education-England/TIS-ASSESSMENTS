@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +33,9 @@ public class OutcomeServiceImpl implements OutcomeService {
 
     List<Specification<Outcome>> specs = new ArrayList<>();
     //add the text search criteria
-    specs.add(Specifications.where(containsLike(CODE_COLUMN, searchString))
-        .or(containsLike(LABEL_COLUMN, searchString)));
 
-    Specifications<Outcome> fullSpec = Specifications.where(specs.get(0));
+    Specification<Outcome> fullSpec = Specification.where(containsLike(CODE_COLUMN, searchString))
+        .or(containsLike(LABEL_COLUMN, searchString));
     //add the rest of the specs that made it in
     for (int i = 1; i < specs.size(); i++) {
       fullSpec = fullSpec.and(specs.get(i));

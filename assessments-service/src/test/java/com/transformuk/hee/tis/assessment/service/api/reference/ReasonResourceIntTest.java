@@ -25,6 +25,7 @@ import com.transformuk.hee.tis.assessment.service.service.ReasonService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.ReasonMapper;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.hamcrest.CoreMatchers;
@@ -108,24 +109,24 @@ public class ReasonResourceIntTest {
   public void getReasonByIdShouldReturnReason() throws Exception {
     Reason reason = new Reason().id(REASON_ID).code(REASON_CODE).label(REASON_LABEL);
 
-    when(reasonRepositoryMock.findOne(REASON_ID)).thenReturn(reason);
+    when(reasonRepositoryMock.findById(REASON_ID)).thenReturn(Optional.of(reason));
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/reasons/{id}", 1))
         .andExpect(jsonPath("$.id").value(REASON_ID.intValue()))
         .andExpect(jsonPath("$.code").value(REASON_CODE))
         .andExpect(jsonPath("$.label").value(REASON_LABEL));
 
-    verify(reasonRepositoryMock).findOne(REASON_ID);
+    verify(reasonRepositoryMock).findById(REASON_ID);
   }
 
   @Test
   public void getReasonByIdShouldReturnNotFound() throws Exception {
-    when(reasonRepositoryMock.findOne(REASON_ID)).thenReturn(null);
+    when(reasonRepositoryMock.findById(REASON_ID)).thenReturn(Optional.empty());
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/reasons/{id}", 1))
         .andExpect(status().isNotFound());
 
-    verify(reasonRepositoryMock).findOne(REASON_ID);
+    verify(reasonRepositoryMock).findById(REASON_ID);
   }
 
   @Test
@@ -142,7 +143,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.post("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isCreated());
   }
@@ -161,7 +162,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(REASON_ID))
@@ -183,7 +184,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.save(isA(Reason.class))).thenReturn(savedReason);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.put("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(reason)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(REASON_ID))
@@ -202,7 +203,7 @@ public class ReasonResourceIntTest {
     when(reasonRepositoryMock.findAll(isA(Pageable.class))).thenReturn(reasons);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/reasons")
-        .contentType(MediaType.APPLICATION_JSON_UTF8))
+        .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "2"))
         .andExpect(
@@ -225,7 +226,7 @@ public class ReasonResourceIntTest {
 
     this.restReasonMockMvc
         .perform(MockMvcRequestBuilders.get("/api/reasons?searchQuery=" + REASON2_CODE)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(header().string("X-Total-Count", "1"))
         .andExpect(jsonPath("$.[*].id").value(hasItems(REASON2_ID.intValue())))
@@ -241,7 +242,7 @@ public class ReasonResourceIntTest {
     Reason reason2 = new Reason().id(REASON2_ID).code(REASON2_CODE).label(REASON2_LABEL);
     Set<Reason> reasons = Sets.newHashSet(reason1, reason2);
 
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID)).thenReturn(outcomeMock);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID)).thenReturn(Optional.of(outcomeMock));
     when(reasonRepositoryMock.findByOutcome(outcomeMock)).thenReturn(reasons);
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}/reasons", 1))
@@ -250,18 +251,18 @@ public class ReasonResourceIntTest {
         .andExpect(jsonPath("$.[*].code").value(hasItems(REASON_CODE, REASON2_CODE)))
         .andExpect(jsonPath("$.[*].label").value(hasItems(REASON_LABEL, REASON2_LABEL)));
 
-    verify(outcomeRepositoryMock).findOne(OUTCOME_ID);
+    verify(outcomeRepositoryMock).findById(OUTCOME_ID);
     verify(reasonRepositoryMock).findByOutcome(outcomeMock);
   }
 
   @Test
   public void getReasonByByOutcomeIdShouldReturnNotFoundWhenOutcomeDoesntExist() throws Exception {
-    when(outcomeRepositoryMock.findOne(OUTCOME_ID)).thenReturn(null);
+    when(outcomeRepositoryMock.findById(OUTCOME_ID)).thenReturn(Optional.empty());
 
     this.restReasonMockMvc.perform(MockMvcRequestBuilders.get("/api/outcomes/{id}/reasons", 1))
         .andExpect(status().isNotFound());
 
-    verify(outcomeRepositoryMock).findOne(OUTCOME_ID);
+    verify(outcomeRepositoryMock).findById(OUTCOME_ID);
     verify(reasonRepositoryMock, never()).findByOutcome(any());
   }
 
