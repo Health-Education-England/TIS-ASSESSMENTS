@@ -134,9 +134,8 @@ public class JsonPatchResource {
   @GetMapping("/jsonPatches/{id}")
   public ResponseEntity<JsonPatchDTO> getJsonPatch(@PathVariable Long id) {
     log.debug("REST request to get JsonPatch : {}", id);
-    JsonPatch jsonPatch = jsonPatchRepository.findOne(id);
-    JsonPatchDTO jsonPatchDTO = jsonPatchMapper.jsonPatchToJsonPatchDTO(jsonPatch);
-    return ResponseUtil.wrapOrNotFound(Optional.ofNullable(jsonPatchDTO));
+    return ResponseEntity.of(jsonPatchRepository.findById(id)
+        .map(jsonPatchMapper::jsonPatchToJsonPatchDTO));
   }
 
   /**
@@ -149,10 +148,17 @@ public class JsonPatchResource {
   @PreAuthorize("hasAuthority('assessment:delete:entities')")
   public ResponseEntity<Void> deleteJsonPatch(@PathVariable Long id) {
     log.debug("REST request to delete JsonPatch : {}", id);
-    JsonPatch jsonPatch = jsonPatchRepository.findOne(id);
-    jsonPatch.setEnabled(false);
-    jsonPatchRepository.save(jsonPatch);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    Optional<JsonPatch> foundJsonPatch = jsonPatchRepository.findById(id);
+
+    if (foundJsonPatch.isPresent()) {
+      JsonPatch jsonPatch = foundJsonPatch.get();
+      jsonPatch.setEnabled(false);
+      jsonPatchRepository.save(jsonPatch);
+    }
+
+    return ResponseEntity.ok()
+        .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString()))
+        .build();
   }
 
   /**
@@ -180,7 +186,7 @@ public class JsonPatchResource {
     }
     List<JsonPatch> jsonPatches = jsonPatchMapper.jsonPatchDTOsToJsonPatches(jsonPatchDTOs);
     jsonPatches.forEach(jsonPatch -> jsonPatch.setEnabled(false));
-    jsonPatches = jsonPatchRepository.save(jsonPatches);
+    jsonPatches = jsonPatchRepository.saveAll(jsonPatches);
     List<JsonPatchDTO> results = jsonPatchMapper.jsonPatchesToJsonPatchDTOs(jsonPatches);
     List<Long> ids = results.stream().map(c -> c.getId()).collect(Collectors.toList());
     return ResponseEntity.ok()

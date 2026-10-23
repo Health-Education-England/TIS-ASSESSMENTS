@@ -144,7 +144,7 @@ public class AssessmentOutcomeResourceTest {
     mockMvc.perform(
         post("/api/trainee/{traineeId}/assessments/{assessmentId}/outcomes", TRAINEE_ID, ASSESSMENT_ID)
             .content(createPayload)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
 
     verify(assessmentServiceMock).findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
@@ -160,7 +160,7 @@ public class AssessmentOutcomeResourceTest {
     mockMvc.perform(
         post("/api/trainee/{traineeId}/assessments/{assessmentId}/outcomes", TRAINEE_ID, ASSESSMENT_ID)
             .content(createPayload)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID))
         .andExpect(jsonPath("$.outcome").value(NOT_ASSESSED))
@@ -183,7 +183,7 @@ public class AssessmentOutcomeResourceTest {
     mockMvc.perform(
         put("/api/trainee/{traineeId}/assessments/{assessmentId}/outcomes", TRAINEE_ID, ASSESSMENT_ID)
             .content(updatePayload)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
 
     verify(assessmentServiceMock).findTraineeAssessment(TRAINEE_ID, ASSESSMENT_ID);
@@ -200,7 +200,7 @@ public class AssessmentOutcomeResourceTest {
     mockMvc.perform(
         put("/api/trainee/{traineeId}/assessments/{assessmentId}/outcomes", TRAINEE_ID, ASSESSMENT_ID)
             .content(updatePayload)
-            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(ASSESSMENT_ID))
         .andExpect(jsonPath("$.outcome").value(OUTCOME))

@@ -48,7 +48,7 @@ public class AssessmentRepositoryIntTest {
     Assert.notNull(revalidation);
 
     //when we delete an assessment, all relating entities get deleted
-    testObj.delete(ASSESSMENT_ID);
+    testObj.deleteById(ASSESSMENT_ID);
 
     Assert.isNull(entityManager.find(Assessment.class, ASSESSMENT_ID));
     Assert.isNull(entityManager.find(AssessmentDetail.class, ASSESSMENT_ID));
