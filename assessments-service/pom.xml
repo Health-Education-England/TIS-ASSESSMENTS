@@ -41,7 +41,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.version>3.0.0</maven.version>
     <node.version>v6.11.4</node.version>
-    <problem-spring-web.version>0.21.0</problem-spring-web.version>
+    <problem-spring-web.version>0.29.1</problem-spring-web.version>
     <profile.swagger/>
 
     <project.build.finalName>assessments</project.build.finalName>
