@@ -278,7 +278,7 @@ public class AssessmentResourceIntTest {
     // Create the Assessment
     AssessmentDTO assessmentDTO = createDTO();
     restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
 
@@ -313,7 +313,7 @@ public class AssessmentResourceIntTest {
 
     // An entity with an existing ID cannot be created, so this API call must fail
     restAssessmentMockMvc.perform(post("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isBadRequest());
 
@@ -335,7 +335,7 @@ public class AssessmentResourceIntTest {
     // Get all the assessmentList
     restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.[*].id").value(hasItem(assessment.getId().intValue())))
         .andExpect(jsonPath("$.[*].traineeId").value(hasItem(assessment.getTraineeId().intValue())))
         .andExpect(jsonPath("$.[*].firstName").value(hasItem(assessment.getFirstName())))
@@ -376,7 +376,7 @@ public class AssessmentResourceIntTest {
     // Get assessmentList with query
     restAssessmentMockMvc.perform(get("/api/trainee/assessments?sort=id,desc&searchQuery=" + DEFAULT_GMC_NUMBER))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.length()").value(1))
         .andExpect(jsonPath("$.[0].id").value(assessment.getId().intValue()))
         .andExpect(jsonPath("$.[0].traineeId").value(assessment.getTraineeId().intValue()))
@@ -404,7 +404,7 @@ public class AssessmentResourceIntTest {
     // Get the assessment
     restAssessmentMockMvc.perform(get("/api/trainee/{traineeId}/assessments/{assessmentId}", DEFAULT_PERSON_ID, assessment.getId()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.id").value(assessment.getId().intValue()))
         .andExpect(jsonPath("$.traineeId").value(assessment.getTraineeId()))
         .andExpect(jsonPath("$.firstName").value(assessment.getFirstName()))
@@ -453,7 +453,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findById(assessment.getId()).get();
     updatedAssessment
 //        .personId(UPDATED_PERSON_ID)
         .firstName(UPDATED_FIRST_NAME)
@@ -487,7 +487,7 @@ public class AssessmentResourceIntTest {
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
 
     restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isOk());
 
@@ -517,7 +517,7 @@ public class AssessmentResourceIntTest {
 
     // If the entity doesn't have an ID, it will be created instead of just being updated
     restAssessmentMockMvc.perform(put("/api/trainee/{traineeId}/assessments", DEFAULT_PERSON_ID)
-        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .contentType(MediaType.APPLICATION_JSON)
         .content(TestUtil.convertObjectToJsonBytes(assessmentDTO)))
         .andExpect(status().isCreated());
 
@@ -566,7 +566,7 @@ public class AssessmentResourceIntTest {
 
     restAssessmentMockMvc.perform(get("/api/trainee/assessments/{ids}", assessment.getId()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.*.id").value(hasItem(assessment.getId().intValue())));
   }
 
@@ -580,7 +580,7 @@ public class AssessmentResourceIntTest {
     int databaseSizeBeforeUpdate = assessmentRepository.findAll().size();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment updatedAssessment = assessmentRepository.findById(assessment.getId()).get();
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -592,14 +592,14 @@ public class AssessmentResourceIntTest {
     AssessmentDTO assessmentDTO = assessmentMapper.toDto(updatedAssessment);
 
     restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
         .andExpect(status().isOk());
 
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessment.getId());
+    Assessment testAssessment = assessmentRepository.findById(assessment.getId()).get();
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);
     assertThat(testAssessment.getProgrammeNumber()).isEqualTo(UPDATED_PROGRAMME_NUMBER);
@@ -629,7 +629,7 @@ public class AssessmentResourceIntTest {
     Long assessmentId = assessment.getId();
 
     // Update the assessment
-    Assessment updatedAssessment = assessmentRepository.findOne(assessmentId);
+    Assessment updatedAssessment = assessmentRepository.findById(assessmentId).get();
     updatedAssessment
         .reviewDate(UPDATED_START_DATE)
         .programmeNumber(UPDATED_PROGRAMME_NUMBER)
@@ -649,14 +649,14 @@ public class AssessmentResourceIntTest {
     assessmentDTO.setRevalidation(revalidationDto);
 
     restAssessmentMockMvc.perform(put("/api/trainee/bulk-assessment")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(Collections.singletonList(assessmentDTO))))
         .andExpect(status().isOk());
 
     // Validate the Assessment in the database
     List<Assessment> assessmentList = assessmentRepository.findAll();
     assertThat(assessmentList).hasSize(databaseSizeBeforeUpdate);
-    Assessment testAssessment = assessmentRepository.findOne(assessmentId);
+    Assessment testAssessment = assessmentRepository.findById(assessmentId).get();
 
     assertThat(testAssessment.getId()).isEqualTo(updatedAssessment.getId());
     assertThat(testAssessment.getProgrammeName()).isEqualTo(UPDATED_PROGRAMME_NAME);

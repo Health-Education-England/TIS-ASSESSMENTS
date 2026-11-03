@@ -8,13 +8,12 @@ import com.transformuk.hee.tis.assessment.service.repository.AssessmentDetailRep
 import com.transformuk.hee.tis.assessment.service.repository.AssessmentRepository;
 import com.transformuk.hee.tis.assessment.service.service.AssessmentDetailService;
 import com.transformuk.hee.tis.assessment.service.service.mapper.AssessmentDetailMapper;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class AssessmentDetailServiceImpl implements AssessmentDetailService {
@@ -45,12 +44,8 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentId);
 
     Assessment example = new Assessment().traineeId(traineeId).id(assessmentId);
-    Assessment foundAssessment = assessmentRepository.findOne(Example.of(example));
-    if (foundAssessment != null) {
-      AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(foundAssessment.getDetail());
-      return Optional.ofNullable(assessmentDetailDTO);
-    }
-    return Optional.empty();
+    return assessmentRepository.findOne(Example.of(example))
+        .map(assessment -> assessmentDetailMapper.toDto(assessment.getDetail()));
   }
 
   /**
@@ -100,8 +95,7 @@ public class AssessmentDetailServiceImpl implements AssessmentDetailService {
     Preconditions.checkNotNull(assessmentDetailId);
 
     log.debug("Request to get Assessment Detail : {}", assessmentDetailId);
-    AssessmentDetail assessmentDetail = assessmentDetailRepository.findOne(assessmentDetailId);
-    AssessmentDetailDTO assessmentDetailDTO = assessmentDetailMapper.toDto(assessmentDetail);
-    return Optional.ofNullable(assessmentDetailDTO);
+    return assessmentDetailRepository.findById(assessmentDetailId)
+        .map(assessmentDetailMapper::toDto);
   }
 }

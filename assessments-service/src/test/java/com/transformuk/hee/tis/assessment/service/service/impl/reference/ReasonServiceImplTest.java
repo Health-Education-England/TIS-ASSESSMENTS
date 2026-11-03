@@ -6,8 +6,6 @@ import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -15,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 
 import java.util.List;
 
@@ -37,9 +34,6 @@ public class ReasonServiceImplTest {
 
   @Mock
   private Pageable pageableMock;
-
-  @Captor
-  private ArgumentCaptor<Specifications<Reason>> specificationsArgumentCaptor;
 
   @Test(expected = NullPointerException.class)
   public void advanceSearchShouldThrowExceptionWhenNoSearchString() {
@@ -67,7 +61,8 @@ public class ReasonServiceImplTest {
     Reason reason2 = new Reason().id(2L).code("reason2").label("a reason 2");
     List<Reason> reasons = Lists.newArrayList(reason1, reason2);
     Page<Reason> pagedResult = new PageImpl<>(reasons);
-    when(reasonRepositoryMock.findAll(any(Specifications.class), eq(pageableMock))).thenReturn(pagedResult);
+    when(reasonRepositoryMock.findAll(any(Specification.class), eq(pageableMock)))
+        .thenReturn(pagedResult);
 
     Page<Reason> result = testObj.advancedSearch(SEARCH_STRING, pageableMock);
 

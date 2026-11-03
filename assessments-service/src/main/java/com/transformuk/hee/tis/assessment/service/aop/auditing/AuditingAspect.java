@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
  * Aspect for auditing execution of rest calls Spring components.
@@ -93,7 +94,7 @@ public class AuditingAspect {
         idField.setAccessible(true);
         final Object idFieldValue = idField.get(newValue);
         Object oldValue = null;
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
         JsonNode newJsonNode = mapper.convertValue(newValue, JsonNode.class);
         JsonNode oldJsonNode = NullNode.getInstance();
         // if the idFieldValue is null means it's new record so don't fetch old value from db

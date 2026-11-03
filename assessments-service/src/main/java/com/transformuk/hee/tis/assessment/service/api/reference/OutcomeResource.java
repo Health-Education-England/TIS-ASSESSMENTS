@@ -69,7 +69,7 @@ public class OutcomeResource {
   })
   public ResponseEntity<Outcome> getOutcome(@PathVariable Long id) {
     log.debug("REST request to get Outcome with id: [{}]", id);
-    Optional<Outcome> outcome = Optional.ofNullable(outcomeRepository.findOne(id));
+    Optional<Outcome> outcome = outcomeRepository.findById(id);
     return ResponseUtil.wrapOrNotFound(outcome);
   }
 

@@ -1,24 +1,24 @@
 package com.transformuk.hee.tis.assessment.service.api.util;
 
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.stream.Collectors.toList;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transformuk.hee.tis.assessment.service.model.ColumnFilter;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.lang3.EnumUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.nhs.tis.StringConverter;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.stream.Collectors.toList;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import uk.nhs.tis.StringConverter;
 
 /**
  * Utility class for Column filters
@@ -29,7 +29,7 @@ public final class ColumnFilterUtil {
 
   private static final Logger log = LoggerFactory.getLogger(ColumnFilterUtil.class);
 
-  private static final ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
 
   public ColumnFilterUtil() {
   }
